@@ -1,0 +1,6 @@
+DatabasePath: 'data'
+
+AnnotationDB37: 'http://krishna.gs.washington.edu/download/CADD/v1.4/annotations.tgz'
+AnnotationDB38: 'http://krishna.gs.washington.edu/download/CADD/v1.4/annotations.tgz'
+PrescoredSNV37: 'http://krishna.gs.washington.edu/download/CADD/v1.4/whole_genome_SNVs.tsv.gz'
+PrescoredSNV38: 'http://krishna.gs.washington.edu/download/CADD/v1.4/whole_genome_SNVs.tsv.gz'
