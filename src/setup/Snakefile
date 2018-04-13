@@ -1,20 +1,25 @@
-configfile: config.yml
+#configfile= 'config.yml'
 
 ########################
 ### GENERATION RULES ###
 ########################
 
-rule all:
+rule default:
     input:
+        '%s/annotation/GRCh37' % (config['DatabasePath']),
+        '%s/vep/GRCh37' % config['DatabasePath'],
+        '%s/annotation/GRCh38' % (config['DatabasePath']),
+        '%s/vep/GRCh38' % config['DatabasePath']
 
 rule annotation_GRCh37:
-    '%s/annotation/GRCh37' % (config['DatabasePath']),
-    '%s/vep/GRCh37' % config['DatabasePath']
+    input:
+        '%s/annotation/GRCh37' % (config['DatabasePath']),
+        '%s/vep/GRCh37' % config['DatabasePath']
 
 rule annotation_GRCh38:
-    '%s/annotation/GRCh38' % (config['DatabasePath']),
-    '%s/vep/GRCh38' % config['DatabasePath']
-
+    input:
+        '%s/annotation/GRCh38' % (config['DatabasePath']),
+        '%s/vep/GRCh38' % config['DatabasePath']
 
 rule prescored_GRCh37:
     input:
@@ -32,19 +37,19 @@ rule prescored_GRCh38:
 
 rule setup_vep:
     output:
-        '%s/vep/GRCh{GenomeBuilt}' % config['DatabasePath']
+        '%s/vep/GRCh{GenomeBuild}' % config['DatabasePath']
     conda:
         '../pipeline/environment.yml'
     shell:
         '''
-        vep_install -a cf -s homo_sapiens -y GRhCh{GenomeBuilt} -v 90 -c {config[DatabasePath]}/vep/GRCh{GenomeBuilt} -CONVERT
+        vep_install -a cf -s homo_sapiens -y GRhCh{wildcards[GenomeBuild]} -v 90 -c {config[DatabasePath]}/vep/GRCh{wildcards[GenomeBuild]} -CONVERT
         '''
 
 rule unpack_annotation:
     input:
-        '%s/Annotation{built}.tar.gz' % (config['DatabasePath'])
+        '%s/Annotation{GenomeBuild}.tar.gz' % (config['DatabasePath'])
     output:
-        '%s/annotation/GRCh{built}' % (config['DatabasePath'])
+        '%s/annotation/GRCh{GenomeBuild}' % (config['DatabasePath'])
     shell:
         '''
         tar -zxf {input} -C {output}
@@ -72,8 +77,8 @@ rule download_annotation38:
 
 rule download_prescored37:
     output:
-        prescore='%s/prescored/GRCh37/whole_genome_SNVs.tsv.gz'  % {config[DatabasePath]},
-        tabix='%s/prescored/GRCh37/whole_genome_SNVs.tsv.gz.tbi' % {config[DatabasePath]}
+        prescore='%s/prescored/GRCh37/whole_genome_SNVs.tsv.gz'  % {config['DatabasePath']},
+        tabix='%s/prescored/GRCh37/whole_genome_SNVs.tsv.gz.tbi' % {config['DatabasePath']}
     shell:
         '''
         wget -c -o {output.prescore} {config[PrescoredSNV37]}
@@ -84,8 +89,8 @@ rule download_prescored37:
 
 rule download_prescored38:
     output:
-        prescore='%s/prescored/GRCh38/whole_genome_SNVs.tsv.gz'  % {config[DatabasePath]},
-        tabix='%s/prescored/GRCh38/whole_genome_SNVs.tsv.gz.tbi' % {config[DatabasePath]}
+        prescore='%s/prescored/GRCh38/whole_genome_SNVs.tsv.gz'  % {config['DatabasePath']},
+        tabix='%s/prescored/GRCh38/whole_genome_SNVs.tsv.gz.tbi' % {config['DatabasePath']}
     shell:
         '''
         wget -c -o {output.prescore} {config[PrescoredSNV38]}
