@@ -4,8 +4,12 @@ input/*
 output/*
 config/*
 
+
 # compiled files
 *.pyc
 
 # process files
 *.log
+
+# snakemake
+.snakemake*

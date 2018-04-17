@@ -1,4 +1,4 @@
-#configfile= 'config.yml'
+configfile: 'src/setup/config.yml'
 
 ########################
 ### GENERATION RULES ###
@@ -6,30 +6,30 @@
 
 rule default:
     input:
-        '%s/annotation/GRCh37' % (config['DatabasePath']),
-        '%s/vep/GRCh37' % config['DatabasePath'],
-        '%s/annotation/GRCh38' % (config['DatabasePath']),
-        '%s/vep/GRCh38' % config['DatabasePath']
+        'data/annotation/GRCh37',
+        'data/vep/GRCh37',
+        'data/annotation/GRCh38',
+        'data/vep/GRCh38'
 
 rule annotation_GRCh37:
     input:
-        '%s/annotation/GRCh37' % (config['DatabasePath']),
-        '%s/vep/GRCh37' % config['DatabasePath']
+        'data/annotation/GRCh37',
+        'data/vep/GRCh37'
 
 rule annotation_GRCh38:
     input:
-        '%s/annotation/GRCh38' % (config['DatabasePath']),
-        '%s/vep/GRCh38' % config['DatabasePath']
+        'data/annotation/GRCh38',
+        'data/vep/GRCh38'
 
 rule prescored_GRCh37:
     input:
-        '%s/prescored/GRCh37/whole_genome_SNVs.tsv.gz' % {config['DatabasePath']},
-        '%s/prescored/GRCh37/whole_genome_SNVs.tsv.gz.tbi' % {config['DatabasePath']}
+        'data/prescored/GRCh37/whole_genome_SNVs.tsv.gz',
+        'data/prescored/GRCh37/whole_genome_SNVs.tsv.gz.tbi'
 
 rule prescored_GRCh38:
     input:
-        '%s/prescored/GRCh38/whole_genome_SNVs.tsv.gz' % {config['DatabasePath']},
-        '%s/prescored/GRCh38/whole_genome_SNVs.tsv.gz.tbi' % {config['DatabasePath']}
+        'data/prescored/GRCh38/whole_genome_SNVs.tsv.gz' ,
+        'data/prescored/GRCh38/whole_genome_SNVs.tsv.gz.tbi'
 
 ######################
 ### WORKFLOW RULES ###
@@ -37,19 +37,19 @@ rule prescored_GRCh38:
 
 rule setup_vep:
     output:
-        '%s/vep/GRCh{GenomeBuild}' % config['DatabasePath']
+        'data/vep/GRCh{GenomeBuild}'
     conda:
-        '../pipeline/environment.yml'
+        '../environment.yml'
     shell:
         '''
-        vep_install -a cf -s homo_sapiens -y GRhCh{wildcards[GenomeBuild]} -v 90 -c {config[DatabasePath]}/vep/GRCh{wildcards[GenomeBuild]} -CONVERT
+        vep_install -a cf --NO_UPDATE -s homo_sapiens -y GRCh{wildcards[GenomeBuild]} -v 90 -c data/vep/GRCh{wildcards[GenomeBuild]}
         '''
 
 rule unpack_annotation:
     input:
-        '%s/Annotation{GenomeBuild}.tar.gz' % (config['DatabasePath'])
+        'data/Annotation{GenomeBuild}.tar.gz'
     output:
-        '%s/annotation/GRCh{GenomeBuild}' % (config['DatabasePath'])
+        'data/annotation/GRCh{GenomeBuild}'
     shell:
         '''
         tar -zxf {input} -C {output}
@@ -77,8 +77,8 @@ rule download_annotation38:
 
 rule download_prescored37:
     output:
-        prescore='%s/prescored/GRCh37/whole_genome_SNVs.tsv.gz'  % {config['DatabasePath']},
-        tabix='%s/prescored/GRCh37/whole_genome_SNVs.tsv.gz.tbi' % {config['DatabasePath']}
+        prescore='data/prescored/GRCh37/whole_genome_SNVs.tsv.gz',
+        tabix='data/prescored/GRCh37/whole_genome_SNVs.tsv.gz.tbi'
     shell:
         '''
         wget -c -o {output.prescore} {config[PrescoredSNV37]}
@@ -89,8 +89,8 @@ rule download_prescored37:
 
 rule download_prescored38:
     output:
-        prescore='%s/prescored/GRCh38/whole_genome_SNVs.tsv.gz'  % {config['DatabasePath']},
-        tabix='%s/prescored/GRCh38/whole_genome_SNVs.tsv.gz.tbi' % {config['DatabasePath']}
+        prescore='data/prescored/GRCh38/whole_genome_SNVs.tsv.gz',
+        tabix='data/prescored/GRCh38/whole_genome_SNVs.tsv.gz.tbi'
     shell:
         '''
         wget -c -o {output.prescore} {config[PrescoredSNV38]}
