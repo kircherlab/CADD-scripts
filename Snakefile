@@ -32,7 +32,7 @@ rule compress:
 rule prescore:
     input:
         inputfile='%s/{file}.vcf.gz' % config['InputFolder'],
-        prescorefiles=glob.glob('%s*.vcf.gz' % config['PrescoredFolder'])
+        prescorefiles=glob.glob('%s*.tsv.gz' % config['PrescoredFolder'])
     output:
         prescored=temp('data/pipeline/prescored/{GenomeBuild}/{file}.tsv.gz'),
         novel=temp('data/pipeline/input/{GenomeBuild}/{file}.vcf')
@@ -107,7 +107,7 @@ rule predict:
         matrix='data/pipeline/sparse/{GenomeBuild}/{file}.npz',
         anno='data/pipeline/annotation/{GenomeBuild}/{file}.tsv.gz',
         model='data/models/{GenomeBuild}/%s' % config['Model'],
-        table='data/models/{GenomeBuild}/%s.conversiontable.tsv' % config['Model']
+        table='data/models/{GenomeBuild}/%s' % config['ConversionTable']
     output:
         temp('data/pipeline/result/{GenomeBuild}/{file}.tsv.gz')
     conda:
