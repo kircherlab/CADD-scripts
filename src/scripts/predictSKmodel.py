@@ -27,7 +27,7 @@ args = parser.parse_args()
 
 if args.output and len(args.input) != len(args.output):
     if len(args.output) == 1:
-        print('Concatenating input files')
+        sys.stderr.write('Concatenating input files\n')
     else:
         raise NotImplementedError('Cannot predict %i dataset into %i files' % (len(args.input), len(args.output)))
 
@@ -43,14 +43,18 @@ for n, infile in enumerate(args.input):
 
     mat_variants = load_npz(infile).toarray()
 
-    model, scaler = joblib.load(args.model)
+    if mat_variants.shape == (0, 0):
+        sys.stderr.write('Input file %s is empty.\n' % infile)
+        res_varaints = []
+    else:
+        model, scaler = joblib.load(args.model)
 
-    scaler.transform(mat_variants)
+        scaler.transform(mat_variants)
 
-    try:
-        res_variants = model.predict_proba(mat_variants)[:,1]
-    except AttributeError:
-        res_variants = model.decision_function(mat_variants).flatten()
+        if hasattr(model, 'predict_proba'):
+            res_variants = model.predict_proba(mat_variants)[:,1]
+        else:
+            res_variants = model.decision_function(mat_variants).flatten()
 
     num = 0
     if args.append:

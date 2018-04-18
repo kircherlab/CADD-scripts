@@ -52,5 +52,6 @@ for line in sys.stdin:
 
   except ValueError:
     sys.stderr.write('Encountered uncovered chromosome\n')
+    sys.stdout.write(line)
 
 found_out.close()
