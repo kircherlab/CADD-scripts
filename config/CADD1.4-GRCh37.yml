@@ -1,0 +1,27 @@
+
+# the location of the whole repository (does not matter if run from the CADD folder)
+CADDpath: '.'
+
+# folder the vcf data is put into
+InputFolder: input/GRCh37
+
+# folder where the final output data is located
+OutputFolder: output/GRCh37
+
+# genome build the variants genome coordinates are in
+GenomeBuild: GRCh37
+
+# CADD model
+Model: "CADD1.4-GRCh37.mod"
+
+# raw Score to PHRED-Score (C-Score) conversion table
+ConversionTable: "conversionTable_CADD1.4-GRCh37.txt"
+
+# annotation definition
+ReferenceConfig: config/GRCh37references.cfg
+
+# annotation transformation and imputation definition
+ImputeConfig: config/impute_GRCh37.cfg
+
+# folder with prescored variants (in .tsv.gz) files
+PrescoredFolder: data/prescored/GRCh37/
