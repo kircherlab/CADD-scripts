@@ -4,7 +4,6 @@ input/*
 output/*
 config/*
 
-
 # compiled files
 *.pyc
 
@@ -13,3 +12,6 @@ config/*
 
 # snakemake
 .snakemake*
+
+# compressed files
+*.gz
