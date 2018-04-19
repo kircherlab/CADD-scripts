@@ -13,5 +13,11 @@ config/*
 # snakemake
 .snakemake*
 
-# compressed files
+# data files
 *.gz
+*.vcf
+*.tsv
+*.zip
+
+# temp files
+.*
