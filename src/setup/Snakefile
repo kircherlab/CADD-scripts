@@ -7,9 +7,7 @@ configfile: 'src/setup/config.yml'
 rule default:
     input:
         'data/annotation/GRCh37',
-        'data/vep/GRCh37',
         'data/annotation/GRCh38',
-        'data/vep/GRCh38'
 
 rule annotation_GRCh37:
     input:
@@ -34,16 +32,6 @@ rule prescored_GRCh38:
 ######################
 ### WORKFLOW RULES ###
 ######################
-
-rule setup_vep:
-    output:
-        'data/vep/GRCh{GenomeBuild}'
-    conda:
-        '../environment.yml'
-    shell:
-        '''
-        vep_install -a cf --NO_UPDATE -s homo_sapiens -y GRCh{wildcards[GenomeBuild]} -v 90 -c data/vep/GRCh{wildcards[GenomeBuild]}
-        '''
 
 rule unpack_annotation:
     input:

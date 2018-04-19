@@ -67,7 +67,7 @@ rule annotate:
         export CADD={config[CADDpath]};
         cat {input} \
         | vep --quiet --cache --buffer 1000 --no_stats --offline --vcf \
-            --dir data/vep/{config[GenomeBuild]} \
+            --dir data/annotations/{config[GenomeBuild]}/vep \
             --species homo_sapiens --db_version=90 \
             --assembly {config[GenomeBuild]} --regulatory --sift b \
             --polyphen b --per_gene --ccds --domains --numbers --canonical \
