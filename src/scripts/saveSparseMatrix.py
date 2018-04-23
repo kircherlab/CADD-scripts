@@ -20,7 +20,7 @@ def saveSparse(inputFile, outFile=None, chunksize=10000, dtype=np.float32, load=
             csr = csr_matrix(chunk)
             csr_block.append(csr)
             i += 1
-            print('Read %i samples ...\n' % (i * chunksize))
+            print('Read %i samples ...\n' % ((i - 1) * chunksize + chunk.shape[0]))
 
         t1 = time.time()
         print('Parsing took %.2f seconds\n' % (t1 - t0))
