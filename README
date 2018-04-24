@@ -1,0 +1,89 @@
+### Prerequisite
+
+- conda
+```bash
+#something like
+wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
+bash Miniconda2-latest-Linux-x86_64.sh -p $HOME/miniconda2 -b
+export PATH=$HOME/miniconda2/bin:$PATH
+```
+
+*Note: you can also install CADD without conda by providing the dependencies otherwise. You can find the list of tools (VEP) and (python) libraries in the `src/environment.yml` file. You will also have to disable the line `source activate cadd-env` in `CADD.sh`*
+
+### Setup
+
+- load/move the zipped CADD archive to its own folder and unzip.
+
+```bash
+unzip CADDv1.4.zip
+```
+
+ - from this point you can either install everything seperately or by running the script `install.sh`
+
+#### Install via script
+
+This is the *less complex* way of installing CADD. By running:
+
+```
+./install.sh
+```
+
+You first state which parts you want to install (the environment and at least one genome build inclusive annotations are neccessary for a quick start) and the script should manage the loading and unpacking of the neccessary files.
+
+#### Install manually
+
+Running CADD depends on 3 big building blocks (plus the repository that we assume you already downloaded):
+
+ - dependencies
+ - genome annotations
+ - prescored variants
+
+**Installing dependencies**
+
+As stated already in the Prerequisite you can install CADD dependencies without conda, although we heavily recommend doing so. This is because managing the various parts becomes very handy by relying it. To setup the neccessary environment, we only need to run the command:
+
+```bash
+conda env create -f src/environment.yml
+```
+
+After the installing process (which will take a few minutes), the CADD conda environment will be loaded (via `source activate cadd-env` automatically in the `CADD.sh` script) and CADD can run without further settings.
+
+**Installing annotations**
+
+Both version of CADD (for the different genome builds) rely on a big number of genomic annotations. Depending on which genome build you requiere you can get them from our website (be careful where you put them as these are really big files) or via:
+
+```bash
+# for GRCh37 / hg19
+wget http://krishna.gs.washington.edu/download/CADD/v1.4/annotationsGRCh37.tar.gz
+# for GRCh38 / hg38
+wget http://krishna.gs.washington.edu/download/CADD/v1.4/annotationsGRCh38.tar.gz
+```
+
+As those files are about 100 and 200 GB in size, download can take, depending on your internet connection, a while. We recommend to setup the process in the background.
+
+To make sure you downloaded the files correctly, we recommend downloading md5 hash files from our website (e.g. `wget http://krishna.gs.washington.edu/download/CADD/v1.4/annotationsGRCh37.tar.gz.md5`) and checking for completness (via `md5sum -c annotationsGRCh37.tar.gz.md5`).
+
+The annotation files are finally put in the folder `data/annotations` and unpacked:
+
+```bash
+cd data/annotations
+tar -zxvf annotationsGRCh37.tar.gz
+tar -zxvf annotationsGRCh38.tar.gz
+cd $OLDPWD
+```
+
+**Installing prescored files**
+
+At this point you are ready to go, but if you want a faster version of CADD, you can download the prescored files from our website (see section Downloads for a list of available files). Please note that these files can be very big. The files are (together with their respective tabix indices) put in the folders `no_anno` or `incl_anno` depending on the file under `data/prescored/${GENOME_BUILD}/` and will be automatically detected by the `CADD.sh` script.
+
+### Running CADD
+
+You run CADD via the script `CADD.sh` which technically only requieres an either vcf or vcf.gz input file as last argument. You can further specify the genome build via `-g`, request a fully annotated output (`-a` flag) and specify a seperate output file via `-o` (else inputfile name `.tsv.gz` is used). I.e:
+
+```bash
+./CADD.sh input/test.vcf
+
+./CADD.sh -a -g GRCh37 -o output.tsv.gz input/test.vcf
+```
+
+*CADD-v1.4 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health 2013-2018. All rights reserved.*
