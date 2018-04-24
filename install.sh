@@ -2,6 +2,8 @@
 
 set -e
 
+echo "CADD-v1.4 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health 2013-2018. All rights reserved."
+
 SCRIPT=$(readlink -f "$0")
 BASEDIR=$(dirname "$SCRIPT")
 
