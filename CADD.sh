@@ -154,9 +154,9 @@ if [ "$ANNOTATION" = 'false' ]
 then
     if [ "$GENOMEBUILD" == "GRCh38" ]
     then
-        COLUMNS="1-4,144,145"
+        COLUMNS="1-4,124,125"
     else
-        COLUMNS="1-4,126,127"
+        COLUMNS="1-4,106,107"
     fi
     zcat $TMP_NOV | cut -f $COLUMNS | uniq | gzip -c > $TMP_NOV.tmp
     mv $TMP_NOV.tmp $TMP_NOV
