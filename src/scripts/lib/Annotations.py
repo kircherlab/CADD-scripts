@@ -348,7 +348,10 @@ class Domain(Annotation):
         if res['DOMAINS'] != '':
             domain_ind = 5
             for dfields in res['DOMAINS'].split('&'):
-                category,name = dfields.split(":", 1)
+                try:
+                    category,name = dfields.split(":", 1)
+                except:
+                    continue
                 if category == "hmmpanther":
                     domain_ind = min(domain_ind, 4)
                 elif ("_domain" in category) or ("_profile" in category):
@@ -498,57 +501,6 @@ class PhyloP(TabixAnnotation, ScoreHighestPerFeature): # summarises the previous
     path = ''
     rangescore = True
     zerobased = True
-
-class DNAstructure(FeatureAnnotation):
-    name = 'DNAstructure'
-    path = '/dnaStructure2/structures.tsv'
-    features = ['dnaMGW','dnaHelT1','dnaHelT2','dnaProT','dnaRoll1','dnaRoll2',
-                'dnaEP','dnaStrech','dnaTilt1','dnaTilt2','dnaBuckle',
-                'dnaShear','dnaOpening','dnaRise1','dnaRise2','dnaShift1',
-                'dnaShift2','dnaStagger','dnaSlide1','dnaSlide2']
-
-    def load(self, args):
-        if self.path != '' and (not os.path.exists(self.path)):
-            sys.stderr.write('%s annotation: Require valid path to index file.\n' % self.name)
-        elif os.path.exists(self.path):
-            self.heptamereTable = {}
-            with open(self.path, 'r') as f:
-                for line in f:
-                    fields = line.rstrip().split('\t')
-                    self.heptamereTable[fields[0]] = np.array(fields[1:]).astype(float)
-
-    def _retrieve(self, res):
-        self.sequence = res['Seq'][72:79]
-
-    def _get_score(self, res):
-        if len(res['Alt']) != 1 or len(res['Ref']) != 1:
-            return res
-        try:
-            DNAstruct = self.heptamereTable[self.sequence] - \
-                        self.heptamereTable[self.sequence[:3] + res['Alt'] + self.sequence[4:]]
-        except KeyError:
-            return res
-        res['dnaMGW'] = DNAstruct[0] # minor groove width
-        res['dnaHelT1'] = DNAstruct[1] # helix twist
-        res['dnaHelT2'] = DNAstruct[2]
-        res['dnaProT'] = DNAstruct[3] # propeller twist
-        res['dnaRoll1'] = DNAstruct[4]
-        res['dnaRoll2'] = DNAstruct[5]
-        res['dnaEP'] = DNAstruct[6] # electrostatic potential
-        res['dnaStrech'] = DNAstruct[7]
-        res['dnaTilt1'] = DNAstruct[8]
-        res['dnaTilt2'] = DNAstruct[9]
-        res['dnaBuckle'] = DNAstruct[10]
-        res['dnaShear'] = DNAstruct[11]
-        res['dnaOpening'] = DNAstruct[12]
-        res['dnaRise1'] = DNAstruct[13]
-        res['dnaRise2'] = DNAstruct[14]
-        res['dnaShift1'] = DNAstruct[15]
-        res['dnaShift2'] = DNAstruct[16]
-        res['dnaStagger'] = DNAstruct[17]
-        res['dnaSlide1'] = DNAstruct[18]
-        res['dnaSlide2'] = DNAstruct[19]
-        return res
 
 class Bscores(TabixAnnotation, ScoreLowest):
     name = 'bStatistic'
@@ -975,7 +927,6 @@ annotations = [
     MamPhyloP(),
     VerPhyloP(),
     PhyloP(),
-    DNAstructure(),
     Bscores(),
     MirTargetScan(),
     MirSVR(),
