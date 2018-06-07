@@ -142,17 +142,12 @@ zcat $TMP_ANNO \
 | python $CADD/src/scripts/trackTransformation.py -b \
             -c $IMPUTE_CONFIG -o $TMP_IMP --noheader;
 
-# Data preparation
-python $CADD/src/scripts/saveSparseMatrix.py -i $TMP_IMP -o $TMP_NPZ;
-rm $TMP_IMP
-
 # Score prediction
 python $CADD/src/scripts/predictSKmodel.py \
-    -i $TMP_NPZ -m $MODEL -a $TMP_ANNO \
+    -i $TMP_IMP -m $MODEL -a $TMP_ANNO \
 | python $CADD/src/scripts/max_line_hierarchy.py --all \
 | python $CADD/src/scripts/appendPHREDscore.py -t $CONVERSION_TABLE \
 | gzip -c > $TMP_NOV;
-rm $TMP_NPZ
 rm $TMP_ANNO
 
 if [ "$ANNOTATION" = 'false' ]
