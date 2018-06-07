@@ -22,7 +22,10 @@ AMINOACID_EXCHANGES = \
  'S-G', 'S-I', 'S-L', 'S-N', 'S-P', 'S-R', 'S-T', 'S-W', 'S-Y', 'T-A', 'T-I',
  'T-K', 'T-M', 'T-N', 'T-P', 'T-R', 'T-S', 'V-A', 'V-D', 'V-E', 'V-F', 'V-G',
  'V-I', 'V-L', 'V-M', 'W-*', 'W-C', 'W-G', 'W-L', 'W-R', 'W-S', 'Y-*', 'Y-C',
- 'Y-D', 'Y-F', 'Y-H', 'Y-N', 'Y-S']
+ 'Y-D', 'Y-F', 'Y-H', 'Y-N', 'Y-S',
+ 'A-A', 'C-C', 'D-D', 'E-E', 'F-F', 'G-G', 'H-H', 'I-I', 'K-K', 'L-L', 'N-N',
+ 'P-P', 'Q-Q', 'R-R', 'S-S', 'T-T', 'V-V', 'Y-Y',
+]
 
 trackData = {
 'y': {
@@ -866,91 +869,6 @@ trackData = {
     'indicator': True,
     'scaling': 'quantile'
     },
-'dnamgw': {
-    'description': 'Predicted local DNA structure effect on DNA minor groove width',
-    'type': float,
-    'hcdiff_transformation': lambda x: -x,
-    'na_value': 0,
-    'indicator': True,
-    'scaling': 'quantile'
-    },
-'dnahelt': {
-    'description': 'Predicted local DNA structure effect on DNA helix twist',
-    'type': float,
-    'dependencies': ['dnahelt1', 'dnahelt2'],
-    'derive': lambda x: float(x['dnahelt1']) + float(x['dnahelt2']),
-    'hcdiff_derive': lambda x: - float(x['dnahelt1']) - float(x['dnahelt2']),
-    'na_value': 0,
-    'shared_indicator': 'dnamgw',
-    'scaling': 'quantile'
-    },
-'dnaprot': {
-    'description': 'Predicted local DNA structure effect on DNA propeller twist',
-    'type': float,
-    'hcdiff_transformation': lambda x: -x,
-    'na_value': 0,
-    'shared_indicator': 'dnamgw',
-    'scaling': 'quantile'
-    },
-'dnaroll': {
-    'description': 'Predicted local DNA structure effect on dnaRoll',
-    'dependencies': ['dnaroll1', 'dnaroll2'],
-    'derive': lambda x: float(x['dnaroll1']) + float(x['dnaroll2']),
-    'hcdiff_derive': lambda x: - float(x['dnaroll1']) - float(x['dnaroll2']),
-    'copy': 'dnahelt'
-    },
-'dnaep': {
-    'description': 'Predicted local DNA structure effect on DNA electrostatic potential',
-    'copy': 'dnaprot'
-    },
-'dnastrech': {
-    'description': 'Predicted local DNA structure effect on DNA Strech',
-    'copy': 'dnaprot'
-    },
-'dnatilt': {
-    'description': 'Predicted local DNA structure effect on dnaTilt',
-    'type': float,
-    'dependencies': ['dnatilt1', 'dnatilt2'],
-    'derive': lambda x: abs(float(x['dnatilt1'])) + abs(float(x['dnatilt2'])),
-    'na_value': 0,
-    'shared_indicator': 'dnamgw',
-    'scaling': 'quantile'
-    },
-'dnabuckle': {
-    'description': 'Predicted local DNA structure effect on DNA Buckle',
-    'copy': 'dnaprot'
-    },
-'dnashear': {
-    'description': 'Predicted local DNA structure effect on DNA Shear',
-    'copy': 'dnaprot'
-    },
-'dnaopening': {
-    'description': 'Predicted local DNA structure effect on DNA Opening',
-    'copy': 'dnaprot'
-    },
-'dnarise': {
-    'description': 'Predicted local DNA structure effect on dnaRise',
-    'dependencies': ['dnarise1', 'dnarise2'],
-    'derive': lambda x: float(x['dnarise1']) + float(x['dnarise2']),
-    'hcdiff_derive': lambda x: - float(x['dnarise1']) - float(x['dnarise2']),
-    'copy': 'dnahelt'
-    },
-'dnashift': {
-    'description': 'Predicted local DNA structure effect on dnaShift',
-    'dependencies': ['dnashift1', 'dnashift2'],
-    'derive': lambda x: abs(float(x['dnashift1'])) + abs(float(x['dnashift2'])),
-    'copy': 'dnatilt'
-    },
-'dnastagger': {
-    'description': 'Predicted local DNA structure effect on DNA Stagger',
-    'copy': 'dnaprot'
-    },
-'dnaslide': {
-    'description': 'Predicted local DNA structure effect on dnaSlide',
-    'dependencies': ['dnaslide1', 'dnaslide2'],
-    'derive': lambda x: abs(float(x['dnaslide1'])) + abs(float(x['dnaslide2'])),
-    'copy': 'dnatilt'
-    },
 'ensembleregulatoryfeature': {
     'description': 'Matches in the Ensemble Regualtory Built (similar to annotype)',
     'type': list,
@@ -1098,8 +1016,7 @@ trackData = {
     'child': ['bstatistic', 'cdnapos', 'cdspos', 'dst2splice', 'gerpn',
                'gerps', 'mamphcons', 'mamphylop', 'mindisttse', 'mindisttss',
                'priphcons', 'priphylop', 'protpos', 'relcdnapos', 'relcdspos',
-               'relprotpos', 'verphcons', 'verphylop', 'dnahelt',
-               'dnamgw', 'dnaprot', 'dnaroll', 'dnaep', 'dist2mutation',
+               'relprotpos', 'verphcons', 'verphylop', 'dist2mutation',
                'bravofreq100',
                'bravorare100', 'bravosngl100', 'bravofreq1000',
                'bravorare1000', 'bravosngl1000', 'bravofreq10000',
