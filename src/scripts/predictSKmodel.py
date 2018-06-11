@@ -75,7 +75,7 @@ for n, infile in enumerate(args.input):
             for res in res_variants:
                 while True:
                     line = append_file.readline().strip()
-                    if line.startswith('#') or line.startswith('Chr'):
+                    if line.startswith('#') or line.startswith('Chrom'):
                         if first_line:
                             out_file.write(''.join([line, args.delimiter,
                                                     args.colname, '\n']))

@@ -32,7 +32,7 @@ trackData = {
     'description': 'ground truth value',
     'type': bool
     },
-'chr': {
+'chrom': {
     'description': 'Chromosome',
     'type': str,
     'default': 'ignore'

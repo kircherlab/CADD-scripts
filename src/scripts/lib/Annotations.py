@@ -32,7 +32,7 @@ class TabixAnnotation(FeatureAnnotation):
 
     def _retrieve(self, res):
         self.tabix = get_range_from_tabix(self.tabix,
-                                          res['Chr'],
+                                          res['Chrom'],
                                           res['Start'],
                                           res['End'],
                                           rangescore=self.rangescore,
@@ -46,7 +46,7 @@ class PosTabixAnnotation(TabixAnnotation):
 
     def _retrieve(self, res):
         self.tabix = get_from_tabix(self.tabix,
-                                    res['Chr'],
+                                    res['Chrom'],
                                     res['Pos'],
                                     continuous=self.continuous,
                                     zerobased=self.zerobased)
@@ -85,7 +85,7 @@ class EncodeAnnotation(FeatureAnnotation):
         values = []
         for encodeTabix in self.tabixlist:
             encodeTabix = get_range_from_tabix(encodeTabix,
-                                               res['Chr'],
+                                               res['Chrom'],
                                                res['Start'],
                                                res['End'],
                                                rangescore=True,
@@ -381,7 +381,7 @@ class Dst2Splice(TabixAnnotation):
             maxvalSPLICE = 20
             for iPos in range(res['Start'],res['End']+1):
                 try:
-                    for elem in self.tabix[0].fetch(res['Chr'],
+                    for elem in self.tabix[0].fetch(res['Chrom'],
                                                  iPos-maxvalSPLICE-1,
                                                  iPos+maxvalSPLICE+1):
                         elem = elem.rstrip("\n").split('\t')
@@ -416,7 +416,7 @@ class MinDistTSX(TabixAnnotation):
         for iPos in set([res['Start'],res['End']]):
             for cmaxval in (maxvalDIST/10000,maxvalDIST/1000,maxvalDIST/100,maxvalDIST/10,maxvalDIST):
                 try:
-                    for elem in self.tabix[0].fetch(reference=res['Chr'], start=max(0,iPos-cmaxval-1), end=iPos+cmaxval+1):
+                    for elem in self.tabix[0].fetch(reference=res['Chrom'], start=max(0,iPos-cmaxval-1), end=iPos+cmaxval+1):
                         #sys.stderr.write("%s\n"%(elem))
                         elem = elem.rstrip("\n").split('\t')
                         start,end = int(elem[1]),int(elem[2])
@@ -716,7 +716,7 @@ class EncodeOpenChrom(EncodeAnnotation):
         newlist = []
         for encodeTabix in self.tabixlist:
             encodeTabix = get_range_from_tabix(encodeTabix,
-                                                          res['Chr'],
+                                                          res['Chrom'],
                                                           res['Start'],
                                                           res['End'],
                                                           rangescore=True,

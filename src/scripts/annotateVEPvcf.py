@@ -101,7 +101,7 @@ for annotation in annotations:
 
 info_columns = vcf_reader.infos['CSQ'].desc.split('Format: ')[1].split('|')
 
-output_columns = ['Chr', 'Pos', 'Ref', 'Alt', 'Type']
+output_columns = ['Chrom', 'Pos', 'Ref', 'Alt', 'Type']
 output_columns.extend(annotationFeatures)
 
 if args.header:
@@ -111,8 +111,8 @@ if args.header:
 for record in vcf_reader:
 
     res = {}
-    res['Chr'] = record.CHROM
-    if len(res['Chr']) > 2: # quickfix: only support main chromosomes, discard others
+    res['Chrom'] = record.CHROM
+    if len(res['Chrom']) > 2: # quickfix: only support main chromosomes, discard others
         continue
 
     res['Ref'] = str(record.REF)
@@ -156,9 +156,9 @@ for record in vcf_reader:
             res['End'] = end_seq
 
     if start_seq > 74:
-        res['Seq'] = genome_index.fetch(res['Chr'], start_seq-75, end_seq+75).upper()
+        res['Seq'] = genome_index.fetch(res['Chrom'], start_seq-75, end_seq+75).upper()
     else:
-        res['Seq'] = (75-start_seq) * 'N' + genome_index.fetch(res['Chr'], 0, end_seq+75).upper()
+        res['Seq'] = (75-start_seq) * 'N' + genome_index.fetch(res['Chrom'], 0, end_seq+75).upper()
 
     # read those annotations, that are independent of the consequence
     for annotation in nocons_annotations:
