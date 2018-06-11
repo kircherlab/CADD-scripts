@@ -20,12 +20,17 @@ parser.add_argument("-m", "--model", dest="model", type=str,
 parser.add_argument("-o", "--output", dest="output", type=str,
                     default=None, nargs='+',
                     help="Location were the generated predictions are stored, default stdout")
+parser.add_argument("-c", "--colname", dest="colname", default='RawScore', type=str,
+                    help="the column name in the output file")
 parser.add_argument("-a", "--append", dest='append', default=None, type=str,
                     nargs='+',
                     help="file to which we append the prediction at end of line")
 parser.add_argument("-d", "--delimiter", dest="delimiter", default="\t",
                     type=str,
                     help="delimter of the output file if appending")
+parser.add_argument("--hastarget", dest="hastarget", default=False,
+                    action="store_true",
+                    help="if dataset contain first column with the target variable")
 
 args = parser.parse_args()
 
@@ -70,8 +75,6 @@ for n, infile in enumerate(args.input):
             for res in res_variants:
                 while True:
                     line = append_file.readline().strip()
-                    if args.short:
-                        line = args.delimiter.join(line.split(args.delimiter, 8)[:8])
                     if line.startswith('#') or line.startswith('Chr'):
                         if first_line:
                             out_file.write(''.join([line, args.delimiter,
