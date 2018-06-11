@@ -129,7 +129,7 @@ fi
 cat $TMP_VCF \
 | vep --quiet --cache --buffer 1000 --no_stats --offline --vcf \
     --dir data/annotations/$GENOMEBUILD/vep \
-    --species homo_sapiens --db_version=90 \
+    --species homo_sapiens --db_version=92 \
     --assembly $GENOMEBUILD --regulatory --sift b \
     --polyphen b --per_gene --ccds --domains --numbers --canonical \
     --total_length --force_overwrite --format vcf --output_file STDOUT \
