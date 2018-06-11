@@ -128,7 +128,7 @@ fi
 # Variant annotation
 cat $TMP_VCF \
 | vep --quiet --cache --buffer 1000 --no_stats --offline --vcf \
-    --dir data/annotations/$GENOMEBUILD/vep \
+    --dir $CADD/data/annotations/$GENOMEBUILD/vep \
     --species homo_sapiens --db_version=92 \
     --assembly $GENOMEBUILD --regulatory --sift b \
     --polyphen b --per_gene --ccds --domains --numbers --canonical \
