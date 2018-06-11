@@ -7,11 +7,14 @@ from optparse import OptionParser
 
 parser = OptionParser()
 parser.add_option("-p","--path", dest="path", help="Path to scored variants.")
-parser.add_option("--found_out", dest="found_out", help="Write found variants to file (default 'output.tsv')",default="output.tsv")
+parser.add_option("--found_out", dest="found_out", help="Write found variants to file (default 'output.tsv')",default=None)
 parser.add_option("--header", dest="header", help="Write full header to output (default none)",default=False, action="store_true")
 (options, args) = parser.parse_args()
 
-found_out = open(options.found_out,'w')
+if options.found_out:
+    found_out = open(options.found_out,'w')
+else:
+    found_out = sys.stdout
 
 fref,falt = 2,3
 if os.path.exists(options.path) and os.path.exists(options.path+".tbi"):
@@ -54,4 +57,5 @@ for line in sys.stdin:
     sys.stderr.write('Encountered uncovered chromosome\n')
     sys.stdout.write(line)
 
-found_out.close()
+if options.found_out:
+    found_out.close()
