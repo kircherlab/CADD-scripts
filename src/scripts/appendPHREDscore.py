@@ -45,8 +45,10 @@ for line in sys.stdin:
     fields = line.rstrip().split('\t')
     if replace:
       val = float(fields[-2])
+      fields[-2]="%.6f"%(val)
     else:
       val = float(fields[-1])
+      fields[-1]="%.6f"%(val)
     score = convtbl.get_larger_equal(val)
     if score[-1] == None:
       if val > maxValue:
@@ -60,4 +62,4 @@ for line in sys.stdin:
       fields[-1] = score[-1]
       sys.stdout.write("\t".join(fields)+"\n")
     else:
-      sys.stdout.write(line.rstrip()+("\t%s\n"%(score[-1])))
+      sys.stdout.write("\t".join(fields)+"\t%s\n"%(score[-1]))
