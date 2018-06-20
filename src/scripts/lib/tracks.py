@@ -984,6 +984,107 @@ trackData = {
     'derive': lambda x: math.log10(float(x['bravosngl1000']) / float(x['bravosngl10000'])),
     'na_value': -1
     },
+'freq100bp': {
+    'description': 'Number of frequent (MAF > 0.05) variants in 100 bp window nearby',
+    'type': int,
+    'na_value': 0,
+    'scaling': 'quantile'
+    },
+'rare100bp': {
+    'description': 'Number of rare (MAF < 0.05) variants in 100 bp window nearby',
+    'copy': 'freq100bp'
+    },
+'sngl100bp': {
+    'description': 'Number of single occurance variants in 100 bp window nearby',
+    'copy': 'freq100bp'
+    },
+'freq1000bp': {
+    'description': 'Number of frequent (MAF > 0.05) variants in 1000 bp window nearby',
+    'copy': 'freq100bp'
+    },
+'rare1000bp': {
+    'description': 'Number of rare (MAF < 0.05) variants in 1000 bp window nearby',
+    'copy': 'freq100bp'
+    },
+'sngl1000bp': {
+    'description': 'Number of single occurance variants in 1000 bp window nearby',
+    'copy': 'freq100bp'
+    },
+'freq10000bp': {
+    'description': 'Number of frequent (MAF > 0.05) variants in 10000 bp window nearby',
+    'copy': 'freq100bp'
+    },
+'rare10000bp': {
+    'description': 'Number of rare (MAF < 0.05) variants in 10000 bp window nearby',
+    'copy': 'freq100bp'
+    },
+'sngl10000bp': {
+    'description': 'Number of single occurance variants in 10000 bp window nearby',
+    'copy': 'freq100bp'
+    },
+'mw-relfreq1': {
+    'description': 'Log10 of relative frequency of frequent variants in 100 and 1000 bp window',
+    'type': float,
+    'dependencies': ['freq100bp', 'freq1000bp'],
+    'derive': lambda x: math.log10(float(x['freq100bp']) / float(x['freq1000bp'])),
+    'na_value': -0.5
+    },
+'mw-relfreq2': {
+    'description': 'Log10 of relative frequency of frequent variants in 100 and 10000 bp window',
+    'type': float,
+    'dependencies': ['freq100bp', 'freq10000bp'],
+    'derive': lambda x: math.log10(float(x['freq100bp']) / float(x['freq10000bp'])),
+    'na_value': -1.5
+    },
+'mw-relfreq3': {
+    'description': 'Log10 of relative frequency of frequent variants in 1000 and 10000 bp window',
+    'type': float,
+    'dependencies': ['freq1000bp', 'freq10000bp'],
+    'derive': lambda x: math.log10(float(x['freq1000bp']) / float(x['freq10000bp'])),
+    'na_value': -1
+    },
+'mw-relrare1': {
+    'description': 'Log10 of relative frequency of rare variants in 100 and 1000 bp window',
+    'type': float,
+    'dependencies': ['rare100bp', 'rare1000bp'],
+    'derive': lambda x: math.log10(float(x['rare100bp']) / float(x['rare1000bp'])),
+    'na_value': -1
+    },
+'mw-relrare2': {
+    'description': 'Log10 of relative frequency of rare variants in 100 and 10000 bp window',
+    'type': float,
+    'dependencies': ['rare100bp', 'rare10000bp'],
+    'derive': lambda x: math.log10(float(x['rare100bp']) / float(x['rare10000bp'])),
+    'na_value': -2
+    },
+'mw-relrare3': {
+    'description': 'Log10 of relative frequency of rare variants in 1000 and 10000 bp window',
+    'type': float,
+    'dependencies': ['rare1000bp', 'rare10000bp'],
+    'derive': lambda x: math.log10(float(x['rare1000bp']) / float(x['rare10000bp'])),
+    'na_value': -1
+    },
+'mw-relsngl1': {
+    'description': 'Log10 of relative frequency of single occurance variants in 100 and 1000 bp window',
+    'type': float,
+    'dependencies': ['sngl100bp', 'sngl1000bp'],
+    'derive': lambda x: math.log10(float(x['sngl100bp']) / float(x['sngl1000bp'])),
+    'na_value': -1
+    },
+'mw-relsngl2': {
+    'description': 'Log10 of relative frequency of single occurance variants in 100 and 10000 bp window',
+    'type': float,
+    'dependencies': ['sngl100bp', 'sngl10000bp'],
+    'derive': lambda x: math.log10(float(x['sngl100bp']) / float(x['sngl10000bp'])),
+    'na_value': -2
+    },
+'mw-relsngl3': {
+    'description': 'Log10 of relative frequency of single occurance variants in 1000 and 10000 bp window',
+    'type': float,
+    'dependencies': ['sngl1000bp', 'sngl10000bp'],
+    'derive': lambda x: math.log10(float(x['sngl1000bp']) / float(x['sngl10000bp'])),
+    'na_value': -1
+    },
 'dbscsnv-ada_score': {
     'description': 'Adaboost classifier score from dbscSNV',
     'type': float,
@@ -1020,7 +1121,10 @@ trackData = {
                'bravofreq100',
                'bravorare100', 'bravosngl100', 'bravofreq1000',
                'bravorare1000', 'bravosngl1000', 'bravofreq10000',
-               'bravorare10000', 'bravosngl10000', 'cfnucleosome',
+               'bravorare10000', 'bravosngl10000', 'freq100bp',
+               'rare100bp', 'sngl100bp', 'freq1000bp',
+               'rare1000bp', 'sngl1000bp', 'freq10000bp',
+               'rare10000bp', 'sngl10000bp', 'cfnucleosome',
              ]
     },
 'splicetype2dst': {

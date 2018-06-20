@@ -868,6 +868,27 @@ class BravoMutationDensity10000(TabixAnnotation, ScoreHighestPerFeature):
     zerobased = True
     path = ''
 
+class MutationDensity100(TabixAnnotation, ScoreHighestPerFeature):
+    name = 'MutationDensity100'
+    features = ['Freq100bp', 'Rare100bp', 'Sngl100bp']
+    rangescore = True
+    zerobased = True
+    path = ''
+
+class MutationDensity1000(TabixAnnotation, ScoreHighestPerFeature):
+    name = 'MutationDensity1000'
+    features = ['Freq1000bp', 'Rare1000bp', 'Sngl1000bp']
+    rangescore = True
+    zerobased = True
+    path = ''
+
+class MutationDensity10000(TabixAnnotation, ScoreHighestPerFeature):
+    name = 'MutationDensity10000'
+    features = ['Freq10000bp', 'Rare10000bp', 'Sngl10000bp']
+    rangescore = True
+    zerobased = True
+    path = ''
+
 regElement_order = ['Promoter', 'TF binding site', 'Enhancer', 'Promoter Flanking Region', 'CTCF Binding Site', 'Open chromatin']
 regElement_ranking = dict(zip(regElement_order,range(len(regElement_order))))
 class RegulatoryBuiltElements(TabixAnnotation):
@@ -963,6 +984,9 @@ annotations = [
     BravoMutationDensity100(),
     BravoMutationDensity1000(),
     BravoMutationDensity10000(),
+    MutationDensity100(),
+    MutationDensity1000(),
+    MutationDensity10000(),
     RegulatoryBuiltElements(),
     DbscSNV(),
     RemapOverlap(),
