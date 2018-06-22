@@ -876,134 +876,15 @@ trackData = {
     'na_value': 'NA'
     },
 'dist2mutation': {
-    'description': 'Distance to the next closest gnomAD mutation (position itself excluded)',
+    'description': 'Distance between the closest known SNV up and downstream (position itself excluded)',
     'type': float,
     'transformation': math.log,
     'na_value': 0,
     'indicator': True,
     'scaling': 'quantile'
     },
-'bravofreq1000': {
-    'description': 'Number of frequent (MAF > 0.05) BRAVO variants in 1000 bp window nearby',
-    'type': int,
-    'dependencies': ['bravofreq1000', 'type'],
-    'derive': lambda x: 0 if x['type'] != 'SNV' else x['bravofreq1000'],
-    'na_value': 0,
-    'scaling': 'quantile'
-    },
-'bravofreq10000': {
-    'description': 'Number of frequent (MAF > 0.05) BRAVO variants in 10000 bp window nearby',
-    'dependencies': ['bravofreq10000', 'type'],
-    'derive': lambda x: 0 if x['type'] != 'SNV' else x['bravofreq10000'],
-    'copy': 'bravofreq1000'
-    },
-'bravorare1000': {
-    'description': 'Number of rare (MAF < 0.05) BRAVO variants in 1000 bp window nearby',
-    'dependencies': ['bravorare1000', 'type'],
-    'derive': lambda x: 0 if x['type'] != 'SNV' else x['bravorare1000'],
-    'copy': 'bravofreq1000'
-    },
-'bravorare10000': {
-    'description': 'Number of rare (MAF < 0.05) BRAVO variants in 10000 bp window nearby',
-    'dependencies': ['bravorare10000', 'type'],
-    'derive': lambda x: 0 if x['type'] != 'SNV' else x['bravorare10000'],
-    'copy': 'bravofreq1000'
-    },
-'bravosngl1000': {
-    'description': 'Number of single occurance BRAVO variants in 1000 bp window nearby',
-    'dependencies': ['bravosngl1000', 'type'],
-    'derive': lambda x: 0 if x['type'] != 'SNV' else x['bravosngl1000'],
-    'copy': 'bravofreq1000'
-    },
-'bravosngl10000': {
-    'description': 'Number of single occurance BRAVO variants in 10000 bp window nearby',
-    'dependencies': ['bravosngl10000', 'type'],
-    'derive': lambda x: 0 if x['type'] != 'SNV' else x['bravosngl10000'],
-    'copy': 'bravofreq1000'
-    },
-'bravofreq100': {
-    'description': 'Number of frequent (MAF > 0.05) BRAVO variants in 100 bp window nearby',
-    'dependencies': ['bravofreq100', 'type'],
-    'derive': lambda x: 0 if x['type'] != 'SNV' else x['bravofreq100'],
-    'copy': 'bravofreq1000'
-    },
-'bravorare100': {
-    'description': 'Number of rare (MAF < 0.05) BRAVO variants in 100 bp window nearby',
-    'dependencies': ['bravorare100', 'type'],
-    'derive': lambda x: 0 if x['type'] != 'SNV' else x['bravorare100'],
-    'copy': 'bravofreq1000'
-    },
-'bravosngl100': {
-    'description': 'Number of single occurance BRAVO variants in 100 bp window nearby',
-    'dependencies': ['bravosngl100', 'type'],
-    'derive': lambda x: 0 if x['type'] != 'SNV' else x['bravosngl100'],
-    'copy': 'bravofreq1000'
-    },
-'relfreq1': {
-    'description': 'Log10 of relative frequency of frequent variants in 100 and 1000 bp window',
-    'type': float,
-    'dependencies': ['bravofreq100', 'bravofreq1000', 'type'],
-    'derive': lambda x: 0 if x['type'] != 'SNV' else math.log10(float(x['bravofreq100']) / float(x['bravofreq1000'])),
-    'na_value': -0.5
-    },
-'relfreq2': {
-    'description': 'Log10 of relative frequency of frequent variants in 100 and 10000 bp window',
-    'type': float,
-    'dependencies': ['bravofreq100', 'bravofreq10000', 'type'],
-    'derive': lambda x: 0 if x['type'] != 'SNV' else math.log10(float(x['bravofreq100']) / float(x['bravofreq10000'])),
-    'na_value': -1.5
-    },
-'relfreq3': {
-    'description': 'Log10 of relative frequency of frequent variants in 1000 and 10000 bp window',
-    'type': float,
-    'dependencies': ['bravofreq1000', 'bravofreq10000', 'type'],
-    'derive': lambda x: 0 if x['type'] != 'SNV' else math.log10(float(x['bravofreq1000']) / float(x['bravofreq10000'])),
-    'na_value': -1
-    },
-'relrare1': {
-    'description': 'Log10 of relative frequency of rare variants in 100 and 1000 bp window',
-    'type': float,
-    'dependencies': ['bravorare100', 'bravorare1000', 'type'],
-    'derive': lambda x: 0 if x['type'] != 'SNV' else math.log10(float(x['bravorare100']) / float(x['bravorare1000'])),
-    'na_value': -1
-    },
-'relrare2': {
-    'description': 'Log10 of relative frequency of rare variants in 100 and 10000 bp window',
-    'type': float,
-    'dependencies': ['bravorare100', 'bravorare10000', 'type'],
-    'derive': lambda x: 0 if x['type'] != 'SNV' else math.log10(float(x['bravorare100']) / float(x['bravorare10000'])),
-    'na_value': -2
-    },
-'relrare3': {
-    'description': 'Log10 of relative frequency of rare variants in 1000 and 10000 bp window',
-    'type': float,
-    'dependencies': ['bravorare1000', 'bravorare10000', 'type'],
-    'derive': lambda x: 0 if x['type'] != 'SNV' else math.log10(float(x['bravorare1000']) / float(x['bravorare10000'])),
-    'na_value': -1
-    },
-'relsngl1': {
-    'description': 'Log10 of relative frequency of single occurance variants in 100 and 1000 bp window',
-    'type': float,
-    'dependencies': ['bravosngl100', 'bravosngl1000', 'type'],
-    'derive': lambda x: 0 if x['type'] != 'SNV' else math.log10(float(x['bravosngl100']) / float(x['bravosngl1000'])),
-    'na_value': -1
-    },
-'relsngl2': {
-    'description': 'Log10 of relative frequency of single occurance variants in 100 and 10000 bp window',
-    'type': float,
-    'dependencies': ['bravosngl100', 'bravosngl10000', 'type'],
-    'derive': lambda x: 0 if x['type'] != 'SNV' else math.log10(float(x['bravosngl100']) / float(x['bravosngl10000'])),
-    'na_value': -2
-    },
-'relsngl3': {
-    'description': 'Log10 of relative frequency of single occurance variants in 1000 and 10000 bp window',
-    'type': float,
-    'dependencies': ['bravosngl1000', 'bravosngl10000', 'type'],
-    'derive': lambda x: 0 if x['type'] != 'SNV' else math.log10(float(x['bravosngl1000']) / float(x['bravosngl10000'])),
-    'na_value': -1
-    },
 'freq100bp': {
-    'description': 'Number of frequent (MAF > 0.05) variants in 100 bp window nearby',
+    'description': 'Number of frequent (MAF > 0.05) SNV in 100 bp window nearby',
     'type': int,
     'dependencies': ['freq100bp', 'type'],
     'derive': lambda x: 0 if x['type'] != 'SNV' else x['freq100bp'],
@@ -1011,111 +892,111 @@ trackData = {
     'scaling': 'quantile'
     },
 'rare100bp': {
-    'description': 'Number of rare (MAF < 0.05) variants in 100 bp window nearby',
+    'description': 'Number of rare (MAF < 0.05) SNV in 100 bp window nearby',
     'dependencies': ['rare100bp', 'type'],
     'derive': lambda x: 0 if x['type'] != 'SNV' else x['rare100bp'],
     'copy': 'freq100bp'
     },
 'sngl100bp': {
-    'description': 'Number of single occurance variants in 100 bp window nearby',
+    'description': 'Number of single occurrence SNV in 100 bp window nearby',
     'dependencies': ['sngl100bp', 'type'],
     'derive': lambda x: 0 if x['type'] != 'SNV' else x['sngl100bp'],
     'copy': 'freq100bp'
     },
 'freq1000bp': {
-    'description': 'Number of frequent (MAF > 0.05) variants in 1000 bp window nearby',
+    'description': 'Number of frequent (MAF > 0.05) SNV in 1000 bp window nearby',
     'dependencies': ['freq1000bp', 'type'],
     'derive': lambda x: 0 if x['type'] != 'SNV' else x['freq1000bp'],
     'copy': 'freq100bp'
     },
 'rare1000bp': {
-    'description': 'Number of rare (MAF < 0.05) variants in 1000 bp window nearby',
+    'description': 'Number of rare (MAF < 0.05) SNV in 1000 bp window nearby',
     'dependencies': ['rare1000bp', 'type'],
     'derive': lambda x: 0 if x['type'] != 'SNV' else x['rare1000bp'],
     'copy': 'freq100bp'
     },
 'sngl1000bp': {
-    'description': 'Number of single occurance variants in 1000 bp window nearby',
+    'description': 'Number of single occurrence SNV in 1000 bp window nearby',
     'dependencies': ['sngl1000bp', 'type'],
     'derive': lambda x: 0 if x['type'] != 'SNV' else x['sngl1000bp'],
     'copy': 'freq100bp'
     },
 'freq10000bp': {
-    'description': 'Number of frequent (MAF > 0.05) variants in 10000 bp window nearby',
+    'description': 'Number of frequent (MAF > 0.05) SNV in 10000 bp window nearby',
     'dependencies': ['freq10000bp', 'type'],
     'derive': lambda x: 0 if x['type'] != 'SNV' else x['freq10000bp'],
     'copy': 'freq100bp'
     },
 'rare10000bp': {
-    'description': 'Number of rare (MAF < 0.05) variants in 10000 bp window nearby',
+    'description': 'Number of rare (MAF < 0.05) SNV in 10000 bp window nearby',
     'dependencies': ['rare10000bp', 'type'],
     'derive': lambda x: 0 if x['type'] != 'SNV' else x['rare10000bp'],
     'copy': 'freq100bp'
     },
 'sngl10000bp': {
-    'description': 'Number of single occurance variants in 10000 bp window nearby',
+    'description': 'Number of single occurrence SNV in 10000 bp window nearby',
     'dependencies': ['sngl10000bp', 'type'],
     'derive': lambda x: 0 if x['type'] != 'SNV' else x['sngl10000bp'],
     'copy': 'freq100bp'
     },
 'mw-relfreq1': {
-    'description': 'Log10 of relative frequency of frequent variants in 100 and 1000 bp window',
+    'description': 'Log10 of relative frequency of frequent SNV in 100 and 1000 bp window',
     'type': float,
     'dependencies': ['freq100bp', 'freq1000bp', 'type'],
     'derive': lambda x: 0 if x['type'] != 'SNV' else math.log10(float(x['freq100bp']) / float(x['freq1000bp'])),
     'na_value': -0.5
     },
 'mw-relfreq2': {
-    'description': 'Log10 of relative frequency of frequent variants in 100 and 10000 bp window',
+    'description': 'Log10 of relative frequency of frequent SNV in 100 and 10000 bp window',
     'type': float,
     'dependencies': ['freq100bp', 'freq10000bp', 'type'],
     'derive': lambda x: 0 if x['type'] != 'SNV' else math.log10(float(x['freq100bp']) / float(x['freq10000bp'])),
     'na_value': -1.5
     },
 'mw-relfreq3': {
-    'description': 'Log10 of relative frequency of frequent variants in 1000 and 10000 bp window',
+    'description': 'Log10 of relative frequency of frequent SNV in 1000 and 10000 bp window',
     'type': float,
     'dependencies': ['freq1000bp', 'freq10000bp', 'type'],
     'derive': lambda x: 0 if x['type'] != 'SNV' else math.log10(float(x['freq1000bp']) / float(x['freq10000bp'])),
     'na_value': -1
     },
 'mw-relrare1': {
-    'description': 'Log10 of relative frequency of rare variants in 100 and 1000 bp window',
+    'description': 'Log10 of relative frequency of rare SNV in 100 and 1000 bp window',
     'type': float,
     'dependencies': ['rare100bp', 'rare1000bp', 'type'],
     'derive': lambda x: 0 if x['type'] != 'SNV' else math.log10(float(x['rare100bp']) / float(x['rare1000bp'])),
     'na_value': -1
     },
 'mw-relrare2': {
-    'description': 'Log10 of relative frequency of rare variants in 100 and 10000 bp window',
+    'description': 'Log10 of relative frequency of rare SNV in 100 and 10000 bp window',
     'type': float,
     'dependencies': ['rare100bp', 'rare10000bp', 'type'],
     'derive': lambda x: 0 if x['type'] != 'SNV' else math.log10(float(x['rare100bp']) / float(x['rare10000bp'])),
     'na_value': -2
     },
 'mw-relrare3': {
-    'description': 'Log10 of relative frequency of rare variants in 1000 and 10000 bp window',
+    'description': 'Log10 of relative frequency of rare SNV in 1000 and 10000 bp window',
     'type': float,
     'dependencies': ['rare1000bp', 'rare10000bp', 'type'],
     'derive': lambda x: 0 if x['type'] != 'SNV' else math.log10(float(x['rare1000bp']) / float(x['rare10000bp'])),
     'na_value': -1
     },
 'mw-relsngl1': {
-    'description': 'Log10 of relative frequency of single occurance variants in 100 and 1000 bp window',
+    'description': 'Log10 of relative frequency of single occurrence SNV in 100 and 1000 bp window',
     'type': float,
     'dependencies': ['sngl100bp', 'sngl1000bp', 'type'],
     'derive': lambda x: 0 if x['type'] != 'SNV' else math.log10(float(x['sngl100bp']) / float(x['sngl1000bp'])),
     'na_value': -1
     },
 'mw-relsngl2': {
-    'description': 'Log10 of relative frequency of single occurance variants in 100 and 10000 bp window',
+    'description': 'Log10 of relative frequency of single occurrence SNV in 100 and 10000 bp window',
     'type': float,
     'dependencies': ['sngl100bp', 'sngl10000bp', 'type'],
     'derive': lambda x: 0 if x['type'] != 'SNV' else math.log10(float(x['sngl100bp']) / float(x['sngl10000bp'])),
     'na_value': -2
     },
 'mw-relsngl3': {
-    'description': 'Log10 of relative frequency of single occurance variants in 1000 and 10000 bp window',
+    'description': 'Log10 of relative frequency of single occurrence SNV in 1000 and 10000 bp window',
     'type': float,
     'dependencies': ['sngl1000bp', 'sngl10000bp', 'type'],
     'derive': lambda x: 0 if x['type'] != 'SNV' else math.log10(float(x['sngl1000bp']) / float(x['sngl10000bp'])),

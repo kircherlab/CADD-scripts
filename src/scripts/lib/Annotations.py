@@ -848,26 +848,6 @@ class NeighboringMutations(TabixAnnotation):
             res['Dist2Mutation'] = int(self.score[-1][2]) - int(self.score[0][1]) - 1
         return res
 
-class BravoMutationDensity100(TabixAnnotation, ScoreHighestPerFeature):
-    name = 'BravoMutationDensity100'
-    features = ['bravoFreq100', 'bravoRare100', 'bravoSngl100']
-    rangescore = True
-    zerobased = True
-
-class BravoMutationDensity1000(TabixAnnotation, ScoreHighestPerFeature):
-    name = 'BravoMutationDensity1000'
-    features = ['bravoFreq1000', 'bravoRare1000', 'bravoSngl1000']
-    rangescore = True
-    zerobased = True
-    path = ''
-
-class BravoMutationDensity10000(TabixAnnotation, ScoreHighestPerFeature):
-    name = 'BravoMutationDensity10000'
-    features = ['bravoFreq10000', 'bravoRare10000', 'bravoSngl10000']
-    rangescore = True
-    zerobased = True
-    path = ''
-
 class MutationDensity100(TabixAnnotation, ScoreHighestPerFeature):
     name = 'MutationDensity100'
     features = ['Freq100bp', 'Rare100bp', 'Sngl100bp']
@@ -981,9 +961,6 @@ annotations = [
     EncodetotalRNA(),
     Grantham(),
     NeighboringMutations(),
-    BravoMutationDensity100(),
-    BravoMutationDensity1000(),
-    BravoMutationDensity10000(),
     MutationDensity100(),
     MutationDensity1000(),
     MutationDensity10000(),
