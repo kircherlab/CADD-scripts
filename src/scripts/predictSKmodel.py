@@ -66,10 +66,7 @@ for n, infile in enumerate(args.input):
 
         scaler.transform(mat_variants)
 
-        if hasattr(model, 'predict_proba'):
-            res_variants = model.predict_proba(mat_variants)[:,1]
-        else:
-            res_variants = model.decision_function(mat_variants).flatten()
+        res_variants = model.decision_function(mat_variants).flatten()
 
         if args.append:
             for res in res_variants:
