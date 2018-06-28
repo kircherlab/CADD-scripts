@@ -1035,13 +1035,9 @@ trackData = {
                'gerps', 'mamphcons', 'mamphylop', 'mindisttse', 'mindisttss',
                'priphcons', 'priphylop', 'protpos', 'relcdnapos', 'relcdspos',
                'relprotpos', 'verphcons', 'verphylop', 'dist2mutation',
-               'bravofreq100',
-               'bravorare100', 'bravosngl100', 'bravofreq1000',
-               'bravorare1000', 'bravosngl1000', 'bravofreq10000',
-               'bravorare10000', 'bravosngl10000', 'freq100bp',
-               'rare100bp', 'sngl100bp', 'freq1000bp',
-               'rare1000bp', 'sngl1000bp', 'freq10000bp',
-               'rare10000bp', 'sngl10000bp', 'cfnucleosome',
+               'freq100bp', 'rare100bp', 'sngl100bp', 'freq1000bp',
+               'rare1000bp', 'sngl1000bp', 'freq10000bp', 'rare10000bp',
+               'sngl10000bp',
              ]
     },
 'splicetype2dst': {
