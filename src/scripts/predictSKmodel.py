@@ -57,37 +57,40 @@ for n, infile in enumerate(args.input):
     if args.append:
         append_file = gzip.open(args.append[n], 'r')
 
-    for chunk in pd.read_csv(infile, chunksize=args.chunksize, dtype=np.float32, header=None):
+    try:
+        for chunk in pd.read_csv(infile, chunksize=args.chunksize, dtype=np.float32, header=None):
 
-        mat_variants = np.array(chunk)
+            mat_variants = np.array(chunk)
 
-        if args.hastarget:
-            mat_variants = mat_variants[:,1:]
+            if args.hastarget:
+                mat_variants = mat_variants[:,1:]
 
-        scaler.transform(mat_variants)
+            scaler.transform(mat_variants)
 
-        res_variants = model.decision_function(mat_variants).flatten()
+            res_variants = model.decision_function(mat_variants).flatten()
 
-        if args.append:
-            for res in res_variants:
-                while True:
-                    line = append_file.readline().strip()
-                    if line.startswith('#') or line.startswith('Chrom'):
-                        if first_line:
-                            out_file.write(''.join([line, args.delimiter,
-                                                    args.colname, '\n']))
-                            first_line = False
-                    else:
-                        break
-                out_file.write(''.join([line, args.delimiter,
-                                        str(res), '\n']))
+            if args.append:
+                for res in res_variants:
+                    while True:
+                        line = append_file.readline().strip()
+                        if line.startswith('#') or line.startswith('Chrom'):
+                            if first_line:
+                                out_file.write(''.join([line, args.delimiter,
+                                                        args.colname, '\n']))
+                                first_line = False
+                        else:
+                            break
+                    out_file.write(''.join([line, args.delimiter,
+                                            str(res), '\n']))
 
-        else:
-            if first_line:
-                out_file.write(args.colname + '\n')
-                first_line = False
-            for res in res_variants:
-                out_file.write(str(res) + '\n')
+            else:
+                if first_line:
+                    out_file.write(args.colname + '\n')
+                    first_line = False
+                for res in res_variants:
+                    out_file.write(str(res) + '\n')
+    except pd.errors.EmptyDataError:
+        sys.stderr.write('Input file %s is empty.\n' % infile)
 
     if args.output and len(args.output) > 1:
         out_file.close()
