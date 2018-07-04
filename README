@@ -81,9 +81,11 @@ At this point you are ready to go, but if you want a faster version of CADD, you
 You run CADD via the script `CADD.sh` which technically only requieres an either vcf or vcf.gz input file as last argument. You can further specify the genome build via `-g`, request a fully annotated output (`-a` flag) and specify a seperate output file via `-o` (else inputfile name `.tsv.gz` is used). I.e:
 
 ```bash
-./CADD.sh input/test.vcf
+./CADD.sh test/input.vcf
 
-./CADD.sh -a -g GRCh37 -o output.tsv.gz input/test.vcf
+./CADD.sh -a -g GRCh37 -o output_inclAnno_GRCh37.tsv.gz test/input.vcf
 ```
+
+You can test whether your CADD is properly set up by comparing to the example files in the `test` directory.
 
 *CADD-v1.4 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health 2013-2018. All rights reserved.*
