@@ -39,6 +39,7 @@ INFILE=$1
 echo "CADD-v1.4 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health 2013-2018. All rights reserved."
 
 set -e
+set -o pipefail
 
 ### Configuring all the paths
 
