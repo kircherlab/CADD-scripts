@@ -204,8 +204,8 @@ then
     if [ "$ANNOTATIONS" = true ]
     then
         echo "Downloading CADD annotations for GRCh37 (98 GB)"
-        mkdir -p data/annotation/
-        cd data/annotation/
+        mkdir -p data/annotations/
+        cd data/annotations/
         wget -c ${ANNOTATION_GRCh37} -O annotationsGRCh37.tar.gz
         wget ${ANNOTATION_GRCh37}.md5 -O annotationsGRCh37.tar.gz.md5
         md5sum -c annotationsGRCh37.tar.gz.md5
@@ -250,8 +250,8 @@ then
     if [ "$ANNOTATIONS" = true ]
     then
         echo "Downloading CADD annotations for GRCh38 (194 GB)"
-        mkdir -p data/annotation/
-        cd data/annotation/
+        mkdir -p data/annotations/
+        cd data/annotations/
         wget -c $ANNOTATION_GRCh38 -O annotationsGRCh38.tar.gz
         wget $ANNOTATION_GRCh38.md5 -O annotationsGRCh38.tar.gz.md5
         md5sum -c annotationsGRCh38.tar.gz.md5
