@@ -3,6 +3,7 @@
 set -e
 
 echo "CADD-v1.4 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health 2013-2018. All rights reserved."
+echo ""
 
 SCRIPT=$(readlink -f "$0")
 BASEDIR=$(dirname "$SCRIPT")
@@ -21,6 +22,11 @@ fi
 #    echo 'Snakemake seems not to be available. Are you sure snakemake is installed and available in the current $PATH ?';
 #    exit 1;
 #fi
+
+echo "The following questions will quide you through selecting the files and dependencies needed for CADD."
+echo "After this, you will see an overview of the selected files before the download and installation starts."
+echo "Please note, that for successfully running CADD locally, you will need the conda environment and at least one set of annotations."
+echo ""
 
 # ask which parts of CADD the user wants to install
 read -p "Do you want to install the virtual environment with all CADD dependencies via conda? (y)/n " CHOICE
@@ -78,19 +84,29 @@ then
         n|N ) NOCANNO=false;;
         * ) NOANNO=false; echo "Assuming No.";;
     esac
+    read -p "Do you also want to load prescored InDels? We provide scores for well known InDels from sources like ClinVar, gnomAD/TOPMed etc. y/(n) " CHOICE
+    case "$CHOICE" in
+        y|Y ) INDELS=true;;
+        n|N ) INDELS=false;;
+        * ) INDELS=false; echo "Assuming No.";;
+    esac
 fi
 
 ### FILE CONFIGURATION
 
-ANNOTATION_GRCh37="http://krishna.gs.washington.edu/download/CADD/v1.4/annotationsGRCh37.tar.gz"
-ANNOTATION_GRCh38="http://krishna.gs.washington.edu/download/CADD/v1.4/annotationsGRCh38.tar.gz"
-PRESCORE_GRCh37="http://krishna.gs.washington.edu/download/CADD/v1.4/whole_genome_SNVs_GRCh37.tsv.gz"
-PRESCORE_GRCh38="http://krishna.gs.washington.edu/download/CADD/v1.4/whole_genome_SNVs_GRCh38.tsv.gz"
-PRESCORE_INCANNO_GRCh37="http://krishna.gs.washington.edu/download/CADD/v1.4/whole_genome_SNVs_inclAnno_GRCh37.tsv.gz"
-PRESCORE_INCANNO_GRCh38="http://krishna.gs.washington.edu/download/CADD/v1.4/whole_genome_SNVs_inclAnno_GRCh38.tsv.gz"
-
+ANNOTATION_GRCh37="http://krishna.gs.washington.edu/download/CADD/v1.4/GRCh37/annotationsGRCh37.tar.gz"
+ANNOTATION_GRCh38="http://krishna.gs.washington.edu/download/CADD/v1.4/GRCh38/annotationsGRCh38.tar.gz"
+PRESCORE_GRCh37="http://krishna.gs.washington.edu/download/CADD/v1.4/GRCh37/whole_genome_SNVs.tsv.gz"
+PRESCORE_GRCh38="http://krishna.gs.washington.edu/download/CADD/v1.4/GRCh38/whole_genome_SNVs.tsv.gz"
+PRESCORE_INCANNO_GRCh37="http://krishna.gs.washington.edu/download/CADD/v1.4/GRCh37/whole_genome_SNVs_inclAnno.tsv.gz"
+PRESCORE_INCANNO_GRCh38="http://krishna.gs.washington.edu/download/CADD/v1.4/GRCh38/whole_genome_SNVs_inclAnno.tsv.gz"
+PRESCORE_GRCh37_INDEL="http://krishna.gs.washington.edu/download/CADD/v1.4/GRCh37/InDels.tsv.gz"
+PRESCORE_GRCh38_INDEL="http://krishna.gs.washington.edu/download/CADD/v1.4/GRCh38/InDels_SNVs.tsv.gz"
+PRESCORE_INCANNO_GRCh37_INDEL="http://krishna.gs.washington.edu/download/CADD/v1.4/GRCh37/InDels_inclAnno.tsv.gz"
+PRESCORE_INCANNO_GRCh38_INDEL="http://krishna.gs.washington.edu/download/CADD/v1.4/GRCh38/InDels_inclAnno.tsv.gz"
 ### OVERVIEW SELECTION
 
+echo ""
 echo "The following will be loaded: (disk space occupied)"
 
 if [ "$ENV" = true ]
@@ -102,18 +118,26 @@ if [ "$GRCh37" = true ]
 then
     if [ "$ANNOTATIONS" = true ]
     then
-        echo " - Download CADD annotations for GRCh37 (99 GB)"
+        echo " - Download CADD annotations for GRCh37 (98 GB)"
     fi
 
     if [ "$PRESCORE" = true ]
     then
-        if [ "INCANNO" = true ]
+        if [ "$INCANNO" = true ]
         then
-            echo " - Download prescored SNV inclusive annotations for GRCh37 (500 GB)"
+            echo " - Download prescored SNV inclusive annotations for GRCh37 (231 GB)"
+            if [ "$INDELS" = true ]
+            then
+                echo " - Download prescored InDels inclusive annotations for GRCh37 (3 GB)"
+            fi
         fi
-        if [ "NOANNO" = true ]
+        if [ "$NOANNO" = true ]
         then
-            echo " - Download prescored SNV (without annotations) for GRCh37 (80 GB)"
+            echo " - Download prescored SNV (without annotations) for GRCh37 (78 GB)"
+            if [ "$INDELS" = true ]
+            then
+                echo " - Download prescored InDels (without annotations) for GRCh37 (0.6 GB)"
+            fi
         fi
     fi
 fi
@@ -127,13 +151,21 @@ then
 
     if [ "$PRESCORE" = true ]
     then
-        if [ "INCANNO" = true ]
+        if [ "$INCANNO" = true ]
         then
-            echo " - Download prescored SNV inclusive annotations for GRCh38 (500 GB)"
+            echo " - Download prescored SNV inclusive annotations for GRCh38 (323 GB)"
+            if [ "$INDELS" = true ]
+            then
+                echo " - Download prescored InDels inclusive annotations for GRCh38 (9 GB)"
+            fi
         fi
-        if [ "NOANNO" = true ]
+        if [ "$NOANNO" = true ]
         then
-            echo " - Download prescored SNV (without annotations) for GRCh38 (80 GB)"
+            echo " - Download prescored SNV (without annotations) for GRCh38 (79 GB)"
+            if [ "$INDELS" = true ]
+            then
+                echo " - Download prescored InDels (without annotations) for GRCh38 (1 GB)"
+            fi
         fi
     fi
 
@@ -155,14 +187,26 @@ then
     conda env create -f src/environment.yml
 fi
 
+# download a file and it index and check both md5 sums
+function download_variantfile()
+{
+    echo $1
+    wget -c $2
+    wget -c $2.tbi
+    wget $2.md5
+    wget $2.tbi.md5
+    md5sum -c *.md5
+    rm *.md5
+}
+
 if [ "$GRCh37" = true ]
 then
     if [ "$ANNOTATIONS" = true ]
     then
-        echo "Downloading CADD annotations for GRCh37 (99 GB)"
+        echo "Downloading CADD annotations for GRCh37 (98 GB)"
         cd data/annotation/
         wget -c ${ANNOTATION_GRCh37} -O annotationsGRCh37.tar.gz
-        wget -c ${ANNOTATION_GRCh37}.md5 -O annotationsGRCh37.tar.gz.md5
+        wget ${ANNOTATION_GRCh37}.md5 -O annotationsGRCh37.tar.gz.md5
         md5sum -c annotationsGRCh37.tar.gz.md5
         echo "Unpacking CADD annotations for GRCh37"
         tar -zxf annotationsGRCh37.tar.gz
@@ -175,23 +219,23 @@ then
     then
         if [ "$NOANNO" = true ]
         then
-            echo "Downloading prescored SNV without annotations for GRCh37 (80 GB)"
             cd data/prescored/GRCh37/no_anno/
-            wget -c ${PRESCORE_GRCh37}
-            wget -c ${PRESCORE_GRCh37}.tbi
-            wget -c ${PRESCORE_GRCh37}.md5
-            md5sum -c *.md5
+            download_variantfile "Downloading prescored SNV without annotations for GRCh37 (78 GB)" ${PRESCORE_GRCh37}
+            if [ "$INDELS" = true ]
+            then
+                echo " - Downloading prescored InDels without annotations for GRCh38 (1 GB)" ${PRESCORE_GRCh37_INDEL}
+            fi
             cd $OLDPWD
         fi
 
         if [ "$INCANNO" = true ]
         then
-            echo "Downloading prescored SNV inclusive annotations for GRCh37 (500 GB)"
             cd data/prescored/GRCh37/no_anno/
-            wget -c ${PRESCORE_INCANNO_GRCh37}
-            wget -c ${PRESCORE_INCANNO_GRCh37}.tbi
-            wget -c ${PRESCORE_INCANNO_GRCh37}.md5
-            md5sum -c *.md5
+            download_variantfile "Downloading prescored SNV inclusive annotations for GRCh37 (231 GB)" ${PRESCORE_INCANNO_GRCh37}
+            if [ "$INDELS" = true ]
+            then
+                echo " - Downloading prescored InDels inclusive annotations for GRCh38 (3 GB)" ${PRESCORE_INCANNO_GRCh37_INDEL}
+            fi
             cd $OLDPWD
         fi
     fi
@@ -205,7 +249,7 @@ then
         echo "Downloading CADD annotations for GRCh38 (194 GB)"
         cd data/annotation/
         wget -c $ANNOTATION_GRCh38 -O annotationsGRCh38.tar.gz
-        wget -c $ANNOTATION_GRCh38.md5 -O annotationsGRCh38.tar.gz.md5
+        wget $ANNOTATION_GRCh38.md5 -O annotationsGRCh38.tar.gz.md5
         md5sum -c annotationsGRCh38.tar.gz.md5
         echo "Unpacking CADD annotations for GRCh38"
         tar -zxf annotationsGRCh38.tar.gz
@@ -218,23 +262,23 @@ then
     then
         if [ "$NOANNO" = true ]
         then
-            echo "Downloading prescored SNV without annotations for GRCh38 (80 GB)"
             cd data/prescored/GRCh38/incl_anno/
-            wget -c ${PRESCORE_GRCh38}
-            wget -c ${PRESCORE_GRCh38}.tbi
-            wget -c ${PRESCORE_GRCh38}.md5
-            md5sum -c *.md5
+            download_variantfile "Downloading prescored SNV without annotations for GRCh38 (79 GB)" ${PRESCORE_GRCh38}
+            if [ "$INDELS" = true ]
+            then
+                echo " - Downloading prescored InDels without annotations for GRCh38 (1 GB)" ${PRESCORE_GRCh38_INDEL}
+            fi
             cd $OLDPWD
         fi
 
         if [ "$INCANNO" = true ]
         then
-            echo "Downloading prescored SNV inclusive annotations for GRCh38 (500 GB)"
             cd data/prescored/GRCh38/incl_anno/
-            wget -c ${PRESCORE_INCANNO_GRCh38}
-            wget -c ${PRESCORE_INCANNO_GRCh38}.tbi
-            wget -c ${PRESCORE_INCANNO_GRCh38}.md5
-            md5sum -c *.md5
+            download_variantfile "Downloading prescored SNV inclusive annotations for GRCh38 (323 GB)" ${PRESCORE_INCANNO_GRCh38}
+            if [ "$INDELS" = true ]
+            then
+                echo " - Downloading prescored InDels inclusive annotations for GRCh38 (9 GB)" ${PRESCORE_INCANNO_GRCh38_INDEL}
+            fi
             cd $OLDPWD
         fi
     fi
