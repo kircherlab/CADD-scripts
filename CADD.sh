@@ -150,6 +150,7 @@ python $CADD/src/scripts/predictSKmodel.py \
 | python $CADD/src/scripts/appendPHREDscore.py -t $CONVERSION_TABLE \
 | gzip -c > $TMP_NOV;
 rm $TMP_ANNO
+rm $TMP_IMP
 
 if [ "$ANNOTATION" = 'false' ]
 then
