@@ -204,6 +204,7 @@ then
     if [ "$ANNOTATIONS" = true ]
     then
         echo "Downloading CADD annotations for GRCh37 (98 GB)"
+        mkdir -p data/annotation/
         cd data/annotation/
         wget -c ${ANNOTATION_GRCh37} -O annotationsGRCh37.tar.gz
         wget ${ANNOTATION_GRCh37}.md5 -O annotationsGRCh37.tar.gz.md5
@@ -219,6 +220,7 @@ then
     then
         if [ "$NOANNO" = true ]
         then
+            mkdir -p data/prescored/GRCh37/no_anno/
             cd data/prescored/GRCh37/no_anno/
             download_variantfile "Downloading prescored SNV without annotations for GRCh37 (78 GB)" ${PRESCORE_GRCh37}
             if [ "$INDELS" = true ]
@@ -230,7 +232,8 @@ then
 
         if [ "$INCANNO" = true ]
         then
-            cd data/prescored/GRCh37/no_anno/
+            mkdir -p data/prescored/GRCh37/incl_anno/
+            cd data/prescored/GRCh37/incl_anno/
             download_variantfile "Downloading prescored SNV inclusive annotations for GRCh37 (231 GB)" ${PRESCORE_INCANNO_GRCh37}
             if [ "$INDELS" = true ]
             then
@@ -247,6 +250,7 @@ then
     if [ "$ANNOTATIONS" = true ]
     then
         echo "Downloading CADD annotations for GRCh38 (194 GB)"
+        mkdir -p data/annotation/
         cd data/annotation/
         wget -c $ANNOTATION_GRCh38 -O annotationsGRCh38.tar.gz
         wget $ANNOTATION_GRCh38.md5 -O annotationsGRCh38.tar.gz.md5
@@ -262,7 +266,8 @@ then
     then
         if [ "$NOANNO" = true ]
         then
-            cd data/prescored/GRCh38/incl_anno/
+            mkdir -p data/prescored/GRCh38/no_anno/
+            cd data/prescored/GRCh38/no_anno/
             download_variantfile "Downloading prescored SNV without annotations for GRCh38 (79 GB)" ${PRESCORE_GRCh38}
             if [ "$INDELS" = true ]
             then
@@ -273,6 +278,7 @@ then
 
         if [ "$INCANNO" = true ]
         then
+            mkdir -p data/prescored/GRCh38/incl_anno/
             cd data/prescored/GRCh38/incl_anno/
             download_variantfile "Downloading prescored SNV inclusive annotations for GRCh38 (323 GB)" ${PRESCORE_INCANNO_GRCh38}
             if [ "$INDELS" = true ]
