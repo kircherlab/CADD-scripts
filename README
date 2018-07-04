@@ -2,37 +2,37 @@
 
 - conda
 ```bash
-#something like
+# can be installed like this
 wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
 bash Miniconda2-latest-Linux-x86_64.sh -p $HOME/miniconda2 -b
 export PATH=$HOME/miniconda2/bin:$PATH
 ```
 
-*Note: you can also install CADD without conda by providing the dependencies otherwise. You can find the list of tools (VEP) and (python) libraries in the `src/environment.yml` file. You will also have to disable the line `source activate cadd-env` in `CADD.sh`*
+*Note: You can also install CADD without conda by installing the dependencies otherwise. You can find the list of tools (VEP) and (python) libraries in the `src/environment.yml` file. In this case, you will also have to disable the line `source activate cadd-env` in `CADD.sh`*
 
 ### Setup
 
-- load/move the zipped CADD archive to its own folder and unzip.
+- load/move the zipped CADD archive to its destination folder and unzip.
 
 ```bash
 unzip CADDv1.4.zip
 ```
 
- - from this point you can either install everything seperately or by running the script `install.sh`
+- from here, you can either install everything seperately or run the script `install.sh` to install using a brief installation dialog (see below).
 
-#### Install via script
+#### Install script
 
-This is the *less complex* way of installing CADD. By running:
+This is the easier way of installing CADD, just run:
 
 ```
 ./install.sh
 ```
 
-You first state which parts you want to install (the environment and at least one genome build inclusive annotations are neccessary for a quick start) and the script should manage the loading and unpacking of the neccessary files.
+You first state which parts you want to install (the environment as well as at least one genome build including annotation tracks are neccessary for a quick start) and the script should manage loading and unpacking the neccessary files.
 
-#### Install manually
+#### Manual installation
 
-Running CADD depends on 3 big building blocks (plus the repository that we assume you already downloaded):
+Running CADD depends on three big building blocks (plus the repository containing this README which we assume you already downloaded):
 
  - dependencies
  - genome annotations
@@ -50,18 +50,18 @@ After the installing process (which will take a few minutes), the CADD conda env
 
 **Installing annotations**
 
-Both version of CADD (for the different genome builds) rely on a big number of genomic annotations. Depending on which genome build you requiere you can get them from our website (be careful where you put them as these are really big files) or via:
+Both version of CADD (for the different genome builds) rely on a big number of genomic annotations. Depending on which genome build you require you can get them from our website (be careful where you put them as these are really big files and have identical filenames) via:
 
 ```bash
 # for GRCh37 / hg19
-wget http://krishna.gs.washington.edu/download/CADD/v1.4/annotationsGRCh37.tar.gz
+wget -c http://krishna.gs.washington.edu/download/CADD/v1.4/annotationsGRCh37.tar.gz
 # for GRCh38 / hg38
-wget http://krishna.gs.washington.edu/download/CADD/v1.4/annotationsGRCh38.tar.gz
+wget -c http://krishna.gs.washington.edu/download/CADD/v1.4/annotationsGRCh38.tar.gz
 ```
 
-As those files are about 100 and 200 GB in size, download can take, depending on your internet connection, a while. We recommend to setup the process in the background.
+As those files are about 100 and 200 GB in size, downloads can take long (depending on your internet connection). We recommend to setup the process in the background and using a tool (like `wget -c` mentioned above) that allows you to continue an interrupted download.
 
-To make sure you downloaded the files correctly, we recommend downloading md5 hash files from our website (e.g. `wget http://krishna.gs.washington.edu/download/CADD/v1.4/annotationsGRCh37.tar.gz.md5`) and checking for completness (via `md5sum -c annotationsGRCh37.tar.gz.md5`).
+To make sure you downloaded the files correctly, we recommend downloading md5 hash files from our website (e.g. `wget http://krishna.gs.washington.edu/download/CADD/v1.4/GRCh37/MD5SUMs`) and checking for completness (via `md5sum -c`).
 
 The annotation files are finally put in the folder `data/annotations` and unpacked:
 
