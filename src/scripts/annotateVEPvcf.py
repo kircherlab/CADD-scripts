@@ -154,14 +154,17 @@ for record in vcf_reader:
             end_seq = res['Pos'] + len(res['Ref']) - 1
             res['Start'] = res['Pos'] + 1
             res['End'] = end_seq
-
-    if start_seq > 74:
-        res['Seq'] = genome_index.fetch(res['Chrom'], start_seq-75, end_seq+75).upper()
-        if len(res['Seq']) < 150:
-            sys.stderr.write('Encountered variant outside of chromosome boundary: %s\t%i\t%s\t%s\n' % (res['Chrom'], res['Pos'], res['Ref'], res['Alt']))
-            continue
-    else:
-        res['Seq'] = (75-start_seq) * 'N' + genome_index.fetch(res['Chrom'], 0, end_seq+75).upper()
+    try:
+        if start_seq > 74:
+            res['Seq'] = genome_index.fetch(res['Chrom'], start_seq-75, end_seq+75).upper()
+            if len(res['Seq']) < 150:
+                sys.stderr.write('Encountered variant outside of chromosome boundary: %s\t%i\t%s\t%s\n' % (res['Chrom'], res['Pos'], res['Ref'], res['Alt']))
+                continue
+        else:
+            res['Seq'] = (75-start_seq) * 'N' + genome_index.fetch(res['Chrom'], 0, end_seq+75).upper()
+    except KeyError:
+        sys.stderr.write('Encountered unknown chromosome name %s: %s\t%i\t%s\t%s\n' % (res['Chrom'],res['Chrom'], res['Pos'], res['Ref'], res['Alt']))
+        continue
 
     # read those annotations, that are independent of the consequence
     for annotation in nocons_annotations:
