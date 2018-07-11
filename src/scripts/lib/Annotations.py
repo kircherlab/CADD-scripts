@@ -120,12 +120,13 @@ class ScoreHighest():
         return res
 
 class ScoreHighestPerFeature():
+    datatype = float
     def _get_score(self, res):
         for i, feature in enumerate(reversed(self.features), start=1):
             if len(self.score) == 1:
                 res[feature] = self.score[0][-i]
             elif len(self.score) > 1:
-                scores = [float(sc[-i]) for sc in self.score if sc[-i] != 'NA']
+                scores = [self.datatype(sc[-i]) for sc in self.score if sc[-i] != 'NA']
                 if scores:
                     res[feature] = str(max(scores))
         return res
@@ -854,6 +855,7 @@ class MutationDensity100(TabixAnnotation, ScoreHighestPerFeature):
     rangescore = True
     zerobased = True
     path = ''
+    datatype = int
 
 class MutationDensity1000(TabixAnnotation, ScoreHighestPerFeature):
     name = 'MutationDensity1000'
@@ -861,6 +863,7 @@ class MutationDensity1000(TabixAnnotation, ScoreHighestPerFeature):
     rangescore = True
     zerobased = True
     path = ''
+    datatype = int
 
 class MutationDensity10000(TabixAnnotation, ScoreHighestPerFeature):
     name = 'MutationDensity10000'
@@ -868,6 +871,7 @@ class MutationDensity10000(TabixAnnotation, ScoreHighestPerFeature):
     rangescore = True
     zerobased = True
     path = ''
+    datatype = int
 
 regElement_order = ['Promoter', 'TF binding site', 'Enhancer', 'Promoter Flanking Region', 'CTCF Binding Site', 'Open chromatin']
 regElement_ranking = dict(zip(regElement_order,range(len(regElement_order))))
@@ -905,6 +909,7 @@ class RemapOverlap(TabixAnnotation, ScoreHighestPerFeature):
     path = '/Remap/ReMap2_overlap_hg19.bg.gz'
     rangescore = True
     zerobased = True
+    datatype = int
 
 annotations = [
     Transversion(),
