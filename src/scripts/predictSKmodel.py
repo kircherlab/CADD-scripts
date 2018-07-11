@@ -91,6 +91,14 @@ for n, infile in enumerate(args.input):
                     out_file.write(str(res) + '\n')
     except pd.errors.EmptyDataError:
         sys.stderr.write('Input file %s is empty.\n' % infile)
+        if first_line and args.append:
+            while True:
+                line = append_file.readline().strip()
+                if line.startswith('#') or line.startswith('Chrom'):
+                    out_file.write(''.join([line, args.delimiter,
+                                            args.colname, '\n']))
+                    first_line = False
+                    break
 
     if args.output and len(args.output) > 1:
         out_file.close()
