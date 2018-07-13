@@ -133,6 +133,7 @@ cat $TMP_VCF \
     --assembly $GENOMEBUILD --regulatory --sift b \
     --polyphen b --per_gene --ccds --domains --numbers --canonical \
     --total_length --force_overwrite --format vcf --output_file STDOUT \
+    --warning_file STDERR \
 | python $CADD/src/scripts/annotateVEPvcf.py -c $REFERENCE_CONFIG \
 | gzip -c > $TMP_ANNO
 rm $TMP_VCF
