@@ -6,3 +6,18 @@ config/*
 
 # compiled files
 *.pyc
+
+# process files
+*.log
+
+# snakemake
+.snakemake*
+
+# data files
+*.gz
+*.vcf
+*.tsv
+*.zip
+
+# temp files
+.*

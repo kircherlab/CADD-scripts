@@ -1,0 +1,15 @@
+name: cadd-env
+channels:
+- bioconda
+- conda-forge
+- defaults
+dependencies:
+- ensembl-vep=89.1=htslib1.4_1
+- python=2.7.13=0
+- numpy=1.14.2=py27_blas_openblas_200
+- pandas=0.20.3=py27_1
+- pysam=0.11.2.1=py27_0
+- pyvcf=0.6.8=py27_0
+- samtools=1.4.1=0
+- scikit-learn=0.19.1=py27_blas_openblas_201
+- scipy=1.0.1=py27_blas_openblas_200
