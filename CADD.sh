@@ -173,6 +173,7 @@ fi
 rm $TMP_NOV
 rm $TMP_PRE
 
-echo -e "\nCADD scored variants written to file $OUTFILE."
+OUTFILE=$(echo $OUTFILE |  sed 's/^\.\///')
+echo -e "\nCADD scored variants written to file: $OUTFILE"
 
 exit 0
