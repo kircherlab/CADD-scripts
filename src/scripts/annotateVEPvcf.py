@@ -157,7 +157,7 @@ for record in vcf_reader:
     try:
         if start_seq > 74:
             res['Seq'] = genome_index.fetch(res['Chrom'], start_seq-75, end_seq+75).upper()
-            if len(res['Seq']) < 150:
+            if len(res['Seq']) == 0:
                 sys.stderr.write('Encountered variant outside of chromosome boundary: %s\t%i\t%s\t%s\n' % (res['Chrom'], res['Pos'], res['Ref'], res['Alt']))
                 continue
         else:
