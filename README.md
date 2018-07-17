@@ -12,7 +12,7 @@ Please check our [website for updates and further information](http://cadd.gs.wa
 
 ## Offline Installation
 
-This section describes how users can setup CADD version 1.4 on their own system. Please note that this requires 100 GB - 1 TB of memory.
+This section describes how users can setup CADD version 1.4 on their own system. Please note that this requires between 100 GB - 1 TB of disc space and at least 12 GB of RAM.
 
 ### Prerequisite
 
