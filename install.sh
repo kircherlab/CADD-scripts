@@ -225,7 +225,7 @@ then
             download_variantfile "Downloading prescored SNV without annotations for GRCh37 (78 GB)" ${PRESCORE_GRCh37}
             if [ "$INDELS" = true ]
             then
-                echo " - Downloading prescored InDels without annotations for GRCh38 (1 GB)" ${PRESCORE_GRCh37_INDEL}
+                download_variantfile "Downloading prescored InDels without annotations for GRCh37 (1 GB)" ${PRESCORE_GRCh37_INDEL}
             fi
             cd $OLDPWD
         fi
@@ -237,7 +237,7 @@ then
             download_variantfile "Downloading prescored SNV inclusive annotations for GRCh37 (231 GB)" ${PRESCORE_INCANNO_GRCh37}
             if [ "$INDELS" = true ]
             then
-                echo " - Downloading prescored InDels inclusive annotations for GRCh38 (3 GB)" ${PRESCORE_INCANNO_GRCh37_INDEL}
+                download_variantfile "Downloading prescored InDels inclusive annotations for GRCh37 (3 GB)" ${PRESCORE_INCANNO_GRCh37_INDEL}
             fi
             cd $OLDPWD
         fi
@@ -271,7 +271,7 @@ then
             download_variantfile "Downloading prescored SNV without annotations for GRCh38 (79 GB)" ${PRESCORE_GRCh38}
             if [ "$INDELS" = true ]
             then
-                echo " - Downloading prescored InDels without annotations for GRCh38 (1 GB)" ${PRESCORE_GRCh38_INDEL}
+                download_variantfile "Downloading prescored InDels without annotations for GRCh38 (1 GB)" ${PRESCORE_GRCh38_INDEL}
             fi
             cd $OLDPWD
         fi
@@ -283,7 +283,7 @@ then
             download_variantfile "Downloading prescored SNV inclusive annotations for GRCh38 (323 GB)" ${PRESCORE_INCANNO_GRCh38}
             if [ "$INDELS" = true ]
             then
-                echo " - Downloading prescored InDels inclusive annotations for GRCh38 (9 GB)" ${PRESCORE_INCANNO_GRCh38_INDEL}
+                download_variantfile "Downloading prescored InDels inclusive annotations for GRCh38 (9 GB)" ${PRESCORE_INCANNO_GRCh38_INDEL}
             fi
             cd $OLDPWD
         fi
