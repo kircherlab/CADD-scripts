@@ -43,9 +43,9 @@ set -ueo pipefail
 ### Configuring all the paths
 
 FILENAME=$(basename $INFILE)
-NAME=${FILENAME/\.vc*/}
+NAME=${FILENAME%\.vcf*}
 FILEDIR=$(dirname $INFILE)
-FILEFORMAT=${FILENAME/$NAME\./}
+FILEFORMAT=${FILENAME#$NAME\.}
 
 SCRIPT=$(readlink -f "$0")
 export CADD=$(dirname "$SCRIPT")
