@@ -118,10 +118,12 @@ then
     do
         cat $TMP_VCF \
         | python $CADD/src/scripts/extract_scored.py --header \
-            -p $PRESCORED --found_out=>( gzip -c >> $TMP_PRE ) \
+            -p $PRESCORED --found_out=$TMP_PRE.tmp \
         > $TMP_VCF.tmp;
+        gzip -c $TMP_PRE.tmp >> $TMP_PRE
         mv $TMP_VCF.tmp $TMP_VCF;
     done;
+    rm $TMP_PRE.tmp
 fi
 
 # Variant annotation
