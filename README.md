@@ -1,9 +1,21 @@
 ## Combined Annotation Dependent Depletion (CADD)
 
 CADD is a tool for scoring the deleteriousness of single nucleotide variants as well as insertion/deletions variants in the human genome (currently supported builds: GRCh37/hg19 and GRCh38/hg38).
-The manuscript describing the method and its features was published by Nature Genetics in 2014:
-*Kircher M, Witten DM, Jain P, O'Roak BJ, Cooper GM, Shendure J. A general framework for estimating the relative pathogenicity of human genetic variants. Nat Genet. 2014 Feb 2.
-[doi: 10.1038/ng.2892.](http://dx.doi.org/10.1038/ng.2892) PubMed PMID: 24487276.*
+
+Details about CADD, including features in the latest version, the different genome builds and how we envision the use case of CADD are described in our latest manuscript:
+<blockquote>
+    Rentzsch P, Witten D, Cooper GM, Shendure J, Kircher M. <br>
+    <i>CADD: predicting the deleteriousness of variants throughout the human genome.</i><br>
+    Nucleic Acids Res. 2018 Oct 29. doi: <a target="_blank" href="http://dx.doi.org/10.1093/nar/gky1016">10.1093/nar/gky1016</a>.<br>
+    PubMed PMID: <a target="_blank" href="http://www.ncbi.nlm.nih.gov/pubmed/30371827">30371827</a>.
+</blockquote>
+The original manuscript describing the method and its features was published by Nature Genetics in 2014:
+<blockquote>
+Kircher M, Witten DM, Jain P, O'Roak BJ, Cooper GM, Shendure J. <br>
+<i>A general framework for estimating the relative pathogenicity of human genetic variants.</i><br>
+Nat Genet. 2014 Feb 2. doi: <a target="_blank" href="http://dx.doi.org/10.1038/ng.2892">10.1038/ng.2892</a>.<br>
+PubMed PMID: <a target="_blank" href="http://www.ncbi.nlm.nih.gov/pubmed/24487276">24487276</a>.
+</blockquote>
 
 We provide pre-computed CADD-based scores (C-scores) for all 8.6 billion possible single nucleotide variants (SNVs) of the reference genome, as well as
 all SNV and insertions/deletions variants (InDels) from population-wide whole genome variant releases and enable scoring of short InDels on our website.
