@@ -38,6 +38,8 @@ export PATH=$HOME/miniconda2/bin:$PATH
 
 *Note: You can also install CADD without conda by installing the dependencies otherwise. You can find the list of tools (VEP) and (python) libraries in the `src/environment.yml` file. In this case, you will also have to disable the line `source activate cadd-env` in `CADD.sh`*
 
+*Note2: If you are using an existing conda installation, please make sure it is [a version >=4.4.0](https://github.com/conda/conda/issues/3200).* 
+
 ### Setup
 
 - load/move the zipped CADD archive to its destination folder and unzip.
