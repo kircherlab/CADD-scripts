@@ -159,7 +159,7 @@ then
     then
         COLUMNS="1-4,124,125"
     else
-        COLUMNS="1-4,106,107"
+        COLUMNS="1-4,107,108"
     fi
     zcat $TMP_NOV | cut -f $COLUMNS | uniq | gzip -c > $TMP_NOV.tmp
     mv $TMP_NOV.tmp $TMP_NOV
