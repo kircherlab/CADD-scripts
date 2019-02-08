@@ -911,6 +911,21 @@ class RemapOverlap(TabixAnnotation, ScoreHighestPerFeature):
     zerobased = True
     datatype = int
 
+class GnomadAF(TabixAnnotation):
+    name = 'GnomadAF'
+    features = ['gnomAD_AF']
+
+    def _get_score(self, res):
+        for hit in self.score:
+            if hit[3] == res['Ref']:
+                for num, alt in enumerate(hit[4].split(',')):
+                    if alt == res['Alt']:
+                        # extracting the AF from info string
+                        af = hit[7].split('AF=')[1].split(';')[0].split(',')[num]
+                        res['gnomAD_AF'] = af
+                        break
+        return res
+
 annotations = [
     Transversion(),
     Length(),
@@ -972,4 +987,5 @@ annotations = [
     RegulatoryBuiltElements(),
     DbscSNV(),
     RemapOverlap(),
+    GnomadAF(),
     ]
