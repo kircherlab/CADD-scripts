@@ -120,7 +120,7 @@ You can test whether your CADD is set up properly by comparing to the example fi
 
 ## Copyright
 Copyright (c) University of Washington, Hudson-Alpha Institute for
-Biotechnology and Berlin Institute of Health 2013-2018. All rights reserved.
+Biotechnology and Berlin Institute of Health 2013-2019. All rights reserved.
 
 Permission is hereby granted, to all non-commercial users and licensees of CADD
 (Combined Annotation Dependent Framework, licensed by the University of
