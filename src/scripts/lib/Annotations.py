@@ -275,6 +275,10 @@ class GC_CpG(Annotation):
         num_n = res['Seq'].count('N')
         res['GC'] = (res['Seq'].count('C') + res['Seq'].count('G') + num_n*0.41) / seq_len
         res['CpG'] = (res['Seq'].count('CG') + num_n * 0.01) / (seq_len - 1) * 2
+
+        # reduce precision
+        res['GC'] = ('%.3f' % res['GC']).rstrip('0').rstrip('.')
+        res['CpG'] = ('%.3f' % res['CpG']).rstrip('0').rstrip('.')
         return res
 
 class MotifScores(Annotation):
@@ -337,7 +341,7 @@ class VariantPosition(Annotation):
                 pos = pos.replace('?-','').replace('-?','').split('-')[0]
                 if pos != '':
                     res[self.features[num*2]] = pos
-                    res[self.features[num*2+1]] = float(pos) / length
+                    res[self.features[num*2+1]] = ('%.3f' % (float(pos) / length)).rstrip('0').rstrip('.')
         return res
 
 class Domain(Annotation):
