@@ -4,7 +4,7 @@ channels:
 - conda-forge
 - defaults
 dependencies:
-- ensembl-vep=89.1=htslib1.4_1
+- ensembl-vep=95.1=pl526ha4d7672_0
 - python=2.7.13=0
 - numpy=1.14.2=py27_blas_openblas_200
 - pandas=0.20.3=py27_1
