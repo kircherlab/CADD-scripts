@@ -1,11 +1,12 @@
 #!/bin/bash
 
-usage="$(basename "$0") [-o <outfile>] [-g <genomebuild>] [-a] <infile>  -- CADD version 1.4
+usage="$(basename "$0") [-o <outfile>] [-g <genomebuild>] [-v <caddversion>] [-a] <infile>  -- CADD version 1.5
 
 where:
     -h  show this help text
     -o  out tsv.gz file (generated from input file name if not set)
     -g  genome build (supported are GRCh37 and GRCh38 [default: GRCh38])
+    -v  CADD version (either v1.4 or v1.5 [default: v1.5])
     -a  include annotation in output
         input vcf of vcf.gz file (required)"
 
@@ -15,7 +16,8 @@ unset OPTIND
 GENOMEBUILD="GRCh38"
 ANNOTATION=false
 OUTFILE=""
-while getopts ':ho:g:a' option; do
+VERSION="v1.5"
+while getopts ':ho:g:v:a' option; do
   case "$option" in
     h) echo "$usage"
        exit
@@ -23,6 +25,8 @@ while getopts ':ho:g:a' option; do
     o) OUTFILE=$OPTARG
        ;;
     g) GENOMEBUILD=$OPTARG
+       ;;
+    v) VERSION=$OPTARG
        ;;
     a) ANNOTATION=true
        ;;
@@ -36,7 +40,7 @@ shift $((OPTIND-1))
 
 INFILE=$1
 
-echo "CADD-v1.4 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health 2013-2018. All rights reserved."
+echo "CADD-v1.5 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health 2013-2019. All rights reserved."
 
 set -ueo pipefail
 
@@ -67,6 +71,18 @@ then
     exit 1
 fi
 
+if [ "$VERSION" != "v1.4" ] && [ "$VERSION" != "v1.5" ]
+then
+    echo "Unknown/Unsupported CADD version $VERSION. This script currently only supports v1.4 and v1.5."
+    exit 1
+fi
+
+if [ "$VERSION" == "v1.5" ] && [ "$GENOMEBUILD" == "GRCh37" ]
+then
+    echo "Please note that CADD scores for GRCh37 version v1.5 are the same as in v1.4."
+    VERSION="v1.4"
+fi
+
 if [ "$ANNOTATION" = 'true' ]
 then
     ANNO_FOLDER="incl_anno"
@@ -75,11 +91,18 @@ else
 fi
 
 # Pipeline configuration
-PRESCORED_FOLDER=$CADD/data/prescored/$GENOMEBUILD/$ANNO_FOLDER
-REFERENCE_CONFIG=$CADD/config/${GENOMEBUILD}references.cfg
-IMPUTE_CONFIG=$CADD/config/impute_$GENOMEBUILD.cfg
-MODEL=$CADD/data/models/$GENOMEBUILD/CADD1.4-$GENOMEBUILD.mod
-CONVERSION_TABLE=$CADD/data/models/$GENOMEBUILD/conversionTable_CADD1.4-$GENOMEBUILD.txt
+PRESCORED_FOLDER=$CADD/data/prescored/${GENOMEBUILD}_${VERSION}/$ANNO_FOLDER
+REFERENCE_CONFIG=$CADD/config/references_${GENOMEBUILD}_${VERSION}.cfg
+IMPUTE_CONFIG=$CADD/config/impute_$GENOMEBUILD_${VERSION}.cfg
+MODEL=$CADD/data/models/$GENOMEBUILD/CADD${VERSION}-$GENOMEBUILD.mod
+CONVERSION_TABLE=$CADD/data/models/$GENOMEBUILD/conversionTable_CADD${VERSION}-$GENOMEBUILD.txt
+
+# determine VEP database version
+DBVERSION=92
+if [ "$GENOMEBUILD" != "GRCh38" ] && [ "$VERSION" == "v1.5" ]
+then
+    DBVERSION=95
+fi
 
 # Temp files
 TMP_FOLDER=$CADD/data/tmp
@@ -130,7 +153,7 @@ fi
 cat $TMP_VCF \
 | vep --quiet --cache --buffer 1000 --no_stats --offline --vcf \
     --dir $CADD/data/annotations/$GENOMEBUILD/vep \
-    --species homo_sapiens --db_version=92 \
+    --species homo_sapiens --db_version=$DBVERSION \
     --assembly $GENOMEBUILD --regulatory --sift b \
     --polyphen b --per_gene --ccds --domains --numbers --canonical \
     --total_length --force_overwrite --format vcf --output_file STDOUT \
@@ -167,7 +190,7 @@ fi
 
 # Join pre and novel scored variants
 {
-    echo "##CADD $GENOMEBUILD-v1.4 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health 2013-2018. All rights reserved.";
+    echo "##CADD $GENOMEBUILD-$VERSION (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health 2013-2019. All rights reserved.";
     head -n 1 < <(zcat $TMP_NOV);
     zcat $TMP_PRE $TMP_NOV | grep -v "^#" | sort -k1,1 -k2,2n -k3,3 -k4,4 || true;
 } | bgzip -c > $OUTFILE;
