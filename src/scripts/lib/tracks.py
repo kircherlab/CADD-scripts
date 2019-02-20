@@ -1017,11 +1017,25 @@ trackData = {
 'remapoverlaptf': {
     'description': 'Remap number of different transcription factors binding',
     'type': int,
+    'transformation': lambda x: math.log10(x),
+    'na_value': -0.5,
+    },
+'remapoverlaptf-old': {
+    'description': 'Old remap track that used the wrong library for imputation and thus was not used in CADDv1.4',
+    'colname': 'remapoverlaptf',
+    'type': int,
     'transformation': lambda x: np.log10(x),
     'na_value': -0.5,
     },
 'remapoverlapcl': {
     'description': 'Remap number of different transcription factor - cell line combinations binding',
+    'type': int,
+    'transformation': lambda x: math.log10(x),
+    'na_value': -0.5,
+    },
+'remapoverlapcl-old': {
+    'description': 'Old remap track that used the wrong library for imputation and thus was not used in CADDv1.4',
+    'colname': 'remapoverlapcl',
     'type': int,
     'transformation': lambda x: np.log10(x),
     'na_value': -0.5,
