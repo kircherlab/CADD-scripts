@@ -24,7 +24,7 @@ Please check our [website for updates and further information](http://cadd.gs.wa
 
 ## Offline Installation
 
-This section describes how users can setup CADD version 1.4 on their own system. Please note that this requires between 100 GB - 1 TB of disc space and at least 12 GB of RAM.
+This section describes how users can setup CADD version 1.5 on their own system. Please note that this requires between 100 GB - 1 TB of disc space and at least 12 GB of RAM.
 
 ### Prerequisite
 
@@ -45,7 +45,7 @@ export PATH=$HOME/miniconda2/bin:$PATH
 - load/move the zipped CADD archive to its destination folder and unzip.
 
 ```bash
-unzip CADDv1.4.zip
+unzip CADD.zip
 ```
 
 - from here, you can either install everything seperately or run the script `install.sh` to install using a brief installation dialog (see below).
@@ -86,7 +86,7 @@ Both version of CADD (for the different genome builds) rely on a big number of g
 # for GRCh37 / hg19
 wget -c http://krishna.gs.washington.edu/download/CADD/v1.4/annotationsGRCh37.tar.gz
 # for GRCh38 / hg38
-wget -c http://krishna.gs.washington.edu/download/CADD/v1.4/annotationsGRCh38.tar.gz
+wget -c http://krishna.gs.washington.edu/download/CADD/v1.5/annotationsGRCh38.tar.gz
 ```
 
 As those files are about 100 and 200 GB in size, downloads can take long (depending on your internet connection). We recommend to setup the process in the background and using a tool (like `wget -c` mentioned above) that allows you to continue an interrupted download.
@@ -98,25 +98,50 @@ The annotation files are finally put in the folder `data/annotations` and unpack
 ```bash
 cd data/annotations
 tar -zxvf annotationsGRCh37.tar.gz
+mv GRCh37 GRCh37_v1.4
 tar -zxvf annotationsGRCh38.tar.gz
 cd $OLDPWD
 ```
 
 **Installing prescored files**
 
-At this point you are ready to go, but if you want a faster version of CADD, you can download the prescored files from our website (see section Downloads for a list of available files). Please note that these files can be very big. The files are (together with their respective tabix indices) put in the folders `no_anno` or `incl_anno` depending on the file under `data/prescored/${GENOME_BUILD}/` and will be automatically detected by the `CADD.sh` script.
+At this point you are ready to go, but if you want a faster version of CADD, you can download the prescored files from our website (see section Downloads for a list of available files). Please note that these files can be very big. The files are (together with their respective tabix indices) put in the folders `no_anno` or `incl_anno` depending on the file under `data/prescored/${GENOME_BUILD}_${VERSION}/` and will be automatically detected by the `CADD.sh` script.
 
 ### Running CADD
 
-You run CADD via the script `CADD.sh` which technically only requieres an either vcf or vcf.gz input file as last argument. You can further specify the genome build via `-g`, request a fully annotated output (`-a` flag) and specify a seperate output file via `-o` (else inputfile name `.tsv.gz` is used). I.e:
+You run CADD via the script `CADD.sh` which technically only requieres an either vcf or vcf.gz input file as last argument. You can further specify the genome build via `-g`, CADD version via `-v`, request a fully annotated output (`-a` flag) and specify a seperate output file via `-o` (else inputfile name `.tsv.gz` is used). I.e:
 
 ```bash
 ./CADD.sh test/input.vcf
 
-./CADD.sh -a -g GRCh37 -o output_inclAnno_GRCh37.tsv.gz test/input.vcf
+./CADD.sh -a -g GRCh37 -v v1.4 -o output_inclAnno_GRCh37.tsv.gz test/input.vcf
 ```
 
 You can test whether your CADD is set up properly by comparing to the example files in the `test` directory.
+
+### Update
+
+Between versions 1.4 and 1.5, we adjusted the CADD repository slightly. If you used CADD before and obviously do not want to download all v1.4 files again, please proceed as follows:
+
+1. update the repository (just overwriting is fine, however this dublicates some moved files)
+2. update the conda environment (needs new version of ensembl vep)
+
+```
+source activate cadd-env
+conda env update -f src/environment.yml
+conda deactivate
+```
+
+3. rename the annotation (and prescored) folder from `data/annotations/$GENOMEBUILD` to `data/annotations/${GENOMEBUILD}_${VERSION}`
+
+```
+mv data/annotations/GRCh37 data/annotations/GRCh37_v1.4
+mv data/annotations/GRCh38 data/annotations/GRCh38_v1.4
+
+# if you have prescored files
+mv data/annotations/GRCh37 data/prescored/GRCh37_v1.4
+mv data/annotations/GRCh38 data/prescored/GRCh38_v1.4
+```
 
 ## Copyright
 Copyright (c) University of Washington, Hudson-Alpha Institute for
