@@ -93,13 +93,13 @@ fi
 # Pipeline configuration
 PRESCORED_FOLDER=$CADD/data/prescored/${GENOMEBUILD}_${VERSION}/$ANNO_FOLDER
 REFERENCE_CONFIG=$CADD/config/references_${GENOMEBUILD}_${VERSION}.cfg
-IMPUTE_CONFIG=$CADD/config/impute_$GENOMEBUILD_${VERSION}.cfg
+IMPUTE_CONFIG=$CADD/config/impute_${GENOMEBUILD}_${VERSION}.cfg
 MODEL=$CADD/data/models/$GENOMEBUILD/CADD${VERSION}-$GENOMEBUILD.mod
 CONVERSION_TABLE=$CADD/data/models/$GENOMEBUILD/conversionTable_CADD${VERSION}-$GENOMEBUILD.txt
 
 # determine VEP database version
 DBVERSION=92
-if [ "$GENOMEBUILD" != "GRCh38" ] && [ "$VERSION" == "v1.5" ]
+if [ "$GENOMEBUILD" == "GRCh38" ] && [ "$VERSION" == "v1.5" ]
 then
     DBVERSION=95
 fi
@@ -152,7 +152,7 @@ fi
 # Variant annotation
 cat $TMP_VCF \
 | vep --quiet --cache --buffer 1000 --no_stats --offline --vcf \
-    --dir $CADD/data/annotations/$GENOMEBUILD/vep \
+    --dir $CADD/data/annotations/${GENOMEBUILD}_${VERSION}/vep \
     --species homo_sapiens --db_version=$DBVERSION \
     --assembly $GENOMEBUILD --regulatory --sift b \
     --polyphen b --per_gene --ccds --domains --numbers --canonical \
