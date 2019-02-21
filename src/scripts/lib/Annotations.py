@@ -281,6 +281,16 @@ class GC_CpG(Annotation):
         res['CpG'] = ('%.3f' % res['CpG']).rstrip('0').rstrip('.')
         return res
 
+class oldGC_CpG(GC_CpG):
+    name = 'oldGC_CpG'
+
+    def process(self, res):
+        seq_len = float(len(res['Seq']))
+        num_n = res['Seq'].count('N')
+        res['GC'] = (res['Seq'].count('C') + res['Seq'].count('G') + num_n*0.41) / seq_len
+        res['CpG'] = (res['Seq'].count('CG') + num_n * 0.01) / (seq_len - 1) * 2
+        return res
+
 class MotifScores(Annotation):
     name = 'MotifScores'
     features = ['motifECount','motifEName','motifEHIPos','motifEScoreChng']
@@ -342,6 +352,21 @@ class VariantPosition(Annotation):
                 if pos != '':
                     res[self.features[num*2]] = pos
                     res[self.features[num*2+1]] = ('%.3f' % (float(pos) / length)).rstrip('0').rstrip('.')
+        return res
+
+
+class oldVariantPosition(VariantPosition):
+    name = 'oldVariantPosition'
+
+    def process(self, res):
+        for num, raw_pos in enumerate(['cDNA_position', 'CDS_position', 'Protein_position']):
+            if res[raw_pos] != '':
+                pos, length = res[raw_pos].split('/')
+                length = float(length)
+                pos = pos.replace('?-','').replace('-?','').split('-')[0]
+                if pos != '':
+                    res[self.features[num*2]] = pos
+                    res[self.features[num*2+1]] = float(pos) / length
         return res
 
 class Domain(Annotation):
@@ -920,10 +945,12 @@ annotations = [
     Length(),
     Consequence(),
     GC_CpG(),
+    oldGC_CpG(),
     MotifScores(),
     AminoAcids(),
     VEPAnnotations(),
     VariantPosition(),
+    oldVariantPosition(),
     Domain(),
     Dst2Splice(),
     MinDistTSX(),
