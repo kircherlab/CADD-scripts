@@ -139,8 +139,8 @@ mv data/annotations/GRCh37 data/annotations/GRCh37_v1.4
 mv data/annotations/GRCh38 data/annotations/GRCh38_v1.4
 
 # if you have prescored files
-mv data/annotations/GRCh37 data/prescored/GRCh37_v1.4
-mv data/annotations/GRCh38 data/prescored/GRCh38_v1.4
+mv data/prescored/GRCh37 data/prescored/GRCh37_v1.4
+mv data/prescored/GRCh38 data/prescored/GRCh38_v1.4
 ```
 
 ## Copyright
