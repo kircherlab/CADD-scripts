@@ -119,7 +119,15 @@ echo "The following will be loaded: (disk space occupied)"
 
 if [ "$ENV" = true ]
 then
-    echo " - Setup of the virtual environment including all dependencies (3 GB)."
+    if [ "$GRCh38v15" = 'true' ]
+    then
+        echo " - Setup of the virtual environment including all dependencies for CADD v1.5 (3 GB)."
+    fi
+
+    if [ "$GRCh38" = 'true' ] || [ "$GRCh37" = 'true' ]
+    then
+        echo " - Setup of the virtual environment including all dependencies for CADD v1.4 (3 GB)."
+    fi
 fi
 
 if [ "$GRCh37" = true ]
@@ -218,8 +226,18 @@ esac
 
 if [ "$ENV" = true ]
 then
-    echo "Setting up virtual environment"
-    conda env create -f src/environment.yml
+    if [ "$GRCh38v15" = 'true' ]
+    then
+        echo "Setting up virtual environment for CADD v1.5"
+        conda env create -f src/environment_v1.5.yml
+    fi
+
+    if [ "$GRCh38" = 'true' ] || [ "$GRCh37" = 'true' ]
+    then
+        echo "Setting up virtual environment for CADD v1.4"
+        conda env create -f src/environment.yml
+    fi
+
 fi
 
 # download a file and it index and check both md5 sums

@@ -1,15 +1,15 @@
-name: cadd-env
+name: cadd-env-v1.5
 channels:
 - bioconda
 - conda-forge
 - defaults
 dependencies:
-- ensembl-vep=89.1=htslib1.4_1
+- ensembl-vep=95.1=pl526ha4d7672_0
 - python=2.7.13=0
 - numpy=1.14.2=py27_blas_openblas_200
 - pandas=0.20.3=py27_1
-- pysam=0.11.2.1=py27_0
+- pysam=0.15.2=py27h0380709_0
 - pyvcf=0.6.8=py27_0
-- samtools=1.4.1=0
-- scikit-learn=0.19.1=py27_blas_openblas_201
+- samtools=1.9=h91753b0_5
+- scikit-learn=0.20.1=py27h22eb022_0
 - scipy=1.0.1=py27_blas_openblas_200

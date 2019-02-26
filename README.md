@@ -123,16 +123,8 @@ You can test whether your CADD is set up properly by comparing to the example fi
 
 Between versions 1.4 and 1.5, we adjusted the CADD repository slightly. If you used CADD before and obviously do not want to download all v1.4 files again, please proceed as follows:
 
-1. update the repository (just overwriting is fine, however this dublicates some moved files)
-2. update the conda environment (needs new version of ensembl vep)
-
-```
-source activate cadd-env
-conda env update -f src/environment.yml
-conda deactivate
-```
-
-3. rename the annotation (and prescored) folder from `data/annotations/$GENOMEBUILD` to `data/annotations/${GENOMEBUILD}_${VERSION}`
+1. update the repository (just overwriting is fine, however this dublicates some moved files so `git pull` is prefered)
+2. rename the annotation (and prescored) folder from `data/annotations/$GENOMEBUILD` to `data/annotations/${GENOMEBUILD}_${VERSION}`
 
 ```
 mv data/annotations/GRCh37 data/annotations/GRCh37_v1.4
