@@ -927,8 +927,8 @@ class DbscSNV(TabixAnnotation):
     def _get_score(self, res):
         for hit in self.score:
             if (hit[2] == res['Ref'] and hit[3] == res['Alt']) or (hit[3] == res['Ref'] and hit[2] == res['Alt']):
-                res['dbscSNV-ada_score'] = hit[16]
-                res['dbscSNV-rf_score'] = hit[17]
+                res['dbscSNV-ada_score'] = hit[-2]
+                res['dbscSNV-rf_score'] = hit[-1]
                 break
         return res
 
