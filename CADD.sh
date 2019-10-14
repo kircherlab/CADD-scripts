@@ -12,6 +12,7 @@ where:
 
 unset OPTARG
 unset OPTIND
+export LC_ALL=C
 
 GENOMEBUILD="GRCh38"
 ANNOTATION=false

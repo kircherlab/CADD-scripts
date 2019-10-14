@@ -34,12 +34,13 @@ else:
   raise IOError("No valid file with pre-scored variants.\n")
 
 for line in sys.stdin:
+  line = line.rstrip('\n\r')
   if line.startswith('#'):
     sys.stdout.write(line + '\n')
     continue
 
   try:
-    fields = line.rstrip().split('\t')
+    fields = line.split('\t')
     found = False
     chrom = fields[0]
     pos = int(fields[1])
@@ -51,11 +52,11 @@ for line in sys.stdin:
         found = True
 
     if not found:
-      sys.stdout.write(line)
+      sys.stdout.write(line + '\n')
 
   except ValueError:
     sys.stderr.write('Encountered uncovered chromosome\n')
-    sys.stdout.write(line)
+    sys.stdout.write(line + '\n')
 
 if options.found_out:
     found_out.close()
