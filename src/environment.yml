@@ -1,41 +1,43 @@
 name: cadd-env
 channels:
-  - https://repo.continuum.io/pkgs/free
   - bioconda
   - r
   - defaults
   - conda-forge
 dependencies:
+  - _libgcc_mutex=0.1=main
   - bcftools=1.4.1=0
   - blas=1.1=openblas
-  - bzip2=1.0.6=1
-  - ca-certificates=2018.1.18=0
-  - certifi=2018.1.18=py27_0
-  - curl=7.59.0=1
+  - bzip2=1.0.8=h516909a_2
+  - ca-certificates=2019.11.28=hecc5488_0
+  - certifi=2019.11.28=py27_0
+  - curl=7.61.0=h93b3f91_2
   - ensembl-vep=89.1=htslib1.4_1
   - htslib=1.4.1=0
   - krb5=1.14.6=0
   - libgcc=7.2.0=h69d50b8_2
-  - libgcc-ng=7.2.0=hdf63c60_3
+  - libgcc-ng=9.2.0=hdf63c60_0
   - libgfortran=3.0.0=1
-  - libssh2=1.8.0=2
-  - libstdcxx-ng=7.2.0=hdf63c60_3
+  - libssh2=1.8.0=h1ad7b7a_1003
+  - libstdcxx-ng=9.2.0=hdf63c60_0
   - mysql-connector-c=6.1.6=2
   - mysqlclient=1.3.10=py27_0
   - ncurses=5.9=10
   - numpy=1.14.2=py27_blas_openblas_200
-  - openblas=0.2.20=7
-  - openssl=1.0.2o=0
+  - openblas=0.2.20=8
+  - openssl=1.0.2t=h14c3975_0
   - pandas=0.20.3=py27_1
   - perl=5.22.0.1=0
   - perl-bio-db-hts=2.7=htslib1.4_0
   - perl-bioperl=1.6.924=4
+  - perl-capture-tiny=0.36=0
   - perl-cgi=4.22=3
   - perl-common-sense=3.74=0
   - perl-compress-raw-bzip2=2.069=1
   - perl-compress-raw-zlib=2.069=3
   - perl-dbd-mysql=4.033=2
   - perl-dbi=1.641=pl5.22.0_0
+  - perl-extutils-cppguess=0.12=pl5.22.0_0
   - perl-io-compress=2.069=pl5.22.0_2
   - perl-json=2.90=1
   - perl-json-xs=2.34=0
@@ -44,25 +46,25 @@ dependencies:
   - perl-sereal=3.015=0
   - perl-sereal-decoder=3.015=0
   - perl-sereal-encoder=3.015=0
-  - perl-set-intervaltree=0.10=pl5.22.0_4
-  - perl-threaded=5.22.0=pl5.22.0_12
-  - perl-yaml=1.24=0
-  - pip=9.0.3=py27_0
+  - perl-set-intervaltree=0.11=pl5.22.0_0
+  - perl-threaded=5.26.0=0
+  - perl-yaml=1.24=pl522_1
+  - pip=19.3.1=py27_0
   - pysam=0.11.2.1=py27_0
   - python=2.7.13=0
-  - python-dateutil=2.3=py27_0
-  - pytz=2018.4=py_0
+  - python-dateutil=2.8.1=py_0
+  - pytz=2019.3=py_0
   - pyvcf=0.6.8=py27_0
   - readline=6.2=0
   - samtools=1.4.1=0
   - scikit-learn=0.19.1=py27_blas_openblas_201
   - scipy=1.0.1=py27_blas_openblas_200
-  - setuptools=39.0.1=py27_0
-  - six=1.11.0=py27_1
+  - setuptools=42.0.2=py27_0
+  - six=1.13.0=py27_0
   - sqlite=3.13.0=1
   - tk=8.5.19=2
-  - unzip=6.0=0
-  - wheel=0.31.0=py27_0
-  - xz=5.2.3=0
-  - zlib=1.2.11=0
+  - unzip=6.0=h516909a_0
+  - wheel=0.33.6=py27_0
+  - xz=5.2.4=h14c3975_1001
+  - zlib=1.2.11=h516909a_1006
 
