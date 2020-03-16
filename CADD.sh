@@ -12,6 +12,7 @@ where:
 
 unset OPTARG
 unset OPTIND
+export LC_ALL=C
 
 GENOMEBUILD="GRCh38"
 ANNOTATION=false
@@ -104,8 +105,12 @@ then
     DBVERSION=95
 fi
 
+# Setup temporary folder that is removed reliably on exit and is outside of
+# the CADD-scripts directory.
+TMP_FOLDER=$(mktemp -d)
+trap "rm -rf $TMP_FOLDER" ERR EXIT
+
 # Temp files
-TMP_FOLDER=$CADD/data/tmp
 TMP_PRE=$TMP_FOLDER/$NAME.pre.tsv.gz
 TMP_VCF=$TMP_FOLDER/$NAME.vcf
 TMP_ANNO=$TMP_FOLDER/$NAME.anno.tsv.gz

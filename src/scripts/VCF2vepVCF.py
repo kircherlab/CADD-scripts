@@ -77,13 +77,14 @@ if options.InDels != None:
   outindels = open(options.InDels,'w')
 
 for line in sys.stdin:
+  line = line.rstrip('\r\n')
   if line.upper().startswith("#CHROM"):
     fields = line.split()
     outsnvs.write("\t".join(fields[:falt_allele+1])+"\n")
     if options.SNVs != None or options.InDels != None:
       outindels.write("\t".join(fields[:falt_allele+1])+"\n")
   if line.startswith("#"): continue
-  fields = line.split()
+  fields = line.split("\t")
   if len(fields) > falt_allele and is_nucleotide(fields[fref_allele]):
     ref = fields[fref_allele].upper()
     if options.refCheck:

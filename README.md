@@ -36,7 +36,7 @@ bash Miniconda2-latest-Linux-x86_64.sh -p $HOME/miniconda2 -b
 export PATH=$HOME/miniconda2/bin:$PATH
 ```
 
-*Note: You can also install CADD without conda by installing the dependencies otherwise. You can find the list of tools (VEP) and (python) libraries in the `src/environment.yml` file. In this case, you will also have to disable the line `source activate cadd-env` in `CADD.sh`*
+*Note: You can also install CADD without conda by installing the dependencies otherwise. You can find the list of tools (VEP) and (python) libraries in the [`src/environment.yml`](https://github.com/kircherlab/CADD-scripts/blob/master/src/environment.yml) file (for CADD GRCh38-v1.5 use [`src/environment_v1.5.yml`](https://github.com/kircherlab/CADD-scripts/blob/master/src/environment_v1.5.yml)). In this case, you will also have to disable the line `source activate cadd-env` in `CADD.sh`*
 
 *Note2: If you are using an existing conda installation, please make sure it is [a version >=4.4.0](https://github.com/conda/conda/issues/3200).* 
 
