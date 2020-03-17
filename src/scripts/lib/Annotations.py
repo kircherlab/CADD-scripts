@@ -827,6 +827,37 @@ class Grantham(AACombination):
     path = '/grantham/grantham_matrix.tsv'
     consequence = True
 
+class SpliceAITabix(TabixAnnotation):
+    name='SpliceAITabix'
+    features = ['SpliceAI-acc-gain', 'SpliceAI-acc-loss', 'SpliceAI-don-gain', 'SpliceAI-don-loss']
+    consequence = True
+
+    def _get_score(self, res):
+        for hit in self.score:
+            if hit[2] == res['Ref'] and hit[3] == res['Alt']:
+                for SAI in hit[4].split(','):
+                    fields = SAI.split('|')
+                    if res['GeneName'] == fields[0]:
+                        for num, fea in enumerate(self.features):
+                            res[fea] = fields[num+1]
+                break
+        return res
+
+class MMSplice(Annotation):
+    name = 'MMSplice'
+    features = ['MMSp_acceptorIntron', 'MMSp_acceptor', 'MMSp_exon', 'MMSp_donor', 'MMSp_donorIntron']
+    consequence = True
+
+    def process(self, res):
+        if 'MMSplice' in res['Info']:
+            for mmsp in res['Info']['MMSplice']:
+                fields = mmsp.split('|')
+                if fields[0] == res['GeneName']:
+                    for i in range(5):
+                        res[self.features[i]] = fields[i+1]
+                    break
+        return res
+
 class NeighboringMutations(TabixAnnotation):
     name = 'NeighboringMutations' # this annotation is replacement of the previous one (Dist2Mutation)
     features = ['Dist2Mutation']
@@ -957,6 +988,8 @@ annotations = [
     EncodeDNase(),
     EncodetotalRNA(),
     Grantham(),
+    SpliceAITabix(),
+    MMSplice(),
     NeighboringMutations(),
     MutationDensity100(),
     MutationDensity1000(),
