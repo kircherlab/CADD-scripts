@@ -332,7 +332,6 @@ class Domain(Annotation):
 class Dst2Splice(TabixAnnotation):
     name = 'Exon/Dst2Splice' # the loaded file is exon tabix
     features = ['Dst2Splice','Dst2SplType']
-    path = '/reference/annotation_exons_v75.gtf.gz'
     consequence = True
 
     def process(self, res):
@@ -370,7 +369,6 @@ class Dst2Splice(TabixAnnotation):
 class MinDistTSX(TabixAnnotation):
     name = 'Transcript/MinDistTSX'
     features = ['minDistTSS', 'minDistTSE']
-    path = '/reference/annotation_transcripts_v75.tsv.gz'
     consequence = True
 
     def process(self, res):
@@ -430,58 +428,47 @@ class PolyPhen(Annotation):
 
 class PriPhCons(TabixAnnotation, ScoreHighest):
     name = 'priPhCons'
-    path = '/phastCons/primates_nohuman.tsv.gz'
 
 class MamPhCons(TabixAnnotation, ScoreHighest):
     name = 'mamPhCons'
-    path = '/phastCons/placentalMammals_nohuman.tsv.gz'
 
 class VerPhCons(TabixAnnotation, ScoreHighest):
     name = 'verPhCons'
-    path = '/phastCons/vertebrates_nohuman.tsv.gz'
 
 class PhastCons(TabixAnnotation, ScoreHighestPerFeature): # summarises the previous three in one Annotation
     name = 'PhastCons'
     features = ['priPhCons', 'mamPhCons', 'verPhCons']
-    path = ''
     rangescore = True
     zerobased = True
 
 class PriPhyloP(TabixAnnotation, ScoreHighest):
     name = 'priPhyloP'
-    path = '/phyloP/primates_nohuman.tsv.gz'
 
 class MamPhyloP(TabixAnnotation, ScoreHighest):
     name = 'mamPhyloP'
-    path = '/phyloP/placentalMammals_nohuman.tsv.gz'
 
 class VerPhyloP(TabixAnnotation, ScoreHighest):
     name = 'verPhyloP'
-    path = '/phyloP/vertebrates_nohuman.tsv.gz'
 
 class PhyloP(TabixAnnotation, ScoreHighestPerFeature): # summarises the previous three in one Annotation
     name = 'PhyloP'
     features = ['priPhyloP', 'mamPhyloP', 'verPhyloP']
-    path = ''
     rangescore = True
     zerobased = True
 
 class Bscores(TabixAnnotation, ScoreLowest):
     name = 'bStatistic'
-    path = '/bscores/bscores.tsv.gz'
     multirange = True
     rangescore = True
 
 class MirTargetScan(TabixAnnotation, ScoreHighest):
     name = 'targetScan'
-    path = '/mirTargetScan/targetScanS.tsv.gz'
     multirange = True
     rangescore = True
     zerobased = True
 
 class MirSVR(TabixAnnotation):
     name = 'mirSVR'
-    path = '/mirSVR/mirSVR.tsv.gz'
     multirange = True
     rangescore = True
     features = ['mirSVR-Score','mirSVR-E','mirSVR-Aln']
@@ -501,7 +488,6 @@ class MirSVR(TabixAnnotation):
 
 class ChromHMM(TabixAnnotation, ScoreAveragePerFeature):
     name = 'chromHMM_Epigenomes'
-    path = '/chromHMM/roadMap_chromHMM.tsv.gz'
     features = ['cHmmTssA','cHmmTssAFlnk','cHmmTxFlnk','cHmmTx','cHmmTxWk',
                 'cHmmEnhG','cHmmEnh','cHmmZnfRpts','cHmmHet','cHmmTssBiv',
                 'cHmmBivFlnk','cHmmEnhBiv','cHmmReprPC','cHmmReprPCWk','cHmmQuies']
@@ -516,7 +502,6 @@ class ChromHMM_25state(TabixAnnotation, ScoreAveragePerFeature):
 
 class GERPelements(TabixAnnotation):
     name = 'GERPelements'
-    path = '/gerp/gerp_elements.tsv.gz'
     rangescore = True
     features = ['GerpRS', 'GerpRSpval']
 
@@ -533,12 +518,10 @@ class GERPelements(TabixAnnotation):
 
 class GERPelementsBed(GERPelements):
     name = 'GERPelementsBed'
-    path = ''
     zerobased = True
 
 class GERPscores(TabixAnnotation):
     name = 'GERPscores'
-    path = '/gerp/gerp_scores.tsv.gz'
     features = ['GerpN', 'GerpS']
 
     def _get_score(self, res):
@@ -556,13 +539,11 @@ class GERPscores(TabixAnnotation):
 
 class GERPscoresBed(GERPscores):
     name = 'GERPscoresBed'
-    path = ''
     rangescore = True
     zerobased = True
 
 class Tfbs(TabixAnnotation):
     name = 'tfbs'
-    path = '/tfbs/encodeAwgTfbsUniform.tsv.gz'
     features = ['TFBS', 'TFBSPeaks', 'TFBSPeaksMax']
 
     def _get_score(self, res):
@@ -576,7 +557,6 @@ class Tfbs(TabixAnnotation):
 
 class Motifs(TabixAnnotation):
     name = 'motifs'
-    path = '/encodeMotifDB/motifs.tsv.gz'
     features = ['tOverlapMotifs','motifDist']
 
     def _get_score(self, res):
@@ -615,7 +595,6 @@ segway_order = ['D','L0','L1','F0','F1','R0','R1','R2','R3','R4','R5','C0','C1',
 segway_ranking = dict(zip(segway_order,range(len(segway_order))))
 class Segway(TabixAnnotation):
     name = 'Segway'
-    path = '/segway/segway.tsv.gz'
     rangescore = True
     zerobased = True
 
@@ -630,37 +609,31 @@ class Segway(TabixAnnotation):
 
 class EncodeH3K27Ac(TabixAnnotation, ScoreHighest):
     name = 'EncH3K27Ac'
-    path = '/encode_GRCh37/encode_H3K27Ac.bg.gz'
     rangescore = True
     zerobased = True
 
 class EncodeH3K4Me1(TabixAnnotation, ScoreHighest):
     name = 'EncH3K4Me1'
-    path = '/encode_GRCh37/encode_H3K4Me1.bg.gz'
     rangescore = True
     zerobased = True
 
 class EncodeH3K4Me3(TabixAnnotation, ScoreHighest):
     name = 'EncH3K4Me3'
-    path = '/encode_GRCh37/encode_H3K4Me3.bg.gz'
     rangescore = True
     zerobased = True
 
 class EncodeExp(TabixAnnotation, ScoreHighest):
     name = 'EncExp'
-    path = '/encode_GRCh37/encode_expression.bg.gz'
     rangescore = True
     zerobased = True
 
 class EncodeNucleosome(TabixAnnotation, ScoreHighest):
     name = 'EncNucleo'
-    path = '/encode_GRCh37/encode_nucleosomes.bg.gz'
     rangescore = True
     zerobased = True
 
 class EncodeOpenChrom(FeatureAnnotation):
     name = 'OpenChrom'
-    path = '/openChromatin/tabix_files.lst'
     features = ['EncOCC','EncOCCombPVal','EncOCDNasePVal','EncOCFairePVal',
                 'EncOCpolIIPVal','EncOCctcfPVal','EncOCmycPVal','EncOCDNaseSig',
                 'EncOCFaireSig','EncOCpolIISig','EncOCctcfSig','EncOCmycSig']
@@ -824,7 +797,6 @@ class EncodetotalRNA(TabixAnnotation, ScoreHighestPerFeature):
 
 class Grantham(AACombination):
     name = 'Grantham'
-    path = '/grantham/grantham_matrix.tsv'
     consequence = True
 
 class SpliceAITabix(TabixAnnotation):
@@ -877,7 +849,6 @@ class MutationDensity100(TabixAnnotation, ScoreHighestPerFeature):
     features = ['Freq100bp', 'Rare100bp', 'Sngl100bp']
     rangescore = True
     zerobased = True
-    path = ''
     datatype = int
 
 class MutationDensity1000(TabixAnnotation, ScoreHighestPerFeature):
@@ -885,7 +856,6 @@ class MutationDensity1000(TabixAnnotation, ScoreHighestPerFeature):
     features = ['Freq1000bp', 'Rare1000bp', 'Sngl1000bp']
     rangescore = True
     zerobased = True
-    path = ''
     datatype = int
 
 class MutationDensity10000(TabixAnnotation, ScoreHighestPerFeature):
@@ -893,14 +863,12 @@ class MutationDensity10000(TabixAnnotation, ScoreHighestPerFeature):
     features = ['Freq10000bp', 'Rare10000bp', 'Sngl10000bp']
     rangescore = True
     zerobased = True
-    path = ''
     datatype = int
 
 regElement_order = ['Promoter', 'TF binding site', 'Enhancer', 'Promoter Flanking Region', 'CTCF Binding Site', 'Open chromatin']
 regElement_ranking = dict(zip(regElement_order,range(len(regElement_order))))
 class RegulatoryBuiltElements(TabixAnnotation):
     name = 'EnsembleRegulatoryFeature'
-    path = '/regulatoryBuilt/regulatory_features.bed.bgz'
     rangescore = True
     zerobased = True
 
@@ -916,7 +884,6 @@ class RegulatoryBuiltElements(TabixAnnotation):
 class DbscSNV(TabixAnnotation):
     name = 'dbscSNV'
     features = ['dbscSNV-ada_score', 'dbscSNV-rf_score']
-    path = '/dbscSNV/dbscSNV1.1_GRCh37.txt.gz'
 
     def _get_score(self, res):
         for hit in self.score:
@@ -929,7 +896,6 @@ class DbscSNV(TabixAnnotation):
 class RemapOverlap(TabixAnnotation, ScoreHighestPerFeature):
     name = 'RemapOverlap'
     features = ['RemapOverlapTF', 'RemapOverlapCL']
-    path = '/Remap/ReMap2_overlap_hg19.bg.gz'
     rangescore = True
     zerobased = True
     datatype = int
