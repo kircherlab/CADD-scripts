@@ -137,7 +137,7 @@ mv data/prescored/GRCh38 data/prescored/GRCh38_v1.4
 
 ## Copyright
 Copyright (c) University of Washington, Hudson-Alpha Institute for
-Biotechnology and Berlin Institute of Health 2013-2019. All rights reserved.
+Biotechnology and Berlin Institute of Health 2013-2020. All rights reserved.
 
 Permission is hereby granted, to all non-commercial users and licensees of CADD
 (Combined Annotation Dependent Framework, licensed by the University of
