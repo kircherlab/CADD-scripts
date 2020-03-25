@@ -1,0 +1,21 @@
+name: MMSplice-minimal
+channels:
+- bioconda
+- conda-forge
+- defaults
+dependencies:
+- python=3.6.8
+- cython=0.29.13
+- pyranges=0.0.51
+- libgcc=7.2.0
+- tensorflow=1.9.0
+- keras=2.2.4
+- numpy=1.16.1
+- scikit-learn=0.19.2
+- cyvcf2
+- pandas
+- pysam
+- pip
+- pip:
+    - kipoiseq==0.2.5
+    - mmsplice==1.0.1

@@ -12,12 +12,14 @@ config/*
 
 # snakemake
 .snakemake*
+envs/*
 
 # data files
 *.gz
 *.vcf
 *.tsv
 *.zip
+*.tbi
 
 # temp files
 .*
