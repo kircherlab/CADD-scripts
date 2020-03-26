@@ -29,7 +29,7 @@ if options.PHRED:
 else:
   scorecol = -1
 
-fVconseq = 12
+fVconseq = 7
 annolines = [(None,None),(None,None),(None,None),(None,None)]
 all_lines = []
 
@@ -44,6 +44,12 @@ for line in stdin:
   if line.startswith('#'):
     fields = line.rstrip().split("\t")
     GPSindices = [ind for ind,value in enumerate(fields) if value in GPSnames]
+    for ind, value in enumerate(fields):
+        if value == 'RawScore':
+            scorecol = ind
+            break
+        if value == 'Consequence':
+            fVconseq = ind
     if options.noheader: continue
     sys.stdout.write(line)
   else:
@@ -75,13 +81,13 @@ for line in stdin:
       annolines = [(None,None),(None,None),(None,None),(None,None)]
       lpos = pos
 
-    if ("coding" in fields[fVconseq]) or ("missense" in fields[fVconseq]) or ("synonymous" in fields[fVconseq]) or ("stop" in fields[fVconseq]) or ("mature" in fields[fVconseq]) or ("splice" in fields[fVconseq]) or ("initiator_codon" in fields[fVconseq]) or ("frame" in fields[fVconseq]) or ("terminal_codon" in fields[fVconseq]) or ("frame" in fields[fVconseq]):
+    if fields[fVconseq] in ['NON_SYNONYMOUS', 'SYNONYMOUS', 'STOP_GAINED', 'STOP_LOST', 'FRAME_SHIFT', 'INFRAME', 'CANONICAL_SPLICE', 'SPLICE_SITE', 'NONCODING_CHANGE']:
       if annolines[0][0] == None or score > annolines[0][0]:
         annolines[0]=score,fields
-    elif ("utr" in fields[fVconseq]) or ("regulatory" in fields[fVconseq]):
+    elif fields[fVconseq] in ['REGULATORY', '5PRIME_UTR', '3PRIME_UTR']:
       if annolines[1][0] == None or score > annolines[1][0]:
         annolines[1]=score,fields
-    elif "intronic" in fields[fVconseq] or ("upstream" in fields[fVconseq]) or ("downstream" in fields[fVconseq]):
+    elif fields[fVconseq] in ['INTRONIC', 'UPSTREAM', 'DOWNSTREAM']:
       if annolines[2][0] == None or score > annolines[2][0]:
         annolines[2]=score,fields
     else:
