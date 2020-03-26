@@ -1,0 +1,24 @@
+# This is the config for retrieving CADD GRCh37-v1.6 scores without annotation
+
+Header: '##CADD GRCh37-v1.6 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health 2013-2020. All rights reserved.'
+
+Version: v1.6
+GenomeBuild: GRCh37
+Annotation: false
+
+# File parameter
+PrescoredFolder: data/prescored/GRCh37_v1.6/no_anno
+ReferenceConfig: config/references_GRCh37_v1.6.cfg
+ImputeConfig: config/impute_GRCh37_v1.6.cfg
+Model: data/models/GRCh37/CADDv1.6-GRCh37.mod
+ConversionTable: data/models/GRCh37/conversionTable_CADDv1.6-GRCh37.txt
+
+# MMSplice config
+ReferenceGTF: data/annotations/GRCh37_v1.6/mmsplice/Homo_sapiens.GRCh37.gtf
+ReferenceFasta: data/annotations/GRCh37_v1.6/reference/reference.fa
+
+# VEP
+VEPpath: data/annotations/GRCh37_v1.6/vep
+EnsemblDB: 95
+
+Columns: '1-4,115,116'

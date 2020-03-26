@@ -15,10 +15,8 @@ rule prepare:
     conda: 'envs/environment.yml'
     shell:
         '''
-        export LC_ALL=C
-        
         cat {input} \
-        | python {config[CADDpath]}/src/scripts/VCF2vepVCF.py \
+        | python $CADD/src/scripts/VCF2vepVCF.py \
         | sort -k1,1 -k2,2n -k3,3 -k4,4 \
         | uniq > {output}
         '''        
@@ -33,13 +31,13 @@ rule prescore:
         '''
         # Prescoring
         echo '## Prescored variant file' > {output.prescored};
-        if [ -d {config[CADDpath]}/{config[PrescoredFolder]} ]
+        if [ -d $CADD/{config[PrescoredFolder]} ]
         then
-            for PRESCORED in $(ls {config[CADDpath]}/{config[PrescoredFolder]}/*.tsv.gz)
+            for PRESCORED in $(ls $CADD/{config[PrescoredFolder]}/*.tsv.gz)
             do
                 cat {input} \
-                | python {config[CADDpath]}/src/scripts/extract_scored.py --header \
-                    -p {config[CADDpath]}/$PRESCORED --found_out={output.prescored}.tmp \
+                | python $CADD/src/scripts/extract_scored.py --header \
+                    -p $CADD/$PRESCORED --found_out={output.prescored}.tmp \
                 > {input}.tmp;
                 cat {output.prescored}.tmp >> {output.prescored}
                 mv {input}.tmp {input};
@@ -56,7 +54,7 @@ rule vep:
     shell:
         '''
         cat {input} \
-        | vep --quiet --cache --offline --dir {config[CADDpath]}/{config[VEPpath]} \
+        | vep --quiet --cache --offline --dir $CADD/{config[VEPpath]} \
             --buffer 1000 --no_stats --species homo_sapiens \
             --db_version={config[EnsemblDB]} --assembly {config[GenomeBuild]} \
             --format vcf --regulatory --sift b --polyphen b --per_gene --ccds --domains \
@@ -70,13 +68,10 @@ rule mmsplice:
     conda: 'envs/environment3.yml'
     shell:
         '''
-        conda list > $CADD/env
         tabix -p vcf {input} -f
-        #python3 {config[CADDpath]}/src/scripts/MMSplice.py -i {input} \
-        #    -g {config[CADDpath]}/{config[ReferenceGTF]} \
-        #    -f {config[CADDpath]}/{config[ReferenceFasta]} \
-        #
-        zcat {input} \
+        python3 $CADD/src/scripts/MMSplice.py -i {input} \
+            -g $CADD/{config[ReferenceGTF]} \
+            -f $CADD/{config[ReferenceFasta]} \
         | grep -v '^Variant(CHROM=' > {output}
         rm {input}.tbi
         '''
@@ -88,8 +83,8 @@ rule annotation:
     shell:
         '''
         cat {input} \
-        | python {config[CADDpath]}/src/scripts/annotateVEPvcf.py \
-            -c {config[CADDpath]}/{config[ReferenceConfig]} \
+        | python $CADD/src/scripts/annotateVEPvcf.py \
+            -c $CADD/{config[ReferenceConfig]} \
         | gzip -c > {output}
         '''
 
@@ -133,11 +128,9 @@ rule join:
     conda: 'envs/environment.yml'
     shell:
         '''
-        export LC_ALL=C
-        
         (
-        echo {config[Header]};
-        cat {input.novel} | head -n 1;
+        echo "{config[Header]}";
+        head -n 1 {input.novel};
         cat {input.pre} {input.novel} \
         | grep -v "^#" \
         | sort -k1,1 -k2,2n -k3,3 -k4,4
