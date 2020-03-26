@@ -209,14 +209,13 @@ then
         echo "Downloading CADD annotations for GRCh37-v1.6 (121 GB)"
         mkdir -p data/annotations/
         cd data/annotations/
-        wget -c ${ANNOTATION_GRCh37} -O annotationsGRCh37.tar.gz
-        wget ${ANNOTATION_GRCh37}.md5 -O annotationsGRCh37.tar.gz.md5
-        md5sum -c annotationsGRCh37.tar.gz.md5
+        wget -c ${ANNOTATION_GRCh37} -O annotationsGRCh37_v1.6.tar.gz
+        wget ${ANNOTATION_GRCh37}.md5 -O annotationsGRCh37_v1.6.tar.gz.md5
+        md5sum -c annotationsGRCh37_v1.6.tar.gz.md5
         echo "Unpacking CADD annotations for GRCh37-v1.6"
-        tar -zxf annotationsGRCh37.tar.gz
-        rm annotationsGRCh37.tar.gz
-        rm annotationsGRCh37.tar.gz.md5
-        mv GRCh37 GRCh37_v1.6
+        tar -zxf annotationsGRCh37_v1.6.tar.gz
+        rm annotationsGRCh37_v1.6.tar.gz
+        rm annotationsGRCh37_v1.6.tar.gz.md5
         cd $OLDPWD
     fi
 
@@ -256,14 +255,13 @@ then
         echo "Downloading CADD annotations for GRCh38-v1.6 (196 GB)"
         mkdir -p data/annotations/
         cd data/annotations/
-        wget -c $ANNOTATION_GRCh38 -O annotationsGRCh38.tar.gz
-        wget $ANNOTATION_GRCh38.md5 -O annotationsGRCh38.tar.gz.md5
-        md5sum -c annotationsGRCh38.tar.gz.md5
+        wget -c $ANNOTATION_GRCh38 -O annotationsGRCh38_v1.6.tar.gz
+        wget $ANNOTATION_GRCh38.md5 -O annotationsGRCh38_v1.6.tar.gz.md5
+        md5sum -c annotationsGRCh38_v1.6.tar.gz.md5
         echo "Unpacking CADD annotations for GRCh38-v1.6"
-        tar -zxf annotationsGRCh38.tar.gz
-        rm annotationsGRCh38.tar.gz
-        rm annotationsGRCh38.tar.gz.md5
-        mv GRCh38 GRCh38_v1.6
+        tar -zxf annotationsGRCh38_v1.6.tar.gz
+        rm annotationsGRCh38_v1.6.tar.gz
+        rm annotationsGRCh38_v1.6.tar.gz.md5
         cd $OLDPWD
     fi
 
