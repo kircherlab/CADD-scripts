@@ -187,7 +187,7 @@ if [ "$ENV" = true ]
 then
     echo "Setting up virtual environments for CADD v1.6"
     snakemake test/input.tsv.gz --use-conda --create-envs-only --conda-prefix envs \
-        --configfile config/config_GRCh38_v1.6.yml --snakefile Snakefile
+        --cores 1 --configfile config/config_GRCh38_v1.6.yml --snakefile Snakefile
 fi
 
 # download a file and it index and check both md5 sums

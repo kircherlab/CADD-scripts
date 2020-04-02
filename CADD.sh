@@ -11,6 +11,7 @@ where:
         input vcf of vcf.gz file (required)
     -q  print basic information about snakemake run
     -p  print full information about the snakemake run
+    -c  number of cores that snakemake is allowed to use [default: 1]
     "
 
 unset OPTARG
@@ -22,7 +23,8 @@ ANNOTATION=false
 OUTFILE=""
 VERSION="v1.6"
 VERBOSE="-q"
-while getopts ':ho:g:v:aqp' option; do
+CORES="1"
+while getopts ':ho:g:v:c:aqp' option; do
   case "$option" in
     h) echo "$usage"
        exit
@@ -32,6 +34,8 @@ while getopts ':ho:g:v:aqp' option; do
     g) GENOMEBUILD=$OPTARG
        ;;
     v) VERSION=$OPTARG
+       ;;
+    v) CORES=$OPTARG
        ;;
     a) ANNOTATION=true
        ;;
@@ -106,9 +110,9 @@ TMP_OUTFILE=$TMP_FOLDER/$NAME.tsv.gz
 cp $INFILE $TMP_INFILE
 
 echo "Running snakemake pipeline:"
-echo snakemake $TMP_OUTFILE --use-conda --conda-prefix $CADD/envs
+echo snakemake $TMP_OUTFILE --use-conda --conda-prefix $CADD/envs --cores $CORES
 echo --configfile $CONFIG --snakefile $CADD/Snakefile $VERBOSE
-snakemake $TMP_OUTFILE --use-conda --conda-prefix $CADD/envs \
+snakemake $TMP_OUTFILE --use-conda --conda-prefix $CADD/envs --cores $CORES \
     --configfile $CONFIG --snakefile $CADD/Snakefile $VERBOSE
 
 mv $TMP_OUTFILE $OUTFILE
