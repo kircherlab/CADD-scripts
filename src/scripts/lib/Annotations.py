@@ -45,11 +45,14 @@ class PosTabixAnnotation(TabixAnnotation):
     # Annotation for this exact position and not the variants whole range
 
     def _retrieve(self, res):
-        self.tabix = get_from_tabix(self.tabix,
-                                    res['Chrom'],
-                                    res['Pos'],
-                                    continuous=self.continuous,
-                                    zerobased=self.zerobased)
+        self.tabix = get_range_from_tabix(self.tabix,
+                                          res['Chrom'],
+                                          res['Pos'],
+                                          res['Pos'],
+                                          rangescore=self.rangescore,
+                                          continuous=self.continuous,
+                                          multirange=self.multirange,
+                                          zerobased=self.zerobased)
         self.score = self.tabix[6]
 
 def maxL(valuelist):
@@ -799,7 +802,7 @@ class Grantham(AACombination):
     name = 'Grantham'
     consequence = True
 
-class SpliceAITabix(TabixAnnotation):
+class SpliceAITabix(PosTabixAnnotation):
     name='SpliceAITabix'
     features = ['SpliceAI-acc-gain', 'SpliceAI-acc-loss', 'SpliceAI-don-gain', 'SpliceAI-don-loss']
     consequence = True
@@ -815,19 +818,23 @@ class SpliceAITabix(TabixAnnotation):
                 break
         return res
 
-class MMSplice(Annotation):
-    name = 'MMSplice'
+class MMSpliceTabix(PosTabixAnnotation):
+    name = 'MMSpliceTabix'
     features = ['MMSp_acceptorIntron', 'MMSp_acceptor', 'MMSp_exon', 'MMSp_donor', 'MMSp_donorIntron']
     consequence = True
 
-    def process(self, res):
-        if 'MMSplice' in res['Info']:
-            for mmsp in res['Info']['MMSplice']:
-                fields = mmsp.split('|')
-                if fields[0] == res['GeneName']:
-                    for i in range(5):
-                        res[self.features[i]] = fields[i+1]
-                    break
+    def _get_score(self, res):
+        for hit in self.score:
+            if hit[2] == res['Ref'] and hit[3] == res['Alt']:
+                for mmsp in hit[4].split(','):
+                    fields = mmsp.split('|')
+                    if res['GeneName'] == fields[0]:
+                        for num, fea in enumerate(self.features):
+                            if fields[num+1] == '':
+                                res[fea] = '0'
+                            else:
+                                res[fea] = fields[num+1]
+                break
         return res
 
 class NeighboringMutations(TabixAnnotation):
@@ -955,7 +962,7 @@ annotations = [
     EncodetotalRNA(),
     Grantham(),
     SpliceAITabix(),
-    MMSplice(),
+    MMSpliceTabix(),
     NeighboringMutations(),
     MutationDensity100(),
     MutationDensity1000(),

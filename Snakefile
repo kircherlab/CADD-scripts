@@ -47,9 +47,9 @@ rule prescore:
         mv {input} {output.novel}
         '''
 
-rule vep:
+rule annotation:
     input: '{file}.novel.vcf'
-    output: temp('{file}.vep.vcf.gz')
+    output: temp('{file}.anno.tsv.gz')
     conda: 'envs/environment.yml'
     shell:
         '''
@@ -59,30 +59,6 @@ rule vep:
             --db_version={config[EnsemblDB]} --assembly {config[GenomeBuild]} \
             --format vcf --regulatory --sift b --polyphen b --per_gene --ccds --domains \
             --numbers --canonical --total_length --vcf --force_overwrite --output_file STDOUT \
-        | bgzip -c > {output}
-        '''
-
-rule mmsplice:
-    input: '{file}.vep.vcf.gz'
-    output: temp('{file}.mmsplice.vcf')
-    conda: 'envs/environment3.yml'
-    shell:
-        '''
-        tabix -p vcf {input} -f
-        python3 $CADD/src/scripts/MMSplice.py -i {input} \
-            -g $CADD/{config[ReferenceGTF]} \
-            -f $CADD/{config[ReferenceFasta]} \
-        | grep -v '^Variant(CHROM=' > {output}
-        rm {input}.tbi
-        '''
-
-rule annotation:
-    input: '{file}.mmsplice.vcf'
-    output: temp('{file}.anno.tsv.gz')
-    conda: 'envs/environment.yml'
-    shell:
-        '''
-        cat {input} \
         | python $CADD/src/scripts/annotateVEPvcf.py \
             -c $CADD/{config[ReferenceConfig]} \
         | gzip -c > {output}

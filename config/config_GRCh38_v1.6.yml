@@ -13,10 +13,6 @@ ImputeConfig: config/impute_GRCh38_v1.6.cfg
 Model: data/models/GRCh38/CADDv1.6-GRCh38.mod
 ConversionTable: data/models/GRCh38/conversionTable_CADDv1.6-GRCh38.txt
 
-# MMSplice config
-ReferenceGTF: data/annotations/GRCh38_v1.6/mmsplice/Homo_sapiens.GRCh38.gtf
-ReferenceFasta: data/annotations/GRCh38_v1.6/reference/reference.fa
-
 # VEP
 VEPpath: data/annotations/GRCh38_v1.6/vep
 EnsemblDB: 95
