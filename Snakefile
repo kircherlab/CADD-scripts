@@ -37,7 +37,7 @@ rule prescore:
             do
                 cat {input} \
                 | python $CADD/src/scripts/extract_scored.py --header \
-                    -p $CADD/$PRESCORED --found_out={output.prescored}.tmp \
+                    -p $PRESCORED --found_out={output.prescored}.tmp \
                 > {input}.tmp;
                 cat {output.prescored}.tmp >> {output.prescored}
                 mv {input}.tmp {input};
