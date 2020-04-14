@@ -1,0 +1,20 @@
+# This is the config for retrieving CADD GRCh38-v1.6 scores with annotation
+
+Header: '##CADD GRCh38-v1.6 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health 2013-2020. All rights reserved.'
+
+Version: v1.6
+GenomeBuild: GRCh38
+Annotation: true
+
+# File parameter
+PrescoredFolder: data/prescored/GRCh38_v1.6/incl_anno
+ReferenceConfig: config/references_GRCh38_v1.6.cfg
+ImputeConfig: config/impute_GRCh38_v1.6.cfg
+Model: data/models/GRCh38/CADDv1.6-GRCh38.mod
+ConversionTable: data/models/GRCh38/conversionTable_CADDv1.6-GRCh38.txt
+
+# VEP
+VEPpath: data/annotations/GRCh38_v1.6/vep
+EnsemblDB: 95
+
+Columns: '1-134'

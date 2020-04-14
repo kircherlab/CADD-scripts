@@ -22,12 +22,6 @@ parser.add_argument("--noHeader", dest="header", action="store_false",
 parser.add_argument("--continuous", dest="continuous",
                     default=False, action="store_true",
                     help="Input file is coordinate sorted and does not contain coordinate ranges -- not save for indels! (default OFF)")
-#parser.add_argument("-v","--verbose", dest="verbose",
-#                    default=False, action="store_true",
-#                    help="Turn verbose messages on (def OFF)")
-parser.add_argument("-f","--filterLowCov", dest="filterLowCov",
-                    default=False,action="store_true",
-                    help="Remove variants only identified from 1000 Genomes Exome sequencing (def OFF)")
 parser.add_argument("--choose", dest="choose", default=False, action="store_true",
                     help="Choose a random line of the same hierarchy instead of all (def OFF)")
 
@@ -166,6 +160,9 @@ for record in vcf_reader:
         sys.stderr.write('Encountered unknown chromosome name %s: %s\t%i\t%s\t%s\n' % (res['Chrom'],res['Chrom'], res['Pos'], res['Ref'], res['Alt']))
         continue
 
+    # enable annotations to access the vcf info column
+    res['Info'] = record.INFO
+
     # read those annotations, that are independent of the consequence
     for annotation in nocons_annotations:
         res = annotation.process(res)
@@ -236,7 +233,9 @@ for record in vcf_reader:
 
     # write off to stream
     for res in res_list:
-        stdout.write('\t'.join([str(res[col]) if col in res else "NA" for col in output_columns]) + '\n')
+        res = {r: str(val) for r, val in res.items()}
+        res = {r: val.rstrip('0').rstrip('.') if '.0' in val else val for r, val in res.items()}
+        stdout.write('\t'.join([res[col] if col in res else "NA" for col in output_columns]) + '\n')
 
 # cleaning up
 genome_index.close()

@@ -53,7 +53,7 @@ for line in stdin:
     lref,allele = fields[-2],fields[-1]
     for regionHit in regionTabix.fetch(chrom, pos-1, pos):
       vfields = regionHit.rstrip().split('\t')
-      if (vfields[fref] == lref) and (vfields[falt] == allele) and (vfields[fpos] == pos):
+      if (vfields[fref] == lref) and (vfields[falt] == allele) and (vfields[fpos] == fields[1]):
         found_out.write(regionHit+"\n")
         found = True
         break
