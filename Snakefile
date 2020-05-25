@@ -17,7 +17,7 @@ rule prepare:
         '''
         cat {input} \
         | python $CADD/src/scripts/VCF2vepVCF.py \
-        | sort -k1,1 -k2,2n -k3,3 -k4,4 \
+        | sort -k1,1 -k2,2n -k4,4 -k5,5 \
         | uniq > {output}
         '''        
 
@@ -109,6 +109,6 @@ rule join:
         head -n 1 {input.novel};
         cat {input.pre} {input.novel} \
         | grep -v "^#" \
-        | sort -k1,1 -k2,2n -k3,3 -k4,4
+        | sort -k1,1 -k2,2n -k3,3 -k4,4 || true;
         ) | bgzip -c > {output};
         '''
