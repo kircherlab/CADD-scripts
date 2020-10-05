@@ -88,9 +88,9 @@ Both version of CADD (for the different genome builds) rely on a big number of g
 
 ```bash
 # for GRCh37 / hg19
-wget -c http://krishna.gs.washington.edu/download/CADD/v1.6/annotationsGRCh37_v1.6.tar.gz
+wget -c https://krishna.gs.washington.edu/download/CADD/v1.6/GRCh37/annotationsGRCh37_v1.6.tar.gz
 # for GRCh38 / hg38
-wget -c http://krishna.gs.washington.edu/download/CADD/v1.6/annotationsGRCh38_v1.6.tar.gz
+wget -c https://krishna.gs.washington.edu/download/CADD/v1.6/GRCh38/annotationsGRCh38_v1.6.tar.gz
 ```
 
 As those files are about 100 and 200 GB in size, downloads can take long (depending on your internet connection). We recommend to setup the process in the background and using a tool (like `wget -c` mentioned above) that allows you to continue an interrupted download.
