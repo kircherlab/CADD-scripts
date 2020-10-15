@@ -95,7 +95,7 @@ wget -c https://krishna.gs.washington.edu/download/CADD/v1.6/GRCh38/annotationsG
 
 As those files are about 100 and 200 GB in size, downloads can take long (depending on your internet connection). We recommend to setup the process in the background and using a tool (like `wget -c` mentioned above) that allows you to continue an interrupted download.
 
-To make sure you downloaded the files correctly, we recommend downloading md5 hash files from our website (e.g. `wget wget -c http://krishna.gs.washington.edu/download/CADD/v1.6/MD5SUMs`) and checking for completness (via `md5sum -c`).
+To make sure you downloaded the files correctly, we recommend downloading md5 hash files from our website (e.g. `wget https://krishna.gs.washington.edu/download/CADD/v1.6/MD5SUMs`) and checking for completness (via `md5sum -c MD5SUMs`).
 
 The annotation files are finally put in the folder `data/annotations` and unpacked:
 
