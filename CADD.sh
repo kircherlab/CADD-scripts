@@ -35,7 +35,7 @@ while getopts ':ho:g:v:c:aqp' option; do
        ;;
     v) VERSION=$OPTARG
        ;;
-    v) CORES=$OPTARG
+    c) CORES=$OPTARG
        ;;
     a) ANNOTATION=true
        ;;
