@@ -76,7 +76,7 @@ Running CADD depends on four big building blocks (plus the repository containing
 As of this version, dependencies have to be installed via conda and snakemake. This is because we are using two different enviroments for python2 and python3.
 
 ```bash
-snakemake test/input.vcf --use-conda --conda-create-envs-only --conda-prefix envs \
+snakemake test/input.tsv.gz --use-conda --conda-create-envs-only --conda-prefix envs \
         --configfile config/config_GRCh38_v1.6.yml --snakefile Snakefile
 ```
 
