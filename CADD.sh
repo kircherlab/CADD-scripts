@@ -57,6 +57,17 @@ echo "CADD-v1.6 (c) University of Washington, Hudson-Alpha Institute for Biotech
 
 set -ueo pipefail
 
+# check if input file does exist
+if [ "$INFILE" == "" ]
+then
+    echo "No input file specified. To run CADD, a list of variants has to be provided in a vcf or vcf.gz file."
+    exit 1
+elif [ ! -f "$INFILE" ]
+then
+    echo "Input file $INFILE does not exist."
+    exit 1
+fi
+
 ### Configuring all the paths
 
 FILENAME=$(basename $INFILE)
