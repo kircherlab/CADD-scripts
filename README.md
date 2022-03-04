@@ -37,10 +37,12 @@ export PATH=$HOME/miniconda2/bin:$PATH
 ```
 - snakemake (installed via conda)
 ```bash
-conda install -c conda-forge -c bioconda snakemake
+conda install -c conda-forge -c bioconda snakemake mamba
 ```
 
 *Note2: If you are using an existing conda installation, please make sure it is [a version >=4.4.0](https://github.com/conda/conda/issues/3200). Make also sure to use snakemake >= 4.0 as some command line parameters are not available in earlier versions. *
+
+*Note3: We are also installing mamba here. In principle it should also work without mamba, in that case add `--conda-frontend conda` to line 216 in install.sh*
 
 ### Setup
 
