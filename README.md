@@ -37,10 +37,12 @@ export PATH=$HOME/miniconda2/bin:$PATH
 ```
 - snakemake (installed via conda)
 ```bash
-conda install -c conda-forge -c bioconda snakemake
+conda install -c conda-forge -c bioconda snakemake mamba
 ```
 
 *Note2: If you are using an existing conda installation, please make sure it is [a version >=4.4.0](https://github.com/conda/conda/issues/3200). Make also sure to use snakemake >= 4.0 as some command line parameters are not available in earlier versions. *
+
+*Note3: We are also installing mamba here. In principle it should also work without mamba, in that case add `--conda-frontend conda` to line 216 in install.sh*
 
 ### Setup
 
@@ -76,7 +78,7 @@ Running CADD depends on four big building blocks (plus the repository containing
 As of this version, dependencies have to be installed via conda and snakemake. This is because we are using two different enviroments for python2 and python3.
 
 ```bash
-snakemake test/input.vcf --use-conda --create-envs-only --conda-prefix envs \
+snakemake test/input.tsv.gz --use-conda --conda-create-envs-only --conda-prefix envs \
         --configfile config/config_GRCh38_v1.6.yml --snakefile Snakefile
 ```
 
@@ -88,14 +90,14 @@ Both version of CADD (for the different genome builds) rely on a big number of g
 
 ```bash
 # for GRCh37 / hg19
-wget -c http://krishna.gs.washington.edu/download/CADD/v1.6/annotationsGRCh37_v1.6.tar.gz
+wget -c https://krishna.gs.washington.edu/download/CADD/v1.6/GRCh37/annotationsGRCh37_v1.6.tar.gz
 # for GRCh38 / hg38
-wget -c http://krishna.gs.washington.edu/download/CADD/v1.6/annotationsGRCh38_v1.6.tar.gz
+wget -c https://krishna.gs.washington.edu/download/CADD/v1.6/GRCh38/annotationsGRCh38_v1.6.tar.gz
 ```
 
 As those files are about 100 and 200 GB in size, downloads can take long (depending on your internet connection). We recommend to setup the process in the background and using a tool (like `wget -c` mentioned above) that allows you to continue an interrupted download.
 
-To make sure you downloaded the files correctly, we recommend downloading md5 hash files from our website (e.g. `wget wget -c http://krishna.gs.washington.edu/download/CADD/v1.6/MD5SUMs`) and checking for completness (via `md5sum -c`).
+To make sure you downloaded the files correctly, we recommend downloading md5 hash files from our website (e.g. `wget https://krishna.gs.washington.edu/download/CADD/v1.6/GRCh38/annotationsGRCh38_v1.6.tar.gz.md5`) and checking for completeness (via `md5sum -c annotationsGRCh38_v1.6.tar.gz.md5`).
 
 The annotation files are finally put in the folder `data/annotations` and unpacked:
 

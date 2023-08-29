@@ -56,7 +56,6 @@ for line in stdin:
       if (vfields[fref] == lref) and (vfields[falt] == allele) and (vfields[fpos] == fields[1]):
         found_out.write(regionHit+"\n")
         found = True
-        break
 
     if not found:
       sys.stdout.write(line + '\n')

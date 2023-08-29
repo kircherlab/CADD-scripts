@@ -1,5 +1,33 @@
 #!/bin/bash
 
+usage="$(basename "$0") [-b] -- CADD installer, version 1.6
+
+where:
+    -h  show this help text
+    -b  use kircherlab.bihealth.org as download server instead of krishna.gs.washington.edu
+
+All further settings will be spcified in a yes/no dialog. 
+    "
+
+### SET FILE SERVER
+DOWNLOAD_LOCATION="https://krishna.gs.washington.edu/download/CADD"
+
+while getopts ':hb' option; do
+  case "$option" in
+    h) echo "$usage"
+       exit
+       ;;
+    b) DOWNLOAD_LOCATION=https://kircherlab.bihealth.org/download/CADD
+       echo "Using kircherlab.bihealth.org as download server"
+       ;;
+    \?) printf "illegal option: -%s\n" "$OPTARG" >&2
+       echo "$usage" >&2
+       exit 1
+       ;;
+  esac
+done
+shift $((OPTIND-1))
+
 set -e
 
 echo "CADD-v1.6 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health 2013-2020. All rights reserved."
@@ -94,8 +122,6 @@ then
 fi
 
 ### FILE CONFIGURATION
-DOWNLOAD_LOCATION="https://krishna.gs.washington.edu/download/CADD"
-
 ANNOTATION_GRCh37="$DOWNLOAD_LOCATION/v1.6/GRCh37/annotationsGRCh37_v1.6.tar.gz"
 ANNOTATION_GRCh38="$DOWNLOAD_LOCATION/v1.6/GRCh38/annotationsGRCh38_v1.6.tar.gz"
 PRESCORE_GRCh37="$DOWNLOAD_LOCATION/v1.6/GRCh37/whole_genome_SNVs.tsv.gz"
@@ -186,7 +212,7 @@ esac
 if [ "$ENV" = true ]
 then
     echo "Setting up virtual environments for CADD v1.6"
-    snakemake test/input.tsv.gz --use-conda --create-envs-only --conda-prefix envs \
+    snakemake test/input.tsv.gz --use-conda --conda-create-envs-only --conda-prefix envs \
         --cores 1 --configfile config/config_GRCh38_v1.6.yml --snakefile Snakefile
 fi
 

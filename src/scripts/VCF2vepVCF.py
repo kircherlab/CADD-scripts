@@ -88,8 +88,12 @@ for line in sys.stdin:
   if len(fields) > falt_allele and is_nucleotide(fields[fref_allele]):
     ref = fields[fref_allele].upper()
     if options.refCheck:
-      pos = int(fields[fpos])
-      href = reference.fetch(fields[fchr],pos-1,pos-1+len(ref)).upper()
+      try:
+        pos = int(fields[fpos])
+        href = reference.fetch(fields[fchr],pos-1,pos-1+len(ref)).upper()
+      except:
+        href = ""
+        
       if href != ref: continue
       
     for alt in fields[falt_allele].upper().split(','):

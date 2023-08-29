@@ -156,6 +156,9 @@ for record in vcf_reader:
                 continue
         else:
             res['Seq'] = (75-start_seq) * 'N' + genome_index.fetch(res['Chrom'], 0, end_seq+75).upper()
+    except ValueError:
+        sys.stderr.write('Encountered coordinate outside of chromosome boundaries: %s\t%i\t%s\t%s\n' % (res['Chrom'], res['Pos'], res['Ref'], res['Alt']))
+        continue
     except KeyError:
         sys.stderr.write('Encountered unknown chromosome name %s: %s\t%i\t%s\t%s\n' % (res['Chrom'],res['Chrom'], res['Pos'], res['Ref'], res['Alt']))
         continue
