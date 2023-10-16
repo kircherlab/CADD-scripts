@@ -117,7 +117,7 @@ def read_fastq_file(filename):
           yield header,seq,None
         raise StopIteration
       else:
-        print "Unexpected line:",line.strip()
+        print("Unexpected line:",line.strip())
         raise StopIteration
   if len(seq) > 0:
     yield name,seq,qual
@@ -584,7 +584,7 @@ def emf_get_base_at_position(emf_obj,species,chrom,pos,outspecies="Hsap-Ptro",si
   if current['species'] != species or current['chrom'] != chrom or (pos < current['bstart']) or (pos >= current['bend']):
     if chrom in cindex:
       res = cindex[chrom]["coords"].find(pos,pos+1)
-      if verbose: print chrom,pos,res
+      if verbose: print(chrom,pos,res)
       if len(res) == 1:
         rstart = res[0].start
         rend = res[0].end

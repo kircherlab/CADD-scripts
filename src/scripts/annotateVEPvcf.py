@@ -1,4 +1,5 @@
-import sys, os
+import sys
+import os
 from argparse import ArgumentParser
 from ConfigParser import ConfigParser
 
@@ -17,8 +18,8 @@ parser.add_argument("-o", "--output", dest="output", type=str, default=None,
 parser.add_argument("-c", "--config", dest="config", type=str, default=None,
                     help="File that configures the used annotation files")
 parser.add_argument("--noHeader", dest="header", action="store_false",
-                   default=True,
-                   help="Whether to output a header of the written columns")
+                    default=True,
+                    help="Whether to output a header of the written columns")
 parser.add_argument("--continuous", dest="continuous",
                     default=False, action="store_true",
                     help="Input file is coordinate sorted and does not contain coordinate ranges -- not save for indels! (default OFF)")
@@ -41,17 +42,18 @@ else:
 if args.config:
     conf = ConfigParser()
     conf.read(args.config)
-    pathConf = {a:b for a,b in conf.items('Path')}
-    annotationConf =  {a:b for a,b in conf.items('Annotations')}
+    pathConf = {a: b for a, b in conf.items('Path')}
+    annotationConf = {a: b for a, b in conf.items('Annotations')}
 
     if pathConf['roottype'].lower() in ['v', 'var', 'env']:
         root_dir = os.environ[pathConf['rootdir']]
     else:
         root_dir = pathConf['rootdir']
-    root_anno = (root_dir+pathConf['annodir']).replace('//','/')
+    root_anno = (root_dir+pathConf['annodir']).replace('//', '/')
     reference = root_anno + pathConf['reference']
 
-    included_annotations = [annotationName for annotationName in annotationConf.keys() if annotationConf[annotationName] != 'Ignore']
+    included_annotations = [annotationName for annotationName in annotationConf.keys()
+                            if annotationConf[annotationName] != 'Ignore']
     for annotation in annotations:
         name = annotation.name.lower()
         if name in included_annotations and annotationConf[name] != 'True':
@@ -59,7 +61,7 @@ if args.config:
 else:
     # define project annotation directory
     root_dir = os.environ['CADD']
-    root_anno = (root_dir+'/scoring/annotations').replace('//','/')
+    root_anno = (root_dir+'/scoring/annotations').replace('//', '/')
     for annotation in annotations:
         if hasattr(annotation, 'path'):
             annotation.path = root_anno + annotation.path
@@ -69,7 +71,8 @@ else:
     # use all annotations without config
     included_annotations = [annotation.name.lower() for annotation in annotations]
 
-annotations = [annotation for annotation in annotations if annotation.mandatory or annotation.name.lower() in included_annotations]
+annotations = [annotation for annotation in annotations if annotation.mandatory or annotation.name.lower()
+               in included_annotations]
 
 cons_annotations = []
 nocons_annotations = []
@@ -85,7 +88,7 @@ for annotation in annotations:
         annotationFeatures.extend(annotation.features)
     else:
         annotationFeatures.append(annotation.name)
-annotationFeatures = OrderedDict.fromkeys(annotationFeatures).keys() # remove duplicates
+annotationFeatures = OrderedDict.fromkeys(annotationFeatures).keys()  # remove duplicates
 
 genome_index = pysam.FastaFile(reference)
 
@@ -106,14 +109,14 @@ for record in vcf_reader:
 
     res = {}
     res['Chrom'] = record.CHROM
-    if len(res['Chrom']) > 2: # quickfix: only support main chromosomes, discard others
+    if len(res['Chrom']) > 2:  # quickfix: only support main chromosomes, discard others
         continue
 
     res['Ref'] = str(record.REF)
-    res['Alt'] = str(record.ALT[0]) # there should always be only one
+    res['Alt'] = str(record.ALT[0])  # there should always be only one
     res['Pos'] = record.POS
     res['Start'] = res['Pos']
-    res['End'] =  res['Pos'] + len(res['Ref'])
+    res['End'] = res['Pos'] + len(res['Ref'])
 
     # sequence around the variant, so that we only retrieve it once
     # the retrieved sequence depends on the type: (uses start_seq and end_seq)
@@ -143,7 +146,7 @@ for record in vcf_reader:
         else:
             if len(res['Alt']) == 1 or len(res['Ref']) > len(res['Alt']):
                 res['Type'] = 'DEL'
-            else: # Exceptions are complex INS like AG -> CTGCT (same with DEL in previous if)
+            else:  # Exceptions are complex INS like AG -> CTGCT (same with DEL in previous if)
                 res['Type'] = 'INS'
             end_seq = res['Pos'] + len(res['Ref']) - 1
             res['Start'] = res['Pos'] + 1
@@ -152,15 +155,18 @@ for record in vcf_reader:
         if start_seq > 74:
             res['Seq'] = genome_index.fetch(res['Chrom'], start_seq-75, end_seq+75).upper()
             if len(res['Seq']) < 75:
-                sys.stderr.write('Encountered variant outside of chromosome boundary: %s\t%i\t%s\t%s\n' % (res['Chrom'], res['Pos'], res['Ref'], res['Alt']))
+                sys.stderr.write('Encountered variant outside of chromosome boundary: %s\t%i\t%s\t%s\n' %
+                                 (res['Chrom'], res['Pos'], res['Ref'], res['Alt']))
                 continue
         else:
             res['Seq'] = (75-start_seq) * 'N' + genome_index.fetch(res['Chrom'], 0, end_seq+75).upper()
     except ValueError:
-        sys.stderr.write('Encountered coordinate outside of chromosome boundaries: %s\t%i\t%s\t%s\n' % (res['Chrom'], res['Pos'], res['Ref'], res['Alt']))
+        sys.stderr.write('Encountered coordinate outside of chromosome boundaries: %s\t%i\t%s\t%s\n' %
+                         (res['Chrom'], res['Pos'], res['Ref'], res['Alt']))
         continue
     except KeyError:
-        sys.stderr.write('Encountered unknown chromosome name %s: %s\t%i\t%s\t%s\n' % (res['Chrom'],res['Chrom'], res['Pos'], res['Ref'], res['Alt']))
+        sys.stderr.write('Encountered unknown chromosome name %s: %s\t%i\t%s\t%s\n' %
+                         (res['Chrom'], res['Chrom'], res['Pos'], res['Ref'], res['Alt']))
         continue
 
     # enable annotations to access the vcf info column
@@ -193,14 +199,14 @@ for record in vcf_reader:
     for res in res_list:
         if res['Feature_type'] == 'MotifFeature':
             num_motiffeature += 1
-            if motif_res and 'motifEScoreChng' in motif_res: # proliferate the highest scoring motif
+            if motif_res and 'motifEScoreChng' in motif_res:  # proliferate the highest scoring motif
                 if 'motifEScoreChng' in res and res['motifEScoreChng'] > motif_res['motifEScoreChng']:
                     motif_res = res
             else:
                 motif_res = res
-    if 0 < num_motiffeature < len(res_list): # ignore/remove motif features if not all consequences are such
+    if 0 < num_motiffeature < len(res_list):  # ignore/remove motif features if not all consequences are such
         res_list2 = []
-        transfers = [t for t in ['motifEName','motifEHIPos','motifEScoreChng'] if t in motif_res]
+        transfers = [t for t in ['motifEName', 'motifEHIPos', 'motifEScoreChng'] if t in motif_res]
         for res in res_list:
             if res['Feature_type'] != 'MotifFeature':
                 for t in transfers:
@@ -211,7 +217,7 @@ for record in vcf_reader:
 
     # when choosing only one functional annotation per variant
     if args.choose:
-        consequence_levels = [['STOP_GAINED','STOP_LOST','FRAME_SHIFT',
+        consequence_levels = [['STOP_GAINED', 'STOP_LOST', 'FRAME_SHIFT',
                                'INFRAME', 'NON_SYNONYMOUS',
                                'NONCODING_CHANGE', 'CANONICAL_SPLICE',
                                'SPLICE_SITE', 'SYNONYMOUS', 'UNKNOWN'],

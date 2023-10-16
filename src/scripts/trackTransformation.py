@@ -53,22 +53,21 @@ for line in stdin:
             stdout.write(','.join(newColumnNames) + '\n')
         continue
     # associate fields with column names
-    fieldsDict = dict(zip(columnNames,line.split('\t')))
+    fieldsDict = dict(zip(columnNames, line.split('\t')))
     outFields = []
     indicatorFields = []
-    
+
     for trackName, status in config['Tracks']:
         if 'colname' in trackData[trackName].keys():
             trackName = trackData[trackName]['colname']
         track = trackData[trackName]
 
-        
         if status == 'Ignore':
             # outFields.append(fieldsDict[trackName])
             continue
         if status != 'True':
             continue
-        
+
         if track['type'] == 'combined':
             if args.cat2bool:
                 i = trackData[track['base']]['id']
@@ -80,7 +79,7 @@ for line in stdin:
             for child in track['child']:
                 values.extend(baseArray * outFields[trackData[child]['id']])
             outFields.extend([value for value in values])
-        else:  
+        else:
             try:
                 if 'derive' in track.keys():
                     value = track['derive'](fieldsDict)
@@ -88,10 +87,10 @@ for line in stdin:
                     value = fieldsDict[trackName]
                 if track['type'] in [float, int]:
                     value = track['type'](value)
-                if 'transformation' in track.keys(): # transform is slightly redundant to derive
+                if 'transformation' in track.keys():  # transform is slightly redundant to derive
                     value = track['transformation'](value)
                 if track['type'] is list:
-                    assert(value in track['categories'])        
+                    assert (value in track['categories'])
                 if 'indicator' in track.keys():
                     indicatorFields.append('0')
             except:
@@ -104,12 +103,12 @@ for line in stdin:
                 outFields.extend(values)
             else:
                 outFields.append(value)
-    
+
     # minimize zeros and stringify
     outFields = ['0' if f == 0 else str(f) for f in outFields]
-    
+
     outFields.extend(indicatorFields)
-    
+
     stdout.write(','.join(outFields) + '\n')
 
 if args.input is not None:

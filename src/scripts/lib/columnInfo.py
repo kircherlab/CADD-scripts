@@ -4,6 +4,7 @@ from ConfigParser import ConfigParser
 from argparse import ArgumentParser
 from tracks import trackData
 
+
 def get_columns(configfile, state=None, cat2bool=True, hcdiff=False):
     conf = ConfigParser()
     conf.read(configfile)
@@ -20,14 +21,14 @@ def get_columns(configfile, state=None, cat2bool=True, hcdiff=False):
     indicatorNames = []
     for track, status in config['Tracks']:
         # check track availability
-        assert(track in trackData.keys())
+        assert (track in trackData.keys())
 
         if status.lower() in ['d', 'default']:
             status = trackData[track]['default']
 
         # ignore unwanted tracks and remove scaling from unscaled ones
         if status.lower() in ['s', 'scale', 'scaling']:
-            pass # keep scaling on
+            pass  # keep scaling on
         elif status.lower() in ['true', 't', 'y', 'yes']:
             if hasattr(trackData[track], 'scaling'):
                 del trackData[track]['scaling']
@@ -57,9 +58,11 @@ def get_columns(configfile, state=None, cat2bool=True, hcdiff=False):
         if trackData[track]['type'] == 'combined':
             baseNames = trackData[trackData[track]['base']]['categories']
             childNames = trackData[track]['child']
-            childNames = [child for child in childNames if child in columnNames] # child tracks need to be configured before the parent track
-            trackData[track]['child'] = childNames                                  # remove combinations that are not there (like ignored ones)
-            columnNames.extend([str((base,child)) for child in childNames for base in baseNames])
+            # child tracks need to be configured before the parent track
+            childNames = [child for child in childNames if child in columnNames]
+            # remove combinations that are not there (like ignored ones)
+            trackData[track]['child'] = childNames
+            columnNames.extend([str((base, child)) for child in childNames for base in baseNames])
             columnTypes.extend([trackData[child]['type'] for child in childNames for base in baseNames])
         elif cat2bool and trackData[track]['type'] is list:
             columnNames.extend([str((track, cat)) for cat in trackData[track]['categories']])
@@ -73,15 +76,16 @@ def get_columns(configfile, state=None, cat2bool=True, hcdiff=False):
         # do some replacements incase ref and alt are mixed
         if hcdiff:
             for old, rep in [('colname', 'hcdiff_colname'),
-                            ('derive', 'hcdiff_derive'),
-                            ('transformation', 'hcdiff_transformation')]:
+                             ('derive', 'hcdiff_derive'),
+                             ('transformation', 'hcdiff_transformation')]:
                 if rep in trackData[track].keys():
                     trackData[track][old] = trackData[track][rep]
 
     columnNames.extend(indicatorNames)
     columnTypes.extend([bool for i in indicatorNames])
 
-    return(columnNames, columnTypes, trackData, config)
+    return (columnNames, columnTypes, trackData, config)
+
 
 if __name__ == '__main__':
     parser = ArgumentParser(description="%prog name")
