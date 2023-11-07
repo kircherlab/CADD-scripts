@@ -121,8 +121,8 @@ then
 fi
 
 ### FILE CONFIGURATION
-ANNOTATION_GRCh37="$DOWNLOAD_LOCATION/v1.7/GRCh37/annotationsGRCh37_v1.7.tar.gz"
-ANNOTATION_GRCh38="$DOWNLOAD_LOCATION/v1.7/GRCh38/annotationsGRCh38_v1.7.tar.gz"
+ANNOTATION_GRCh37="$DOWNLOAD_LOCATION/v1.7/GRCh37/GRCh37_v1.7.tar.gz"
+ANNOTATION_GRCh38="$DOWNLOAD_LOCATION/v1.7/GRCh38/GRCh38_v1.7.tar.gz"
 PRESCORE_GRCh37="$DOWNLOAD_LOCATION/v1.7/GRCh37/whole_genome_SNVs.tsv.gz"
 PRESCORE_GRCh38="$DOWNLOAD_LOCATION/v1.7/GRCh38/whole_genome_SNVs.tsv.gz"
 PRESCORE_INCANNO_GRCh37="$DOWNLOAD_LOCATION/v1.7/GRCh37/whole_genome_SNVs_inclAnno.tsv.gz"
@@ -231,16 +231,16 @@ if [ "$GRCh37" = true ]
 then
     if [ "$ANNOTATIONS" = true ]
     then
-        echo "Downloading CADD annotations for GRCh37-v1.7 (121 GB)"
+        echo "Downloading CADD annotations for GRCh37-v1.7 (261 GB)"
         mkdir -p data/annotations/
         cd data/annotations/
-        wget -c ${ANNOTATION_GRCh37} -O annotationsGRCh37_v1.7.tar.gz
-        wget ${ANNOTATION_GRCh37}.md5 -O annotationsGRCh37_v1.7.tar.gz.md5
-        md5sum -c annotationsGRCh37_v1.7.tar.gz.md5
+        wget -c ${ANNOTATION_GRCh37} -O GRCh37_v1.7.tar.gz
+        wget ${ANNOTATION_GRCh37}.md5 -O GRCh37_v1.7.tar.gz.md5
+        md5sum -c GRCh37_v1.7.tar.gz.md5
         echo "Unpacking CADD annotations for GRCh37-v1.7"
-        tar -zxf annotationsGRCh37_v1.7.tar.gz
-        rm annotationsGRCh37_v1.7.tar.gz
-        rm annotationsGRCh37_v1.7.tar.gz.md5
+        tar -zxf GRCh37_v1.7.tar.gz
+        rm GRCh37_v1.7.tar.gz
+        rm GRCh37_v1.7.tar.gz.md5
         cd $OLDPWD
     fi
 
@@ -277,16 +277,16 @@ then
 
     if [ "$ANNOTATIONS" = true ]
     then
-        echo "Downloading CADD annotations for GRCh38-v1.7 (196 GB)"
+        echo "Downloading CADD annotations for GRCh38-v1.7 (336 GB)"
         mkdir -p data/annotations/
         cd data/annotations/
-        wget -c $ANNOTATION_GRCh38 -O annotationsGRCh38_v1.7.tar.gz
-        wget $ANNOTATION_GRCh38.md5 -O annotationsGRCh38_v1.7.tar.gz.md5
-        md5sum -c annotationsGRCh38_v1.7.tar.gz.md5
+        wget -c $ANNOTATION_GRCh38 -O GRCh38_v1.7.tar.gz
+        wget $ANNOTATION_GRCh38.md5 -O GRCh38_v1.7.tar.gz.md5
+        md5sum -c GRCh38_v1.7.tar.gz.md5
         echo "Unpacking CADD annotations for GRCh38-v1.7"
-        tar -zxf annotationsGRCh38_v1.7.tar.gz
-        rm annotationsGRCh38_v1.7.tar.gz
-        rm annotationsGRCh38_v1.7.tar.gz.md5
+        tar -zxf GRCh38_v1.7.tar.gz
+        rm GRCh38_v1.7.tar.gz
+        rm GRCh38_v1.7.tar.gz.md5
         cd $OLDPWD
     fi
 
