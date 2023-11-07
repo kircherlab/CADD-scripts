@@ -1,6 +1,10 @@
 # data folders
-data/prescored/*
+
 data/annotations/*
+data/prescored/GRCh38_v1.7/incl_anno/*
+data/prescored/GRCh37_v1.7/incl_anno/*
+data/prescored/GRCh38_v1.7/no_anno/*
+data/prescored/GRCh37_v1.7/no_anno/*
 input/*
 output/*
 
@@ -13,6 +17,11 @@ output/*
 # snakemake
 .snakemake*
 envs/*
+!envs/environment_minimal.yml
+!envs/esm.yml
+!envs/mmsplice.yml
+!envs/regulatorySequence.yml
+!envs/vep.yml
 
 # data files
 *.gz

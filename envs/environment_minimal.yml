@@ -1,12 +1,13 @@
 name: cadd-minimal
 channels:
-- bioconda
-- conda-forge
-- defaults
+  - bioconda
+  - conda-forge
+  - defaults
 dependencies:
-- ensembl-vep=95.1=pl526ha4d7672_0
-- python=2.7.13=0
-- scikit-learn=0.20.4
-- pysam
-- pyvcf
-- pandas
+  - python=2.7.13=0
+  - scikit-learn=0.20.4
+  - pysam
+  - pyvcf
+  - pandas
+  - statistics
+  - htslib

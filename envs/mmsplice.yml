@@ -1,0 +1,24 @@
+---
+name: mmsplice
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python
+  - cython=0.29.13
+  - libgcc=7.2.0
+  - tensorflow<=1.13.1
+  - cyvcf2=0.8.4
+  - keras=2.2.4
+  - numpy=1.16.1
+  - pandas<0.25.0
+  - pip
+  - htslib
+  - pybedtools
+  - pyfaidx
+  - click
+  - pyranges
+  - pip:
+      - kipoiseq==0.2.5
+      - mmsplice==1.0.1

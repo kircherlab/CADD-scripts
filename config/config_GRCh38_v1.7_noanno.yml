@@ -1,0 +1,32 @@
+# This is the config for retrieving CADD GRCh38-v1.6 scores without annotation
+
+Header: "##CADD GRCh38-v1.7 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health at Charité - Universitätsmedizin Berlin 2013-2023. All rights reserved."
+
+Version: v1.7
+GenomeBuild: GRCh38
+Annotation: false
+
+# File parameter
+PrescoredFolder: data/prescored/GRCh38_v1.7/no_anno
+ReferenceConfig: config/references_GRCh38_v1.7.cfg
+ImputeConfig: config/impute_GRCh38_v1.7.cfg
+Model: data/models/GRCh38/CADDv1.7-GRCh38.mod
+ConversionTable: data/models/GRCh38/conversionTable_CADDv1.6-GRCh38.txt
+
+# genome files
+REFERENCEpath: data/annotations/GRCh38_v1.7/reference
+
+# VEP
+VEPpath: data/annotations/GRCh38_v1.7/vep
+EnsemblDB: 110
+
+# ESM
+ESMpath: data/annotations/GRCh38_v1.7/esm
+
+# RegSeq
+REGSEQpath: data/annotations/GRCh38_v1.7/regseq
+
+# MMSplice
+MMSPLICEpath: data/annotations/GRCh38_v1.7/mmsplice
+
+Columns: "1-4,152,153"
