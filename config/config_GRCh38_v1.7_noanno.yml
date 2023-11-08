@@ -11,7 +11,7 @@ PrescoredFolder: data/prescored/GRCh38_v1.7/no_anno
 ReferenceConfig: config/references_GRCh38_v1.7.cfg
 ImputeConfig: config/impute_GRCh38_v1.7.cfg
 Model: data/models/GRCh38/CADDv1.7-GRCh38.mod
-ConversionTable: data/models/GRCh38/conversionTable_CADDv1.6-GRCh38.txt
+ConversionTable: data/models/GRCh38/conversionTable_CADDv1.7-GRCh38.txt
 
 # genome files
 REFERENCEpath: data/annotations/GRCh38_v1.7/reference
