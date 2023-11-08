@@ -35,6 +35,7 @@ echo ""
 
 SCRIPT=$(readlink -f "$0")
 BASEDIR=$(dirname "$SCRIPT")
+CADD=$(dirname "$SCRIPT")
 
 cd $BASEDIR
 

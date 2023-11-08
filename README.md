@@ -55,9 +55,9 @@ This section describes how users can setup CADD version 1.7 on their own system.
 micromamba install -c conda-forge -c bioconda snakemake
 ```
 
-*Note: If you are using an existing conda installation, please make sure it is [a version >=4.4.0](https://github.com/conda/conda/issues/3200). Make also sure to use snakemake >= 7.32.3 as some command line parameters are not available in earlier versions. *
+*Note1: If you are using an existing conda installation, please make sure it is [a version >=4.4.0](https://github.com/conda/conda/issues/3200). Make also sure to use snakemake >= 7.32.3 as some command line parameters are not available in earlier versions. *
 
-*Note3: We are using mamba here. In principle it should also work with conda, in that case add `--conda-frontend conda` to line 216 in install.sh`*
+*Note2: We are using mamba here. In principle it should also work with conda, in that case add `--conda-frontend conda` to line 216 in install.sh`*
 
 ### Setup
 
