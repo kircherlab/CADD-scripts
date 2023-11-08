@@ -147,7 +147,7 @@ if [ "$GRCh37" = true ]
 then
     if [ "$ANNOTATIONS" = true ]
     then
-        echo " - Download CADD annotations for GRCh37-v1.7 (121 GB)"
+        echo " - Download CADD annotations for GRCh37-v1.7 (261 GB)"
     fi
 
     if [ "$PRESCORE" = true ]
@@ -175,7 +175,7 @@ if [ "$GRCh38" = true ]
 then
     if [ "$ANNOTATIONS" = true ]
     then
-        echo " - Download CADD annotations for GRCh38-v1.7 (196 GB)"
+        echo " - Download CADD annotations for GRCh38-v1.7 (336 GB)"
     fi
 
     if [ "$PRESCORE" = true ]
@@ -208,13 +208,6 @@ case "$CHOICE" in
 esac
 
 ### INSTALLATION
-
-if [ "$ENV" = true ]
-then
-    echo "Setting up virtual environments for CADD v1.7"
-    snakemake test/input.tsv.gz --use-conda --conda-create-envs-only --conda-prefix envs/conda \
-        --cores 1 --configfile config/config_GRCh38_v1.7.yml --snakefile Snakefile
-fi
 
 # download a file and it index and check both md5 sums
 function download_variantfile()
@@ -317,4 +310,11 @@ then
             cd $OLDPWD
         fi
     fi
+fi
+
+if [ "$ENV" = true ]
+then
+    echo "Setting up virtual environments for CADD v1.7"
+    snakemake test/input.tsv.gz --use-conda --conda-create-envs-only --conda-prefix envs/conda \
+        --cores 1 --configfile config/config_GRCh38_v1.7.yml --snakefile Snakefile
 fi
