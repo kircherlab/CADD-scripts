@@ -212,7 +212,7 @@ esac
 if [ "$ENV" = true ]
 then
     echo "Setting up virtual environments for CADD v1.7"
-    snakemake test/input.tsv.gz --use-conda --conda-create-envs-only --conda-prefix envs \
+    snakemake test/input.tsv.gz --use-conda --conda-create-envs-only --conda-prefix envs/conda \
         --cores 1 --configfile config/config_GRCh38_v1.7.yml --snakefile Snakefile
 fi
 
