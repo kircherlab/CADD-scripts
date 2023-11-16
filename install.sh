@@ -129,9 +129,9 @@ PRESCORE_GRCh38="$DOWNLOAD_LOCATION/v1.7/GRCh38/whole_genome_SNVs.tsv.gz"
 PRESCORE_INCANNO_GRCh37="$DOWNLOAD_LOCATION/v1.7/GRCh37/whole_genome_SNVs_inclAnno.tsv.gz"
 PRESCORE_INCANNO_GRCh38="$DOWNLOAD_LOCATION/v1.7/GRCh38/whole_genome_SNVs_inclAnno.tsv.gz"
 PRESCORE_GRCh37_INDEL="$DOWNLOAD_LOCATION/v1.7/GRCh37/InDels.tsv.gz"
-PRESCORE_GRCh38_INDEL="$DOWNLOAD_LOCATION/v1.7/GRCh38/gnomad.genomes.r3.0.indel.tsv.gz"
+PRESCORE_GRCh38_INDEL="$DOWNLOAD_LOCATION/v1.7/GRCh38/gnomad.genomes.r4.0.indel.tsv.gz"
 PRESCORE_INCANNO_GRCh37_INDEL="$DOWNLOAD_LOCATION/v1.7/GRCh37/InDels_inclAnno.tsv.gz"
-PRESCORE_INCANNO_GRCh38_INDEL="$DOWNLOAD_LOCATION/v1.7/GRCh38/gnomad.genomes.r3.0.indel_inclAnno.tsv.gz"
+PRESCORE_INCANNO_GRCh38_INDEL="$DOWNLOAD_LOCATION/v1.7/GRCh38/gnomad.genomes.r4.0.indel_inclAnno.tsv.gz"
 
 ### OVERVIEW SELECTION
 
@@ -182,7 +182,7 @@ then
     then
         if [ "$INCANNO" = true ]
         then
-            echo " - Download prescored SNV inclusive annotations for GRCh38-v1.7 (313 GB)"
+            echo " - Download prescored SNV inclusive annotations for GRCh38-v1.7 (736 GB)"
             if [ "$INDELS" = true ]
             then
                 echo " - Download prescored InDels inclusive annotations for GRCh38-v1.7 (7 GB)"
