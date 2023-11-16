@@ -140,7 +140,7 @@ echo "The following will be loaded: (disk space occupied)"
 
 if [ "$ENV" = true ]
 then
-    echo " - Setup of the virtual environments including all dependencies for CADD v1.7 (10 GB)."
+    echo " - Setup of the virtual environments including all dependencies for CADD v1.7 (16 GB)."
 fi
 
 if [ "$GRCh37" = true ]
