@@ -76,7 +76,7 @@ rule prescore:
         """
         # Prescoring
         echo '## Prescored variant file' > {output.prescored} 2> {log};
-        PRESCORED_FILES=`find {input.prescored} -maxdepth 1 -type f -name \\*.tsv.gz | wc -l`
+        PRESCORED_FILES=`find -L {input.prescored} -maxdepth 1 -type f -name \\*.tsv.gz | wc -l`
         if [ ${{PRESCORED_FILES}} -gt 0 ];
         then
             for PRESCORED in $(ls {input.prescored}/*.tsv.gz)
