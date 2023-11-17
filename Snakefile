@@ -86,7 +86,7 @@ rule prescore:
                     -p $PRESCORED --found_out={output.prescored}.tmp \
                 > {input.vcf}.tmp 2>> {log};
                 cat {output.prescored}.tmp >> {output.prescored}
-                mv {input}.tmp {input.vcf} &> {log};
+                mv {input.vcf}.tmp {input.vcf} &> {log};
             done;
             rm {output.prescored}.tmp &>> {log}
         fi
