@@ -293,7 +293,7 @@ then
             download_variantfile "Downloading prescored SNV without annotations for GRCh38-v1.7 (81 GB)" ${PRESCORE_GRCh38}
             if [ "$INDELS" = true ]
             then
-                download_variantfile "Downloading prescored InDels without annotations for GRCh38-v1.7 (1 GB)" ${PRESCORE_GRCh38_INDEL}
+                download_variantfile "Downloading prescored InDels without annotations for GRCh38-v1.7 (1.2 GB)" ${PRESCORE_GRCh38_INDEL}
             fi
             cd $OLDPWD
         fi
