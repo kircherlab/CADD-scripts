@@ -49,7 +49,7 @@ trackData = {
         'description': 'Reference allele',
         'type': list,
         'categories': NUCLEOTIDES,
-        'dependencies': ['type', 'ref'],
+        'dependencies': ['type', 'ref', 'alt'],
         'derive': lambda x: 'N' if x['type'] != 'SNV' else x['ref'],
         'na_value': 'N',
         'hcdiff_derive': lambda x: 'N' if x['type'] != 'SNV' else x['alt']
@@ -1194,8 +1194,8 @@ trackData = {
     'regseq_positive': {
         'description': 'regulatory sequence model of 7 cell-lines with negatives positives negatives max',
         'dependencies': ['regseq7'],
-        'derive': lambda x: float(x['RegSeq7']) if float(x['RegSeq7']) > 0 else 0,
-        'hcdiff_derive': lambda x: float(x['RegSeq7']) if float(x['RegSeq7']) < 0 else 0,
+        'derive': lambda x: float(x['regseq7']) if float(x['regseq7']) > 0 else 0,
+        'hcdiff_derive': lambda x: float(x['regseq7']) if float(x['regseq7']) < 0 else 0,
         'transformation': abs,
         'type': float,
         'na_value': 0,
@@ -1203,8 +1203,8 @@ trackData = {
     'regseq_negative': {
         'description': 'regulatory sequence model of 7 cell-lines with negatives negatives negatives max',
         'copy': 'regseq_positive',
-        'derive': lambda x: float(x['RegSeq7']) if float(x['RegSeq7']) < 0 else 0,
-        'hcdiff_derive': lambda x: float(x['RegSeq7']) if float(x['RegSeq7']) > 0 else 0,
+        'derive': lambda x: float(x['regSeq7']) if float(x['regseq7']) < 0 else 0,
+        'hcdiff_derive': lambda x: float(x['regseq7']) if float(x['regseq7']) > 0 else 0,
     },
     "aparent2": {
         "description": "Aparent2 score",
