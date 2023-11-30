@@ -241,7 +241,7 @@ def cli(
                 for task_id in range(num_targets):
                     to_add["RegSeq%d" % task_id] = to_add.get(
                         "RegSeq%d" % task_id, []
-                    ) + [results_alt[predict_idx][task_id] - results_ref[predict_idx][task_id]]
+                    ) + [round(results_alt[predict_idx][task_id] - results_ref[predict_idx][task_id],6)]
                 predict_idx += 1
             else:
                 for task_id in range(num_targets):
