@@ -6,7 +6,7 @@ Details about CADD, including features in the latest version, the different geno
 <blockquote>
     Schubach M, Maass T, Nazaretyan L, Roner S, Kircher M. <br>
     <i>CADD v1.7: Using protein language models, regulatory CNNs and other nucleotide-level scores to improve genome-wide variant predictions.</i><br>
-    ucleic Acids Res. 2023 Nov. doi: <a target="_blank"
+    Nucleic Acids Res. 2023 Nov. doi: <a target="_blank"
         href="https://doi.org/10.1093/nar/gkad989">10.1093/nar/gkad989</a>.<br>
     <!-- PubMed PMID: <a target="_blank" href="http://www.ncbi.nlm.nih.gov/pubmed/TODO">TODO</a>. -->
 </blockquote>
@@ -46,18 +46,23 @@ This section describes how users can setup CADD version 1.7 on their own system.
 ### Prerequisite
 
 - conda or mamba
+
+  We recommend to install conda/mamba via [miniforge](https://github.com/conda-forge/miniforge)
 ```bash
-# micromamba can be installed like this
-"${SHELL}" <(curl -L micro.mamba.pm/install.sh)
+# For example 
+curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+bash Miniforge3-$(uname)-$(uname -m).sh
 ```
-- snakemake (installed via mamba)
+- snakemake 7.X (installed via mamba)
 ```bash
-micromamba install -c conda-forge -c bioconda snakemake
+micromamba install -c conda-forge -c bioconda 'snakemake=7'
 ```
 
 *Note1: If you are using an existing conda installation, please make sure it is [a version >=4.4.0](https://github.com/conda/conda/issues/3200). Make also sure to use snakemake >= 7.32.3 as some command line parameters are not available in earlier versions. *
 
 *Note2: We are using mamba here. In principle it should also work with conda, in that case add `--conda-frontend conda` to line 216 in install.sh`*
+
+*Note3: The recent snakemake 8 is not supported yet. please use the latest snakemake 7.x version*
 
 ### Setup
 
