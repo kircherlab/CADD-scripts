@@ -55,7 +55,7 @@ bash Miniforge3-$(uname)-$(uname -m).sh
 ```
 - snakemake 7.X (installed via mamba)
 ```bash
-micromamba install -c conda-forge -c bioconda 'snakemake=7'
+mamba install -c conda-forge -c bioconda 'snakemake=7'
 ```
 
 *Note1: If you are using an existing conda installation, please make sure it is [a version >=4.4.0](https://github.com/conda/conda/issues/3200). Make also sure to use snakemake >= 7.32.3 as some command line parameters are not available in earlier versions. *
