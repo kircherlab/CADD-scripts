@@ -59,7 +59,7 @@ rule prepare:
         """
 
 
-rule prescore:
+checkpoint prescore:
     conda:
         "envs/environment_minimal.yml"
     input:
@@ -290,14 +290,21 @@ rule score:
             mv {output}.tmp {output} &>> {log}
         fi
         """
+def aggregate_input(wildcards):
+    with checkpoints.prescore.get(file=wildcards.file).output['novel'].open() as f:
+        output = ["{file}.pre.tsv"]
+        for line in f:
+            if line.strip() != "":
+                output.append("{file}.novel.tsv")
+                break
+        return output
 
 
 rule join:
     conda:
         "envs/environment_minimal.yml"
     input:
-        pre="{file}.pre.tsv",
-        novel="{file}.novel.tsv",
+        aggregate_input
     output:
         "{file}.tsv.gz",
     log:
@@ -308,8 +315,8 @@ rule join:
         """
         (
             echo "{params.header}";
-            head -n 1 {input.novel};
-            cat {input.pre} {input.novel} | \
+            head -n 1 {input[0]};
+            cat {input} | \
             grep -v "^#" | \
             sort -k1,1 -k2,2n -k3,3 -k4,4 || true;
         ) | bgzip -c > {output} 2>> {log};
