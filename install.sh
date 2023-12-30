@@ -182,7 +182,7 @@ then
     then
         if [ "$INCANNO" = true ]
         then
-            echo " - Download prescored SNV inclusive annotations for GRCh38-v1.7 (736 GB)"
+            echo " - Download prescored SNV inclusive annotations for GRCh38-v1.7 (621 GB)"
             if [ "$INDELS" = true ]
             then
                 echo " - Download prescored InDels inclusive annotations for GRCh38-v1.7 (7 GB)"
