@@ -6,9 +6,9 @@ Details about CADD, including features in the latest version, the different geno
 <blockquote>
     Schubach M, Maass T, Nazaretyan L, Roner S, Kircher M. <br>
     <i>CADD v1.7: Using protein language models, regulatory CNNs and other nucleotide-level scores to improve genome-wide variant predictions.</i><br>
-    Nucleic Acids Res. 2023 Nov. doi: <a target="_blank"
+    Nucleic Acids Res. 2024 Jan 5. doi: <a target="_blank"
         href="https://doi.org/10.1093/nar/gkad989">10.1093/nar/gkad989</a>.<br>
-    <!-- PubMed PMID: <a target="_blank" href="http://www.ncbi.nlm.nih.gov/pubmed/TODO">TODO</a>. -->
+    PubMed PMID: <a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/38183205/">38183205</a>.
 </blockquote>
 
 And and in our previous publications:
