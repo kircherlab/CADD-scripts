@@ -301,9 +301,12 @@ def cli(input_file, transcript_file, model_directory, modelsToUse, output_file, 
         elif (
             len(nAA[j]) == len(oAA[j]) and "-" not in oAA[j] and "-" not in nAA[j]
         ):  # inframe ins wenn gleich viele weg kommen wie dazu ommen (zB AAA/GGG)
+            nAA_mod = nAA[j].replace(
+                "*", ""
+            )  # falls oAA und nAA ein nicht terminales stopp codon haben (A*G/P*K)
             aa_seq_alt.append(
                 aa_seq_ref[j][0 : protPosStart[j] - numberOfStopCodons[j] - 1]
-                + nAA[j]
+                + nAA_mod
                 + aa_seq_ref[j][
                     protPosEnd[j]
                     - numberOfStopCodons[j]
