@@ -210,7 +210,7 @@ rule annotate_mmsplice:
     shell:
         """
         tabix -p vcf {input.vcf} &> {log};
-        python {params.cadd}/src/scripts/lib/tools/MMSplice.py -i {input.vcf} \
+        KERAS_BACKEND=tensorflow python {params.cadd}/src/scripts/lib/tools/MMSplice.py -i {input.vcf} \
         -g {input.transcripts} \
         -f {input.reference} | \
         grep -v '^Variant(CHROM=' | \
