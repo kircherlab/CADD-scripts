@@ -10,7 +10,7 @@ properties:
   Header:
     type: string
     pattern: "^##.+$"
-    default: "##CADD GRCh37-v1.7 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health at Charité - Universitätsmedizin Berlin 2013-2023. All rights reserved."
+    default: "##CADD GRCh37-v1.7 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health at Charite - Universitaetsmedizin Berlin 2013-2023. All rights reserved."
     description: Header comment of the output file
   Version:
     type: string
