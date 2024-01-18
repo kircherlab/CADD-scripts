@@ -315,7 +315,7 @@ rule join:
         """
         (
             echo "{params.header}";
-            head -n 1 {input[0]};
+            cat {input[0]} | grep "^#" | tail -n 1;
             cat {input} | \
             grep -v "^#" | \
             sort -k1,1 -k2,2n -k3,3 -k4,4 || true;
