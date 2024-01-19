@@ -1203,7 +1203,7 @@ trackData = {
     'regseq_negative': {
         'description': 'regulatory sequence model of 7 cell-lines with negatives negatives negatives max',
         'copy': 'regseq_positive',
-        'derive': lambda x: float(x['regSeq7']) if float(x['regseq7']) < 0 else 0,
+        'derive': lambda x: float(x['regseq7']) if float(x['regseq7']) < 0 else 0,
         'hcdiff_derive': lambda x: float(x['regseq7']) if float(x['regseq7']) > 0 else 0,
     },
     "aparent2": {
