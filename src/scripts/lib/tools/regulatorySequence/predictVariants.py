@@ -48,6 +48,8 @@ import click
 def cli(
     variants_file, model_file, weights_file, reference_file, genome_file, output_file
 ):
+    import os
+    os.environ["CUDA_VISIBLE_DEVICES"]="-1"    
     import numpy as np
     import math
     import vcfpy
