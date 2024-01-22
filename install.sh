@@ -128,9 +128,9 @@ PRESCORE_GRCh37="$DOWNLOAD_LOCATION/v1.7/GRCh37/whole_genome_SNVs.tsv.gz"
 PRESCORE_GRCh38="$DOWNLOAD_LOCATION/v1.7/GRCh38/whole_genome_SNVs.tsv.gz"
 PRESCORE_INCANNO_GRCh37="$DOWNLOAD_LOCATION/v1.7/GRCh37/whole_genome_SNVs_inclAnno.tsv.gz"
 PRESCORE_INCANNO_GRCh38="$DOWNLOAD_LOCATION/v1.7/GRCh38/whole_genome_SNVs_inclAnno.tsv.gz"
-PRESCORE_GRCh37_INDEL="$DOWNLOAD_LOCATION/v1.7/GRCh37/InDels.tsv.gz"
+PRESCORE_GRCh37_INDEL="$DOWNLOAD_LOCATION/v1.7/GRCh37/gnomad.genomes-exomes.r4.0.indel.tsv.gz"
 PRESCORE_GRCh38_INDEL="$DOWNLOAD_LOCATION/v1.7/GRCh38/gnomad.genomes.r4.0.indel.tsv.gz"
-PRESCORE_INCANNO_GRCh37_INDEL="$DOWNLOAD_LOCATION/v1.7/GRCh37/InDels_inclAnno.tsv.gz"
+PRESCORE_INCANNO_GRCh37_INDEL="$DOWNLOAD_LOCATION/v1.7/GRCh37/gnomad.genomes-exomes.r4.0.indel_inclAnno.tsv.gz"
 PRESCORE_INCANNO_GRCh38_INDEL="$DOWNLOAD_LOCATION/v1.7/GRCh38/gnomad.genomes.r4.0.indel_inclAnno.tsv.gz"
 
 ### OVERVIEW SELECTION
@@ -247,7 +247,7 @@ then
             download_variantfile "Downloading prescored SNV without annotations for GRCh37-v1.7 (78 GB)" ${PRESCORE_GRCh37}
             if [ "$INDELS" = true ]
             then
-                download_variantfile "Downloading prescored InDels without annotations for GRCh37-v1.7 (0.6 GB)" ${PRESCORE_GRCh37_INDEL}
+                download_variantfile "Downloading prescored InDels without annotations for GRCh37-v1.7 (1.4 GB)" ${PRESCORE_GRCh37_INDEL}
             fi
             cd $OLDPWD
         fi
@@ -256,10 +256,10 @@ then
         then
             mkdir -p data/prescored/GRCh37_v1.7/incl_anno/
             cd data/prescored/GRCh37_v1.7/incl_anno/
-            download_variantfile "Downloading prescored SNV inclusive annotations for GRCh37-v1.7 (248 GB)" ${PRESCORE_INCANNO_GRCh37}
+            download_variantfile "Downloading prescored SNV inclusive annotations for GRCh37-v1.7 (558 GB)" ${PRESCORE_INCANNO_GRCh37}
             if [ "$INDELS" = true ]
             then
-                download_variantfile "Downloading prescored InDels inclusive annotations for GRCh37-v1.7 (3.4 GB)" ${PRESCORE_INCANNO_GRCh37_INDEL}
+                download_variantfile "Downloading prescored InDels inclusive annotations for GRCh37-v1.7 (11 GB)" ${PRESCORE_INCANNO_GRCh37_INDEL}
             fi
             cd $OLDPWD
         fi
@@ -302,10 +302,10 @@ then
         then
             mkdir -p data/prescored/GRCh38_v1.7/incl_anno/
             cd data/prescored/GRCh38_v1.7/incl_anno/
-            download_variantfile "Downloading prescored SNV inclusive annotations for GRCh38-v1.7 (313 GB)" ${PRESCORE_INCANNO_GRCh38}
+            download_variantfile "Downloading prescored SNV inclusive annotations for GRCh38-v1.7 (621 GB)" ${PRESCORE_INCANNO_GRCh38}
             if [ "$INDELS" = true ]
             then
-                download_variantfile "Downloading prescored InDels inclusive annotations for GRCh38-v1.7 (7 GB)" ${PRESCORE_INCANNO_GRCh38_INDEL}
+                download_variantfile "Downloading prescored InDels inclusive annotations for GRCh38-v1.7 (12 GB)" ${PRESCORE_INCANNO_GRCh38_INDEL}
             fi
             cd $OLDPWD
         fi
