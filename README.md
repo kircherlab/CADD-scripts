@@ -148,6 +148,11 @@ You run CADD via the script `CADD.sh` which technically only requieres an either
 
 You can test whether your CADD is set up properly by comparing to the example files in the `test` directory.
 
+### Costomization of CADD parameters
+There are a few options to decrease calculation times of your CADD offline installation:
+- The first and most effeciant one is to make use of prescored files as indicated above.
+- Second, you can optimize the `ESMbatchsize` parameter for your local system. This is especially recommented if you have a GPU available. Note that your GPU is automatically detected and set up by the `install.sh` CADD installation script. You can simply add a line with, e.g., `ESMbatchsize: 20` to the the respective CADDv1.7 config file in `./configs/` (e.g., `config_GRCh38_v1.7.yml`). This will parrallelize calculations of ESM1-v scores on your GPU, which are used for the calculation of CADD scores. This is expected to significantly decrease calculation times. Note that the dafault value for the `ESMbatchsize` parameter is set to 1 to avoid memory overload. Also note that if changing the `EMSbatchsize` parameter gives you errors, it is likely that the memory of your GPU is too small. Consider using a smaller number for the parameter in such a case (e.g. `ESMbatchsize: 10`).
+
 ### Update
 
 Version 1.7 includes some additions in features to v1.6 and we refactured the Snakemake workflow of CADD-scripts including config files. The new models for v1.7 are extended by a protein language model, regulatory effect prediction with a CNN, Zonoomia and Aparent2 scores and an update to the lates gencode 110 version. Because of the refactored workflow with additinal config settings you cannot use it with previous CADD versions. If you are still using those versions, please use [this repository for version 1.6](https://github.com/kircherlab/CADD-scripts/archive/v1.6.post1.zip) or [this repository for v1.5 and v1.4](https://github.com/kircherlab/CADD-scripts/archive/CADD1.5.zip).
