@@ -64,7 +64,7 @@ properties:
       - esm1v_t33_650M_UR90S_3
       - esm1v_t33_650M_UR90S_4
       - esm1v_t33_650M_UR90S_5
-  ESMbatchsize:
+  ESMbatch:
     type: integer
     default: 1
     description: Batch size for ESM model
