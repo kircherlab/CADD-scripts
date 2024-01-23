@@ -11,7 +11,7 @@ PrescoredFolder: data/prescored/GRCh37_v1.7/incl_anno
 ReferenceConfig: config/references_GRCh37_v1.7.cfg
 ImputeConfig: config/impute_GRCh37_v1.7.cfg
 Model: data/models/GRCh37/CADDv1.7-GRCh37.mod
-ConversionTable: data/models/GRCh37/conversionTable_CADDv1.6-GRCh37.txt
+ConversionTable: data/models/GRCh37/conversionTable_CADDv1.7-GRCh37.txt
 
 # VEP
 VEPpath: data/annotations/GRCh37_v1.7/vep
