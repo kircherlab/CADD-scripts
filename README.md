@@ -119,7 +119,7 @@ cd $OLDPWD
 
 As those files are about 300 GB in size, downloads can take long (depending on your internet connection). We recommend to setup the process in the background and using a tool (like `wget -c` mentioned above) that allows you to continue an interrupted download.
 
-To make sure you downloaded the files correctly, we recommend downloading md5 hash files from our website (e.g. `wget https://cadd.bihealth.org/download/CADD/v1.7/GRCh38/GRCh38_v1.7.tar.gz.md5`) and checking for completeness (via `md5sum -c GRCh38_v1.7.tar.gz.md5`).
+To make sure you downloaded the files correctly, we recommend check md5 hash files from our website (https://kircherlab.bihealth.org/download/CADD/v1.7/GRCh38/MD5SUMs) and checking your downloaded file for completeness (via `md5sum GRCh38_v1.7.tar.gz.md5` ; themd5 sums should match the ones we provide at our website).
 
 The annotation files are finally put in the folder `data/annotations` and unpacked:
 
