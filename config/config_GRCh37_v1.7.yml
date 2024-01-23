@@ -1,4 +1,4 @@
-# This is the config for retrieving CADD GRCh37-v1.6 scores with annotation
+# This is the config for retrieving CADD GRCh37-v1.7 scores with annotation
 
 Header: '##CADD GRCh37-v1.7 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health at Charite - Universitaetsmedizin Berlin 2013-2023. All rights reserved.'
 
