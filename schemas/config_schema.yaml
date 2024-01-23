@@ -64,7 +64,7 @@ properties:
       - esm1v_t33_650M_UR90S_3
       - esm1v_t33_650M_UR90S_4
       - esm1v_t33_650M_UR90S_5
-  ESMbatch:
+  ESMbatchsize:
     type: integer
     default: 1
     description: Batch size for ESM model
@@ -107,5 +107,5 @@ required:
   - Columns
   - ESMpath
   - ESMmodels
-  - ESMbatch
+  - ESMbatchsize
   - REGSEQpath
