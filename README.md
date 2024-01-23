@@ -111,9 +111,9 @@ Both version of CADD (for the different genome builds) rely on a big number of g
 ```bash
 cd data/annotations
 # for GRCh37 / hg19
-wget -c https://cadd.bihealth.org/download/CADD/v1.7/GRCh37/annotationsGRCh37_v1.7.tar.gz
+wget -c https://kircherlab.bihealth.org/download/CADD/v1.7/GRCh37/GRCh37_v1.7.tar.gz
 # for GRCh38 / hg38
-wget -c https://cadd.bihealth.org/download/CADD/v1.7/GRCh38/annotationsGRCh38_v1.7.tar.gz
+wget -c https://kircherlab.bihealth.org/download/CADD/v1.7/GRCh38/GRCh38_v1.7.tar.gz
 cd $OLDPWD
 ```
 
