@@ -107,5 +107,5 @@ required:
   - Columns
   - ESMpath
   - ESMmodels
-  - ESMbatchsize
+  - ESMbatch
   - REGSEQpath
