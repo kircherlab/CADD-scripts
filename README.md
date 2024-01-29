@@ -79,8 +79,14 @@ unzip CADD.zip
 This is the easier way of installing CADD, just run:
 
 ```
+# if you are located in the US
 ./install.sh
+
+# if you are located in Europe
+./install.sh -b
 ```
+
+Note that depending on the `-b` flag, the script will use the German server as download source for annotation files. This may significantly speed up the installation if you are located in Europe.
 
 You first state which parts you want to install (the environments as well as at least one genome build including annotation tracks are neccessary for a quick start) and the script should manage loading and unpacking the neccessary files.
 
@@ -109,13 +115,23 @@ Please note that we installing both conda environments in the CADD subdirectory 
 Both version of CADD (for the different genome builds) rely on a big number of genomic annotations. Depending on which genome build you require you can get them from our website (be careful where you put them as these are really big files and have identical filenames) via:
 
 ```bash
+# if you are located in Europe
 cd data/annotations
 # for GRCh37 / hg19
 wget -c https://kircherlab.bihealth.org/download/CADD/v1.7/GRCh37/GRCh37_v1.7.tar.gz
 # for GRCh38 / hg38
 wget -c https://kircherlab.bihealth.org/download/CADD/v1.7/GRCh38/GRCh38_v1.7.tar.gz
 cd $OLDPWD
+
+# if you are located in the US
+cd data/annotations
+# for GRCh37 / hg19
+wget -c https://krishna.gs.washington.edu/download/CADD/v1.7/GRCh37/GRCh37_v1.7.tar.gz
+# for GRCh38 / hg38
+wget -c https://krishna.gs.washington.edu/download/CADD/v1.7/GRCh38/GRCh38_v1.7.tar.gz
+cd $OLDPWD
 ```
+
 
 As those files are about 300 GB in size, downloads can take long (depending on your internet connection). We recommend to setup the process in the background and using a tool (like `wget -c` mentioned above) that allows you to continue an interrupted download.
 
