@@ -41,7 +41,8 @@ if args.output and len(args.input) != len(args.output):
         raise NotImplementedError('Cannot predict %i dataset into %i files' % (len(args.input), len(args.output)))
 
 if args.append and len(args.input) != len(args.append):
-    raise NotImplementedError('Number of input files has to be the same as the number of appending files (if the latter is >0)')
+    raise NotImplementedError(
+        'Number of input files has to be the same as the number of appending files (if the latter is >0)')
 
 if args.output is None:
     out_file = sys.stdout
@@ -63,7 +64,7 @@ for n, infile in enumerate(args.input):
             mat_variants = np.array(chunk)
 
             if args.hastarget:
-                mat_variants = mat_variants[:,1:]
+                mat_variants = mat_variants[:, 1:]
 
             scaler.transform(mat_variants)
 
@@ -102,7 +103,7 @@ for n, infile in enumerate(args.input):
 
     if args.output and len(args.output) > 1:
         out_file.close()
-        if n + 1 < len(args.output): # open next output file if not in last iteration
+        if n + 1 < len(args.output):  # open next output file if not in last iteration
             first_line = True
             out_file = gzip.open(args.output[n+1], 'w')
 

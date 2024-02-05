@@ -1,0 +1,111 @@
+---
+$schema: https://json-schema.org/draft/2020-12/schema
+
+description: snakemake configuration file for CADD scripts
+
+type: object
+
+# possible entries of the config file and which type they should be
+properties:
+  Header:
+    type: string
+    pattern: "^##.+$"
+    default: "##CADD GRCh37-v1.7 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health at Charite - Universitaetsmedizin Berlin 2013-2023. All rights reserved."
+    description: Header comment of the output file
+  Version:
+    type: string
+    pattern: "^v[0-9]+.[0-9]+$"
+    description: CADD version
+  GenomeBuild:
+    type: string
+    enum:
+      - GRCh38
+      - GRCh37
+    description: Genome build
+  Annotation:
+    type: boolean
+    default: false
+    description: Add annotation to output
+  PrescoredFolder:
+    type: string
+    description: Path to prescored file
+  ReferenceConfig:
+    type: string
+    description: Configuration file of the annotations
+  ImputeConfig:
+    type: string
+    description: Config that lists the annotation tracks used in the models
+  Model:
+    type: string
+    description: Path to model file
+  ConversionTable:
+    type: string
+    description: Path to conversion table (model output to PHRED scores)
+  VEPpath:
+    type: string
+    description: Path to VEP
+  EnsemblDB:
+    type: integer
+    default: 110
+    description: Ensemble Database version
+  REFERENCEpath:
+    type: string
+    description: Path to reference files of the genome build
+  ESMpath:
+    type: string
+    description: Path to ESM models
+  ESMmodels:
+    type: array
+    items:
+      type: string
+    default:
+      - esm1v_t33_650M_UR90S_1
+      - esm1v_t33_650M_UR90S_2
+      - esm1v_t33_650M_UR90S_3
+      - esm1v_t33_650M_UR90S_4
+      - esm1v_t33_650M_UR90S_5
+  ESMbatchsize:
+    type: integer
+    default: 1
+    description: Batch size for ESM model
+  REGSEQpath:
+    type: string
+    description: Path to RegSeq models
+  MMSPLICEpath:
+    type: string
+    description: Path to MMSplice reference and transcripts
+  Columns:
+    type: string
+    pattern: "^[0-9]+(-[0-9]+)?(,[0-9]+(-[0-9]+)?)*$"
+
+additionalProperties: false
+
+allOf:
+  - if:
+      properties:
+        GenomeBuild:
+          const: GRCh38
+        required:
+          - GenomeBuild
+    then:
+      required:
+        - REFERENCEpath
+        - MMSPLICEpath
+
+# entries that have to be in the config file for successful validation
+required:
+  - Header
+  - GenomeBuild
+  - Annotation
+  - PrescoredFolder
+  - ReferenceConfig
+  - ImputeConfig
+  - Model
+  - ConversionTable
+  - VEPpath
+  - EnsemblDB
+  - Columns
+  - ESMpath
+  - ESMmodels
+  - ESMbatchsize
+  - REGSEQpath

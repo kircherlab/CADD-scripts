@@ -1,0 +1,24 @@
+---
+name: mmsplice
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python
+  - cython=0.29.13
+  - pyranges=0.0.51
+  - libgcc=7.2.0
+  - tensorflow
+  - keras=2.2.4
+  - numpy=1.16.1
+  - scikit-learn
+  - cyvcf2=0.8.4
+  - pandas<0.25.0
+  - pysam
+  - htslib
+  - pip
+  - pip:
+      - kipoiseq==0.2.5
+      - git+https://github.com/Aerval/SpliceAI.git
+      - mmsplice==1.0.1

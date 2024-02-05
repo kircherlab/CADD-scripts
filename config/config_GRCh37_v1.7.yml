@@ -1,0 +1,26 @@
+# This is the config for retrieving CADD GRCh37-v1.7 scores with annotation
+
+Header: '##CADD GRCh37-v1.7 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health at Charite - Universitaetsmedizin Berlin 2013-2023. All rights reserved.'
+
+Version: v1.7
+GenomeBuild: GRCh37
+Annotation: true
+
+# File parameter
+PrescoredFolder: data/prescored/GRCh37_v1.7/incl_anno
+ReferenceConfig: config/references_GRCh37_v1.7.cfg
+ImputeConfig: config/impute_GRCh37_v1.7.cfg
+Model: data/models/GRCh37/CADDv1.7-GRCh37.mod
+ConversionTable: data/models/GRCh37/conversionTable_CADDv1.7-GRCh37.txt
+
+# VEP
+VEPpath: data/annotations/GRCh37_v1.7/vep
+EnsemblDB: 110
+
+# ESM
+ESMpath: data/annotations/GRCh37_v1.7/esm
+
+# RegSeq
+REGSEQpath: data/annotations/GRCh37_v1.7/regseq
+
+Columns: '1-135'

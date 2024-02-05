@@ -1,0 +1,13 @@
+---
+channels:
+  - defaults
+  - bioconda
+  - conda-forge
+dependencies:
+  - numpy<=1.23.5
+  - click
+  - pyfaidx
+  - pybedtools
+  - tensorflow-gpu
+  - seqiolib
+  - vcfpy

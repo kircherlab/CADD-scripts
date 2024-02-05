@@ -1,0 +1,19 @@
+---
+name: esm_annotate
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+  - bioconda
+dependencies:
+  - numpy
+  - python
+  - click
+  - biopython
+  - pytorch=1.13.1
+  - pytorch-cuda=11.6
+  - torchaudio=0.13.1
+  - torchvision=0.14.1
+  - htslib
+  - pip:
+      - fair-esm==2.0.0

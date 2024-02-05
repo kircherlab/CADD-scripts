@@ -1,0 +1,15 @@
+---
+name: vep
+channels:
+    - conda-forge
+    - bioconda
+    - defaults
+dependencies:
+    - ensembl-vep=110
+    - pyvcf=0.6.*
+    - numpy=1.13.*
+    - configparser=3.5.*
+    - python=2.7.*
+    - scikit-learn
+    - pandas
+    - pysam

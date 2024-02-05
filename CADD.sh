@@ -1,12 +1,12 @@
 #!/bin/bash
 
-usage="$(basename "$0") [-o <outfile>] [-g <genomebuild>] [-v <caddversion>] [-a] <infile>  -- CADD version 1.6
+usage="$(basename "$0") [-o <outfile>] [-g <genomebuild>] [-v <caddversion>] [-a] <infile>  -- CADD version 1.7
 
 where:
     -h  show this help text
     -o  out tsv.gz file (generated from input file name if not set)
     -g  genome build (supported are GRCh37 and GRCh38 [default: GRCh38])
-    -v  CADD version (only v1.6 possible with this set of scripts [default: v1.6])
+    -v  CADD version (only v1.7 possible with this set of scripts [default: v1.7])
     -a  include annotation in output
         input vcf of vcf.gz file (required)
     -q  print basic information about snakemake run
@@ -21,7 +21,7 @@ export LC_ALL=C
 GENOMEBUILD="GRCh38"
 ANNOTATION=false
 OUTFILE=""
-VERSION="v1.6"
+VERSION="v1.7"
 VERBOSE="-q"
 CORES="1"
 while getopts ':ho:g:v:c:aqp' option; do
@@ -53,7 +53,7 @@ shift $((OPTIND-1))
 
 INFILE=$1
 
-echo "CADD-v1.6 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health 2013-2020. All rights reserved."
+echo "CADD-v1.7 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health at Charité - Universitätsmedizin Berlin 2013-2023. All rights reserved."
 
 set -ueo pipefail
 
@@ -95,9 +95,9 @@ then
     exit 1
 fi
 
-if [ "$VERSION" != "v1.6" ]
+if [ "$VERSION" != "v1.7" ]
 then
-    echo "Unknown/Unsupported CADD version $VERSION. This set of script currently only supports v1.6."
+    echo "Unknown/Unsupported CADD version $VERSION. This set of script currently only supports v1.7."
     echo "If you want to score another version of CADD, please download the accordingly tagged version of the scripts"
     exit 1
 fi
@@ -121,9 +121,9 @@ TMP_OUTFILE=$TMP_FOLDER/$NAME.tsv.gz
 cp $INFILE $TMP_INFILE
 
 echo "Running snakemake pipeline:"
-echo snakemake $TMP_OUTFILE --use-conda --conda-prefix $CADD/envs --cores $CORES
+echo snakemake $TMP_OUTFILE --use-conda --conda-prefix $CADD/envs/conda --cores $CORES
 echo --configfile $CONFIG --snakefile $CADD/Snakefile $VERBOSE
-snakemake $TMP_OUTFILE --use-conda --conda-prefix $CADD/envs --cores $CORES \
+snakemake $TMP_OUTFILE --use-conda --conda-prefix $CADD/envs/conda --cores $CORES \
     --configfile $CONFIG --snakefile $CADD/Snakefile $VERBOSE
 
 mv $TMP_OUTFILE $OUTFILE
