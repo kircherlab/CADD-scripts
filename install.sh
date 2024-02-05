@@ -154,18 +154,18 @@ then
     then
         if [ "$INCANNO" = true ]
         then
-            echo " - Download prescored SNV inclusive annotations for GRCh37-v1.7 (248 GB)"
+            echo " - Download prescored SNV inclusive annotations for GRCh37-v1.7 (562 GB)"
             if [ "$INDELS" = true ]
             then
-                echo " - Download prescored InDels inclusive annotations for GRCh37-v1.7 (3.4 GB)"
+                echo " - Download prescored InDels inclusive annotations for GRCh37-v1.7 (10 GB)"
             fi
         fi
         if [ "$NOANNO" = true ]
         then
-            echo " - Download prescored SNV (without annotations) for GRCh37-v1.7 (78 GB)"
+            echo " - Download prescored SNV (without annotations) for GRCh37-v1.7 (79 GB)"
             if [ "$INDELS" = true ]
             then
-                echo " - Download prescored InDels (without annotations) for GRCh37-v1.7 (0.6 GB)"
+                echo " - Download prescored InDels (without annotations) for GRCh37-v1.7 (1.4 GB)"
             fi
         fi
     fi
@@ -182,10 +182,10 @@ then
     then
         if [ "$INCANNO" = true ]
         then
-            echo " - Download prescored SNV inclusive annotations for GRCh38-v1.7 (621 GB)"
+            echo " - Download prescored SNV inclusive annotations for GRCh38-v1.7 (625 GB)"
             if [ "$INDELS" = true ]
             then
-                echo " - Download prescored InDels inclusive annotations for GRCh38-v1.7 (7 GB)"
+                echo " - Download prescored InDels inclusive annotations for GRCh38-v1.7 (11 GB)"
             fi
         fi
         if [ "$NOANNO" = true ]
@@ -193,7 +193,7 @@ then
             echo " - Download prescored SNV (without annotations) for GRCh38-v1.7 (81 GB)"
             if [ "$INDELS" = true ]
             then
-                echo " - Download prescored InDels (without annotations) for GRCh38-v1.7 (1 GB)"
+                echo " - Download prescored InDels (without annotations) for GRCh38-v1.7 (1.2 GB)"
             fi
         fi
     fi
