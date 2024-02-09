@@ -20,7 +20,7 @@ import os
 envvars:
     "CADD",
 
-
+localrules: decompress, prepare, prescore, annotation_vep, annotate_regseq, annotate_mmsplice, annotation, imputation, score, join
 # START Rules
 
 
