@@ -2,11 +2,12 @@
 
 # Import
 from tqdm import tqdm
-from concise.preprocessing import encodeDNA
+# from concise.preprocessing import encodeDNA
 from mmsplice.vcf_dataloader import SplicingVCFDataloader
 from mmsplice import MMSplice
 from mmsplice.utils import logit, predict_deltaLogitPsi, \
-    predict_pathogenicity, predict_splicing_efficiency
+    predict_pathogenicity, predict_splicing_efficiency, \
+    encodeDNA
 import pandas as pd
 import numpy as np
 
