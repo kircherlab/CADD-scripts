@@ -8,8 +8,6 @@ dependencies:
   - python
   - cython
   - libgcc
-  - keras
-  - tensorflow
   - numpy
   - pandas
   - pysam
