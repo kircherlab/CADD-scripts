@@ -120,11 +120,16 @@ TMP_OUTFILE=$TMP_FOLDER/$NAME.tsv.gz
 
 cp $INFILE $TMP_INFILE
 
+mkdir -p $CADD/logs
+
 echo "Running snakemake pipeline:"
 echo snakemake $TMP_OUTFILE --use-conda --conda-prefix $CADD/envs/conda --cores $CORES
 echo --configfile $CONFIG --snakefile $CADD/Snakefile $VERBOSE
+echo --cluster-cancel scancel --cluster-status status.py --cluster \"sbatch --parsable --nodes=1 --ntasks=1 --mem=20G -t '01-00:00' -p gpu --gres=gpu:1 -o $CADD/logs\"
+
 snakemake $TMP_OUTFILE --use-conda --conda-prefix $CADD/envs/conda --cores $CORES \
-    --configfile $CONFIG --snakefile $CADD/Snakefile $VERBOSE
+    --configfile $CONFIG --snakefile $CADD/Snakefile $VERBOSE \
+    --cluster-cancel scancel --cluster-status status.py --cluster "sbatch --parsable --nodes=1 --ntasks=1 --mem=20G -t '01-00:00' -p gpu --gres=gpu:1 -o $CADD/logs"
 
 mv $TMP_OUTFILE $OUTFILE
 rm $TMP_INFILE # is in temp folder, should not be necessary
