@@ -15,5 +15,6 @@ dependencies:
   - torchaudio=0.13.1
   - torchvision=0.14.1
   - htslib
+  - pip
   - pip:
       - fair-esm==2.0.0
