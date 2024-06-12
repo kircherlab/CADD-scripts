@@ -3,6 +3,10 @@ Note that we are declaring many files temporary here that should be located in a
 """
 
 
+# container with conda environments
+containerized: "docker://visze/cadd-scripts-v1_7:0.1.0"
+
+
 # Min version of snakemake
 from snakemake.utils import min_version
 
@@ -290,8 +294,10 @@ rule score:
             mv {output}.tmp {output} &>> {log}
         fi
         """
+
+
 def aggregate_input(wildcards):
-    with checkpoints.prescore.get(file=wildcards.file).output['novel'].open() as f:
+    with checkpoints.prescore.get(file=wildcards.file).output["novel"].open() as f:
         output = ["{file}.pre.tsv"]
         for line in f:
             if line.strip() != "":
@@ -304,7 +310,7 @@ rule join:
     conda:
         "envs/environment_minimal.yml"
     input:
-        aggregate_input
+        aggregate_input,
     output:
         "{file}.tsv.gz",
     log:
