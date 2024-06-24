@@ -14,6 +14,7 @@ dependencies:
   - pytorch-cuda=11.6
   - torchaudio=0.13.1
   - torchvision=0.14.1
+  - mkl=2024.0.0
   - htslib
   - pip
   - pip:
