@@ -58,11 +58,11 @@ echo "Please note, that for successfully running CADD locally, you will need the
 echo ""
 
 # ask which parts of CADD the user wants to install
-read -p "Do you want to install the virtual environments with all CADD dependencies via conda? (y)/n " CHOICE
+read -p "For conda/mamba runs only (running without apptainer): Do you want to install the virtual environments with all CADD dependencies via conda? y/(n) " CHOICE
 case "$CHOICE" in
     y|Y ) ENV=true;;
     n|N ) ENV=false;;
-    * ) ENV=true; echo "Assuming Yes.";;
+    * ) ENV=false; echo "Assuming no.";;
 esac
 
 read -p "Do you want to install CADD v1.7 for GRCh37/hg19? (y)/n " CHOICE

@@ -48,21 +48,25 @@ This section describes how users can setup CADD version 1.7 on their own system.
 - conda or mamba
 
   We recommend to install conda/mamba via [miniforge](https://github.com/conda-forge/miniforge)
+
 ```bash
 # For example 
 curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
 bash Miniforge3-$(uname)-$(uname -m).sh
 ```
-- snakemake 7.X (installed via mamba)
+- snakemake 8.X (installed via mamba)
+
 ```bash
-mamba install -c conda-forge -c bioconda 'snakemake=7'
+mamba install -c conda-forge -c bioconda 'snakemake=8'
 ```
 
-*Note1: If you are using an existing conda installation, please make sure it is [a version >=4.4.0](https://github.com/conda/conda/issues/3200). Make also sure to use snakemake >= 7.32.3 as some command line parameters are not available in earlier versions. *
+- apptainer/singularity (optional, but highly recommended for a more stable environment)
+
+*Note1: If you are using an existing conda installation, please make sure it is [a version >=4.4.0](https://github.com/conda/conda/issues/3200). *
 
 *Note2: We are using mamba here. In principle it should also work with conda, in that case add `--conda-frontend conda` to line 216 in install.sh`*
 
-*Note3: The recent snakemake 8 is not supported yet. please use the latest snakemake 7.x version*
+*Note3: The commands are tested with snakemake 8.15.2. Snakemake 7 (>= 7.32.3) might also work but then the commands are different and the `CADD.sh` script will not work.*
 
 ### Setup
 
@@ -99,7 +103,7 @@ Running CADD depends on four big building blocks (plus the repository containing
  - genome annotations
  - prescored variants
 
-**Installing dependencies**
+**Installing dependencies (when running without apptainer/singularity)**
 
 As of this version, dependencies have to be installed via conda and snakemake. This is because we are using two different enviroments for python2 and python3.
 
@@ -175,12 +179,11 @@ Version 1.7 includes some additions in features to v1.6 and we refactured the Sn
 
 Version 1.6 includes some changes in comparison to v1.5. Next to the obvious switch of the pipeline into a Snakemake workflow which became necessary due to the ongoin issues with `conda activate`, the new models for v1.6 are extended by more specialized annotations for splicing variants, as well as a few minor changes in some other annotations (most prominent: fixed gerp for GRCh38) and changes in consequence categories which make this scripts incompatible with CADD v1.4 and v1.5. If you are still using those version, please use [version 1.5 of this repository](https://github.com/kircherlab/CADD-scripts/archive/CADD1.5.zip).
 
-```
-
+```text
 ## Copyright
 Copyright (c) University of Washington, Hudson-Alpha Institute for
-Biotechnology and Berlin Institute of Health at Charité - Universitätsmedizin
-Berlin 2013-2023. All rights reserved.
+Biotechnology and Berlin Institute of Health at Charite - Universitatsmedizin
+Berlin 2013-2024. All rights reserved.
 
 Permission is hereby granted, to all non-commercial users and licensees of CADD
 (Combined Annotation Dependent Framework, licensed by the University of
@@ -197,3 +200,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+```
