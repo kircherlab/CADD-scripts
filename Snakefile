@@ -25,6 +25,9 @@ envvars:
     "CADD",
 
 
+wildcard_constraints:
+    file="[^\\.]+"
+
 # START Rules
 
 
@@ -81,20 +84,21 @@ checkpoint prescore:
         # Prescoring
         echo '## Prescored variant file' > {output.prescored} 2> {log};
         PRESCORED_FILES=`find -L {input.prescored} -maxdepth 1 -type f -name \\*.tsv.gz | wc -l`
+        cp {input.vcf} {input.vcf}.new
         if [ ${{PRESCORED_FILES}} -gt 0 ];
         then
             for PRESCORED in $(ls {input.prescored}/*.tsv.gz)
             do
-                cat {input.vcf} \
+                cat {input.vcf}.new \
                 | python {params.cadd}/src/scripts/extract_scored.py --header \
                     -p $PRESCORED --found_out={output.prescored}.tmp \
                 > {input.vcf}.tmp 2>> {log};
                 cat {output.prescored}.tmp >> {output.prescored}
-                mv {input.vcf}.tmp {input.vcf} &> {log};
+                mv {input.vcf}.tmp {input.vcf}.new &> {log};
             done;
             rm {output.prescored}.tmp &>> {log}
         fi
-        mv {input.vcf} {output.novel} &>> {log}
+        mv {input.vcf}.new {output.novel} &>> {log}
         """
 
 
