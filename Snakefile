@@ -25,8 +25,8 @@ envvars:
     "CADD",
 
 
-wildcard_constraints:
-    file="[^\\.]+"
+# wildcard_constraints:
+#     file=".*(?<!\\.vcf)$"
 
 # START Rules
 
@@ -316,7 +316,7 @@ rule join:
     input:
         aggregate_input,
     output:
-        "{file}.tsv.gz",
+        "{file,.+(?<!\\.anno)}.tsv.gz",
     log:
         "{file}.join.log",
     params:
