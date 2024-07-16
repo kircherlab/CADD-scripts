@@ -9,8 +9,11 @@ where:
     -v  CADD version (only v1.7 possible with this set of scripts [default: v1.7])
     -a  include annotation in output
         input vcf of vcf.gz file (required)
+    -m  use mamba/conda only (no apptainer/singularity)
+    -r  singularity/apptainer arguments, e.g. \"--bind /data/mnt/x --nv\" [default \"\" but will always add \"--bind $TMP_DIR\"]
     -q  print basic information about snakemake run
     -p  print full information about the snakemake run
+    -d  do not remove temporary directory for debug puroposes
     -c  number of cores that snakemake is allowed to use [default: 1]
     "
 
@@ -20,11 +23,14 @@ export LC_ALL=C
 
 GENOMEBUILD="GRCh38"
 ANNOTATION=false
+MAMBAONLY=false
 OUTFILE=""
 VERSION="v1.7"
+SIGNULARITYARGS=""
 VERBOSE="-q"
 CORES="1"
-while getopts ':ho:g:v:c:aqp' option; do
+RM_TMP_DIR=true
+while getopts ':ho:g:v:c:amr:qpd' option; do
   case "$option" in
     h) echo "$usage"
        exit
@@ -39,9 +45,15 @@ while getopts ':ho:g:v:c:aqp' option; do
        ;;
     a) ANNOTATION=true
        ;;
+    m) MAMBAONLY=true
+       ;;
+    r) SIGNULARITYARGS=$OPTARG
+       ;;
     q) VERBOSE=""
        ;;
     p) VERBOSE="-p"
+       ;;
+    d) RM_TMP_DIR=false
        ;;
    \?) printf "illegal option: -%s\n" "$OPTARG" >&2
        echo "$usage" >&2
@@ -53,7 +65,7 @@ shift $((OPTIND-1))
 
 INFILE=$1
 
-echo "CADD-v1.7 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health at Charité - Universitätsmedizin Berlin 2013-2023. All rights reserved."
+echo "CADD-v1.7 (c) University of Washington, Hudson-Alpha Institute for Biotechnology and Berlin Institute of Health at Charite - Universitatsmedizin Berlin 2013-2024. All rights reserved."
 
 set -ueo pipefail
 
@@ -112,7 +124,10 @@ fi
 # Setup temporary folder that is removed reliably on exit and is outside of
 # the CADD-scripts directory.
 TMP_FOLDER=$(mktemp -d)
-trap "rm -rf $TMP_FOLDER" ERR EXIT
+if [ "$RM_TMP_DIR" = 'true' ]
+then
+    trap "rm -rf $TMP_FOLDER" ERR EXIT
+fi
 
 # Temp files
 TMP_INFILE=$TMP_FOLDER/$NAME.$FILEFORMAT
@@ -120,11 +135,24 @@ TMP_OUTFILE=$TMP_FOLDER/$NAME.tsv.gz
 
 cp $INFILE $TMP_INFILE
 
+# setup bindings of singularity args
+if [ "$MAMBAONLY" = 'true' ]
+then
+    SIGNULARITYARGS=""
+else
+    SIGNULARITYARGS="apptainer --apptainer-prefix $CADD/envs/apptainer --singularity-args \"--bind ${TMP_FOLDER} ${SIGNULARITYARGS}\""
+fi
+
 echo "Running snakemake pipeline:"
-echo snakemake $TMP_OUTFILE --use-conda --conda-prefix $CADD/envs/conda --cores $CORES
-echo --configfile $CONFIG --snakefile $CADD/Snakefile $VERBOSE
-snakemake $TMP_OUTFILE --use-conda --conda-prefix $CADD/envs/conda --cores $CORES \
-    --configfile $CONFIG --snakefile $CADD/Snakefile $VERBOSE
+
+command="snakemake $TMP_OUTFILE \
+    --sdm conda $SIGNULARITYARGS --conda-prefix $CADD/envs/conda \
+    --cores $CORES --configfile $CONFIG \
+    --snakefile $CADD/Snakefile $VERBOSE"
+
+echo -e $command
+
+eval $command
 
 mv $TMP_OUTFILE $OUTFILE
 rm $TMP_INFILE # is in temp folder, should not be necessary

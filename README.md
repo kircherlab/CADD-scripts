@@ -48,21 +48,25 @@ This section describes how users can setup CADD version 1.7 on their own system.
 - conda or mamba
 
   We recommend to install conda/mamba via [miniforge](https://github.com/conda-forge/miniforge)
+
 ```bash
 # For example 
 curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
 bash Miniforge3-$(uname)-$(uname -m).sh
 ```
-- snakemake 7.X (installed via mamba)
+- snakemake 8.X (installed via mamba). 
+
 ```bash
-mamba install -c conda-forge -c bioconda 'snakemake=7'
+mamba install -c conda-forge -c bioconda 'snakemake=8'
 ```
 
-*Note1: If you are using an existing conda installation, please make sure it is [a version >=4.4.0](https://github.com/conda/conda/issues/3200). Make also sure to use snakemake >= 7.32.3 as some command line parameters are not available in earlier versions. *
+- apptainer/singularity (optional, but highly recommended for a more stable environment)
 
-*Note2: We are using mamba here. In principle it should also work with conda, in that case add `--conda-frontend conda` to line 216 in install.sh`*
+*Note1: If you are using an existing conda installation, please make sure it is [a version >=4.4.0](https://github.com/conda/conda/issues/3200). *
 
-*Note3: The recent snakemake 8 is not supported yet. please use the latest snakemake 7.x version*
+*Note2: We are using mamba here. In principle it should also work with conda, in that case add `--conda-frontend conda` to line 318 in install.sh`*
+
+*Note3: The commands are tested with snakemake 8.15.2. Snakemake 7 (>= 7.32.3) might also work but then the commands are different and the `CADD.sh` script will not work.*
 
 ### Setup
 
@@ -99,12 +103,12 @@ Running CADD depends on four big building blocks (plus the repository containing
  - genome annotations
  - prescored variants
 
-**Installing dependencies**
+**Installing dependencies (when running without apptainer/singularity)**
 
 As of this version, dependencies have to be installed via conda and snakemake. This is because we are using two different enviroments for python2 and python3.
 
 ```bash
-snakemake test/input.tsv.gz --use-conda --conda-create-envs-only --conda-prefix envs/conda \
+snakemake test/input.tsv.gz --software-deployment-method conda --conda-create-envs-only --conda-prefix envs/conda \
         --configfile config/config_GRCh38_v1.7.yml --snakefile Snakefile -c 1
 ```
 
@@ -164,23 +168,37 @@ You run CADD via the script `CADD.sh` which technically only requieres an either
 
 You can test whether your CADD is set up properly by comparing to the example files in the `test` directory.
 
-### Costomization of CADD parameters
+For all command-line inputs please run `./CADD.sh -h`.
+
+### Customization of CADD parameters
 There are a few options to decrease calculation times of your CADD offline installation:
 - The first and most efficient one is to make use of prescored files as indicated above.
 - Second, you can optimize the `ESMbatchsize` parameter for your local system. This is especially recommented if you have a GPU available. Note that your GPU is automatically detected and set up by the `install.sh` CADD installation script. You can simply add a line with, e.g., `ESMbatchsize: 20` to the the respective CADDv1.7 config file in `./configs/` (e.g., `config_GRCh38_v1.7.yml`). This will parrallelize calculations of ESM1-v scores on your GPU, which are used for the calculation of CADD scores. This is expected to significantly decrease calculation times. Note that the dafault value for the `ESMbatchsize` parameter is set to 1 to avoid memory overload. Also note that if changing the `EMSbatchsize` parameter gives you errors, it is likely that the memory of your GPU is too small. Consider using a smaller number for the parameter in such a case (e.g. `ESMbatchsize: 10`).
 
 ### Update
 
+#### Version 1.7.1
+
+Just a `CADD-Script` version update for snakemake 8 compatibility and containerization. CADD scores are the same as with CADD-script v1.7 (CADD scores v1.7). Detailed changes:
+
+- containerization
+- updating dependencies to resolve conda build issues
+- snakemake 8 compatibility
+- readme update
+
+#### Version 1.7
+
 Version 1.7 includes some additions in features to v1.6 and we refactured the Snakemake workflow of CADD-scripts including config files. The new models for v1.7 are extended by a protein language model, regulatory effect prediction with a CNN, Zonoomia and Aparent2 scores and an update to the lates gencode 110 version. Because of the refactored workflow with additinal config settings you cannot use it with previous CADD versions. If you are still using those versions, please use [this repository for version 1.6](https://github.com/kircherlab/CADD-scripts/archive/v1.6.post1.zip) or [this repository for v1.5 and v1.4](https://github.com/kircherlab/CADD-scripts/archive/CADD1.5.zip).
+
+#### Version 1.6 and lower
 
 Version 1.6 includes some changes in comparison to v1.5. Next to the obvious switch of the pipeline into a Snakemake workflow which became necessary due to the ongoin issues with `conda activate`, the new models for v1.6 are extended by more specialized annotations for splicing variants, as well as a few minor changes in some other annotations (most prominent: fixed gerp for GRCh38) and changes in consequence categories which make this scripts incompatible with CADD v1.4 and v1.5. If you are still using those version, please use [version 1.5 of this repository](https://github.com/kircherlab/CADD-scripts/archive/CADD1.5.zip).
 
-```
-
+```text
 ## Copyright
 Copyright (c) University of Washington, Hudson-Alpha Institute for
-Biotechnology and Berlin Institute of Health at Charité - Universitätsmedizin
-Berlin 2013-2023. All rights reserved.
+Biotechnology and Berlin Institute of Health at Charite - Universitatsmedizin
+Berlin 2013-2024. All rights reserved.
 
 Permission is hereby granted, to all non-commercial users and licensees of CADD
 (Combined Annotation Dependent Framework, licensed by the University of
@@ -197,3 +215,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+```
