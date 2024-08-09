@@ -6,6 +6,8 @@ Note that we are declaring many files temporary here that should be located in a
 # container with conda environments
 containerized: "docker://visze/cadd-scripts-v1_7:0.1.0"
 
+# need glob to get chunked files
+import psutil 
 
 # Min version of snakemake
 from snakemake.utils import min_version
@@ -21,12 +23,26 @@ validate(config, schema="schemas/config_schema.yaml")
 import os
 
 
+
+# esm takes ~16 Gb of memory per tread. limit threading to 0.8*RAM / 16 threads ; with a minimum of 1 thread.  
+config['esm_slots'] = int((0.8 * (psutil.virtual_memory().total / (1024 ** 3)))/16)
+if config['esm_slots'] < 1:
+    config['esm_slots'] = 1
+config['esm_load'] = max(20,int(100/config['esm_slots']))  # 4GB of GPU ram per thread.. 
+config['vep_load'] = int(config['esm_load']/5)  # up to 4Gb/ram
+config['regseq_load'] = int(config['esm_load']/4)  # 
+config['mms_load'] = int(config['esm_load'])  # up to 16Gb/ram
+config['anno_load'] = int(config['esm_load']/10)  # disk IO intensive
+## allowed scattering 
+scattergather:
+    split=workflow.cores,
+
 envvars:
     "CADD",
 
 
-# wildcard_constraints:
-#     file=".*(?<!\\.vcf)$"
+#wildcard_constraints:
+#    basefile="[^/]+"
 
 # START Rules
 
@@ -37,7 +53,7 @@ rule decompress:
     input:
         "{file}.vcf.gz",
     output:
-        temp("{file}.vcf"),
+        "{file}.vcf",
     log:
         "{file}.decompress.log",
     shell:
@@ -50,19 +66,43 @@ rule prepare:
     conda:
         "envs/environment_minimal.yml"
     input:
-        "{file}.vcf",
+        vcf="{file}.vcf",
+        
     output:
-        temp("{file}.prepared.vcf"),
+        #prep="{file}.prepared.vcf.tmp",
+        #split=directory("{file}_splits"),
+        splits=scatter.split("{{file}}_splits/chunk_{scatteritem}.prepared.vcf"),
     log:
         "{file}.prepare.log",
     params:
         cadd=os.environ["CADD"],
+        threads=workflow.cores,
+    resources:
+        # < 1GB of memory
+        load=1,
     shell:
         """
-        cat {input} \
+        mkdir -p {wildcards.file}_splits/ 2>> {log}
+        cat {input.vcf} \
         | python {params.cadd}/src/scripts/VCF2vepVCF.py \
+        | grep -v '^#' \
+        | sed 's/^chr//' \
         | sort -k1,1 -k2,2n -k4,4 -k5,5 \
-        | uniq > {output} 2> {log}
+        | uniq > {wildcards.file}_splits/full.vcf 2> {log} 
+
+        # split
+        LC=$(wc -l {wildcards.file}_splits/full.vcf | cut -f1 -d' ')
+        LC=$(((LC / {params.threads})+1))
+        
+        split -l $LC --numeric-suffixes=1 --additional-suffix="-of-{params.threads}.prepared.vcf" {wildcards.file}_splits/full.vcf {wildcards.file}_splits/chunk_ 2>> {log}
+
+        rm -f {wildcards.file}_splits/full.vcf
+        
+        # strip padding zeros in the file names 
+        for f in {wildcards.file}_splits/chunk_*.prepared.vcf
+        do
+            mv -n "$f" "$(echo "$f" | sed -E 's/(chunk_)0*([1-9][0-9]*)(-of-{params.threads}\\.prepared\\.vcf)/\\1\\2\\3/')"
+        done
         """
 
 
@@ -70,15 +110,18 @@ checkpoint prescore:
     conda:
         "envs/environment_minimal.yml"
     input:
-        vcf="{file}.prepared.vcf",
+        vcf="{file}_splits/chunk_{chunk}.prepared.vcf",
         prescored="%s/%s" % (os.environ["CADD"], config["PrescoredFolder"]),
     output:
-        novel=temp("{file}.novel.vcf"),
-        prescored=temp("{file}.pre.tsv"),
+        novel="{file}_splits/chunk_{chunk}.novel.vcf",
+        prescored="{file}_splits/chunk_{chunk}.pre.tsv",
     log:
-        "{file}.prescore.log",
+        "{file}.chunk_{chunk}.prescore.log",
     params:
         cadd=os.environ["CADD"],
+    resources:
+        # < 1GB of memory
+        load=1,
     shell:
         """
         # Prescoring
@@ -106,16 +149,19 @@ rule annotation_vep:
     conda:
         "envs/vep.yml"
     input:
-        vcf="{file}.novel.vcf",
+        vcf="{file}_splits/chunk_{chunk}.novel.vcf",
         veppath="%s/%s" % (os.environ["CADD"], config["VEPpath"]),
     output:
-        temp("{file}.vep.vcf.gz"),
+        "{file}_splits/chunk_{chunk}.vep.vcf.gz",
     log:
-        "{file}.annotation_vep.log",
+        "{file}.chunk_{chunk}.annotation_vep.log",
     params:
         cadd=os.environ["CADD"],
         genome_build=config["GenomeBuild"],
         ensembl_db=config["EnsemblDB"],
+    resources:
+        # < 1GB of memory
+        load=int(config['vep_load']),
     shell:
         """
         cat {input.vcf} \
@@ -132,7 +178,8 @@ rule annotate_esm:
     conda:
         "envs/esm.yml"
     input:
-        vcf="{file}.vep.vcf.gz",
+        #vcf="{file}_splits/chunk_{chunk}.vep.vcf.gz",
+        vcf="{file}_splits/chunk_{chunk}.vep.vcf.gz",
         models=expand(
             "{path}/{model}.pt",
             path=config["ESMpath"],
@@ -140,20 +187,25 @@ rule annotate_esm:
         ),
         transcripts="%s/pep.%s.fa" % (config["ESMpath"], config["EnsemblDB"]),
     output:
-        missens=temp("{file}.esm_missens.vcf.gz"),
-        frameshift=temp("{file}.esm_frameshift.vcf.gz"),
-        final=temp("{file}.esm.vcf.gz"),
+        missens="{file}_splits/chunk_{chunk}.esm_missens.vcf.gz",
+        frameshift="{file}_splits/chunk_{chunk}.esm_frameshift.vcf.gz",
+        final="{file}_splits/chunk_{chunk}.esm.vcf.gz",
     log:
-        "{file}.annotate_esm.log",
+        "{file}.chunk_{chunk}.annotate_esm.log",
+    resources:
+        load=int(config['esm_load']),
     params:
         cadd=os.environ["CADD"],
         models=["--model %s " % model for model in config["ESMmodels"]],
         batch_size=config["ESMbatchsize"],
+        #header=config["Header"],
+    
     shell:
         """
         model_directory=`dirname {input.models[0]}`;
         model_directory=`dirname $model_directory`;
 
+        
         python {params.cadd}/src/scripts/lib/tools/esmScore/esmScore_missense_av_fast.py \
         --input {input.vcf} \
         --transcripts {input.transcripts} \
@@ -171,6 +223,8 @@ rule annotate_esm:
         --transcripts {input.transcripts} \
         --model-directory $model_directory {params.models} \
         --output {output.final} --batch-size {params.batch_size} &>> {log}
+
+        #rm -f {wildcards.file}.esm_in.vcf.gz
         """
 
 
@@ -178,17 +232,20 @@ rule annotate_regseq:
     conda:
         "envs/regulatorySequence.yml"
     input:
-        vcf="{file}.esm.vcf.gz",
+        vcf="{file}_splits/chunk_{chunk}.esm.vcf.gz",
         reference="%s/%s" % (config["REGSEQpath"], "reference.fa"),
         genome="%s/%s" % (config["REGSEQpath"], "reference.fa.genome"),
         model="%s/%s" % (config["REGSEQpath"], "Hyperopt400InclNegatives.json"),
         weights="%s/%s" % (config["REGSEQpath"], "Hyperopt400InclNegatives.h5"),
     output:
-        temp("{file}.regseq.vcf.gz"),
+        "{file}_splits/chunk_{chunk}.regseq.vcf.gz",
     log:
-        "{file}.annotate_regseq.log",
+        "{file}.chunk_{chunk}.annotate_regseq.log",
     params:
         cadd=os.environ["CADD"],
+    resources:
+        # roughly 4GB of memory
+        load=int(config['regseq_load']),
     shell:
         """
         python {params.cadd}/src/scripts/lib/tools/regulatorySequence/predictVariants.py \
@@ -205,16 +262,18 @@ rule annotate_mmsplice:
     conda:
         "envs/mmsplice.yml"
     input:
-        vcf="{file}.regseq.vcf.gz",
+        vcf="{file}_splits/chunk_{chunk}.regseq.vcf.gz",
         transcripts="%s/homo_sapiens.110.gtf" % config.get("MMSPLICEpath", ""),
         reference="%s/reference.fa" % config.get("REFERENCEpath", ""),
     output:
-        mmsplice=temp("{file}.mmsplice.vcf.gz"),
-        idx=temp("{file}.regseq.vcf.gz.tbi"),
+        mmsplice="{file}_splits/chunk_{chunk}.mmsplice.vcf.gz",
+        idx="{file}_splits/chunk_{chunk}.regseq.vcf.gz.tbi",
     log:
-        "{file}.annotate_mmsplice.log",
+        "{file}.chunk_{chunk}.annotate_mmsplice.log",
     params:
         cadd=os.environ["CADD"],
+    resources:
+        load=int(config['mms_load']),
     shell:
         """
         tabix -p vcf {input.vcf} &> {log};
@@ -230,15 +289,17 @@ rule annotation:
     conda:
         "envs/environment_minimal.yml"
     input:
-        vcf=lambda wc: "{file}.%s.vcf.gz"
+        vcf=lambda wc: "{file}_splits/chunk_{chunk}.%s.vcf.gz"
         % ("mmsplice" if config["GenomeBuild"] == "GRCh38" else "regseq"),
         reference_cfg="%s/%s" % (os.environ["CADD"], config["ReferenceConfig"]),
     output:
-        temp("{file}.anno.tsv.gz"),
+        "{file}_splits/chunk_{chunk}.anno.tsv.gz",
     log:
-        "{file}.annotation.log",
+        "{file}.chunk_{chunk}.annotation.log",
     params:
         cadd=os.environ["CADD"],
+    resources:
+        load=int(config['anno_load']),
     shell:
         """
         zcat {input.vcf} \
@@ -252,14 +313,15 @@ rule imputation:
     conda:
         "envs/environment_minimal.yml"
     input:
-        tsv="{file}.anno.tsv.gz",
+        tsv="{file}_splits/chunk_{chunk}.anno.tsv.gz",
         impute_cfg="%s/%s" % (os.environ["CADD"], config["ImputeConfig"]),
     output:
-        temp("{file}.csv.gz"),
+        "{file}_splits/chunk_{chunk}.csv.gz",
     log:
-        "{file}.imputation.log",
+        "{file}.chunk_{chunk}.imputation.log",
     params:
         cadd=os.environ["CADD"],
+    
     shell:
         """
         zcat {input.tsv} \
@@ -272,18 +334,19 @@ rule score:
     conda:
         "envs/environment_minimal.yml"
     input:
-        impute="{file}.csv.gz",
-        anno="{file}.anno.tsv.gz",
+        impute="{file}_splits/chunk_{chunk}.csv.gz",
+        anno="{file}_splits/chunk_{chunk}.anno.tsv.gz",
         conversion_table="%s/%s" % (os.environ["CADD"], config["ConversionTable"]),
         model_file="%s/%s" % (os.environ["CADD"], config["Model"]),
     output:
-        temp("{file}.novel.tsv"),
+        "{file}_splits/chunk_{chunk}.novel.tsv",
     log:
-        "{file}.score.log",
+        "{file}.chunk_{chunk}.score.log",
     params:
         cadd=os.environ["CADD"],
         use_anno=config["Annotation"],
         columns=config["Columns"],
+    
     shell:
         """
         python {params.cadd}/src/scripts/predictSKmodel.py \
@@ -300,21 +363,39 @@ rule score:
         """
 
 
-def aggregate_input(wildcards):
-    with checkpoints.prescore.get(file=wildcards.file).output["novel"].open() as f:
-        output = ["{file}.pre.tsv"]
-        for line in f:
-            if line.strip() != "":
-                output.append("{file}.novel.tsv")
-                break
-        return output
+# def aggregate_input(wildcards):
+#     # Find all chunk files for the given wildcard
+#     chunk_files = glob.glob(f"{wildcards.file}_splits/{wildcards.file}.chunk_*.novel.vcf")
+#     pre_files = glob.glob(f"{wildcards.file}_splits/{wildcards.file}.chunk_*.pre.tsv")
+#     
+#     # Combine the novel and prescore chunk files if not empty
+#     output = [f for f in chunk_files + pre_files if os.path.getsize(f) > 0]
+#     if not output:
+#         # no output : make empty file 
+#         open(f"{wildcards.file}.empty", "w").close()
+#         output = [f"{wildcards.file}.empty"]
+# 
+#     return output
+
+
+
+#def aggregate_input(wildcards):
+#    with checkpoints.prescore.get(file=wildcards.file).output["novel"].open() as f:
+#        output = ["{file}.pre.tsv"]
+#        for line in f:
+#            if line.strip() != "":
+#                output.append("{file}.novel.tsv")
+#                break
+#        return output
 
 
 rule join:
     conda:
         "envs/environment_minimal.yml"
     input:
-        aggregate_input,
+        #aggregate_input,
+        pre=gather.split("{{file}}_splits/chunk_{scatteritem}.pre.tsv"),
+        scored=gather.split("{{file}}_splits/chunk_{scatteritem}.novel.tsv"),
     output:
         "{file,.+(?<!\\.anno)}.tsv.gz",
     log:
@@ -325,8 +406,8 @@ rule join:
         """
         (
             echo "{params.header}";
-            cat {input} | grep -v "^##" | grep "^#" | tail -n 1;
-            cat {input} | \
+            cat {input.pre} {input.scored} | grep -v "^##" | grep "^#" | tail -n 1;
+            cat {input.pre} {input.scored}| \
             grep -v "^#" | \
             sort -k1,1 -k2,2n -k3,3 -k4,4 || true;
         ) | bgzip -c > {output} 2>> {log};

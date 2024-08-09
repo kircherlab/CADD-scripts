@@ -145,7 +145,9 @@ fi
 
 echo "Running snakemake pipeline:"
 
+# resources is added to divide total load wrt number of cores
 command="snakemake $TMP_OUTFILE \
+    --resources load=100 \
     --sdm conda $SIGNULARITYARGS --conda-prefix $CADD/envs/conda \
     --cores $CORES --configfile $CONFIG \
     --snakefile $CADD/Snakefile $VERBOSE"
