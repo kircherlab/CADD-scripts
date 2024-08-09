@@ -22,17 +22,31 @@ validate(config, schema="schemas/config_schema.yaml")
 # CADD environment variable
 import os
 
-
-
-# esm takes ~16 Gb of memory per tread. limit threading to 0.8*RAM / 16 threads ; with a minimum of 1 thread.  
-config['esm_slots'] = int((0.8 * (psutil.virtual_memory().total / (1024 ** 3)))/16)
+###################################
+## RULE SPECFIC THREADING LIMITS ##
+###################################
+system_memory = psutil.virtual_memory().total / (1024 ** 3)
+gpu_memory = 0
+try:
+    lines = subprocess.check_output("nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits", shell=True).decode('utf-8').splitlines()
+    # sum over gpu(s)
+    gpu_memory = int(sum([int(x) for x in lines])/1024)
+except Exception as e:
+    pass
+    
+# esm takes ~16 Gb of system memory per tread & 4 Gb of GPU ram (if available). 
+config['esm_slots'] = int(min((0.9*system_memory)/16, 0.95*gpu_memory/4))
 if config['esm_slots'] < 1:
     config['esm_slots'] = 1
-config['esm_load'] = max(20,int(100/config['esm_slots']))  # 4GB of GPU ram per thread.. 
-config['vep_load'] = int(config['esm_load']/5)  # up to 4Gb/ram
-config['regseq_load'] = int(config['esm_load']/4)  # 
-config['mms_load'] = int(config['esm_load'])  # up to 16Gb/ram
-config['anno_load'] = int(config['esm_load']/10)  # disk IO intensive
+config['esm_load'] = 100 if config['esm_slots'] < 1 else int(100/config['esm_slots'])  
+config['vep_load'] = 100 if system_memory < 4 else int(100/int(0.9*system_memory / 4 ))  # up to 4Gb/ram
+config['regseq_load'] = 100 if system_memory < 2 else int(100/int(0.9*system_memory / 2 ))   # up to 2Gb of ram
+config['mms_load'] = if system_memory < 16 else int(100/int(0.9*system_memory / 16 ))   # up to 16Gb/ram
+config['anno_load'] = 1 # disk IO intensive
+config['impute_load'] = 1 
+config['prescore_load'] = 1 
+config['score_load'] = 1
+
 ## allowed scattering 
 scattergather:
     split=workflow.cores,
@@ -121,7 +135,7 @@ checkpoint prescore:
         cadd=os.environ["CADD"],
     resources:
         # < 1GB of memory
-        load=1,
+        load=int(config['prescore_load']),
     shell:
         """
         # Prescoring
@@ -321,7 +335,8 @@ rule imputation:
         "{file}.chunk_{chunk}.imputation.log",
     params:
         cadd=os.environ["CADD"],
-    
+    resources:
+        load=int(config['impute_load']),
     shell:
         """
         zcat {input.tsv} \
@@ -346,7 +361,8 @@ rule score:
         cadd=os.environ["CADD"],
         use_anno=config["Annotation"],
         columns=config["Columns"],
-    
+    resources:
+        load=config['score_load'],
     shell:
         """
         python {params.cadd}/src/scripts/predictSKmodel.py \
