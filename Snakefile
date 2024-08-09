@@ -35,7 +35,10 @@ except Exception as e:
     pass
     
 # esm takes ~16 Gb of system memory per tread & 4 Gb of GPU ram (if available). 
-config['esm_slots'] = int(min((0.9*system_memory)/16, 0.95*gpu_memory/4))
+if gpu_memory > 0:
+    config['esm_slots'] = int(min((0.9*system_memory)/16, 0.95*gpu_memory/4))
+else:
+    config['esm_slots'] = int(0.9*system_memory / 16)
 if config['esm_slots'] < 1:
     config['esm_slots'] = 1
 config['esm_load'] = 100 if config['esm_slots'] < 1 else int(100/config['esm_slots'])  
