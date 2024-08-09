@@ -44,11 +44,31 @@ if config['esm_slots'] < 1:
 config['esm_load'] = 100 if config['esm_slots'] < 1 else int(100/config['esm_slots'])  
 config['vep_load'] = 100 if system_memory < 4 else int(100/int(0.9*system_memory / 4 ))  # up to 4Gb/ram
 config['regseq_load'] = 100 if system_memory < 2 else int(100/int(0.9*system_memory / 2 ))   # up to 2Gb of ram
-config['mms_load'] = if system_memory < 16 else int(100/int(0.9*system_memory / 16 ))   # up to 16Gb/ram
+config['mms_load'] = 100 if system_memory < 16 else int(100/int(0.9*system_memory / 16 ))   # up to 16Gb/ram
 config['anno_load'] = 1 # disk IO intensive
 config['impute_load'] = 1 
 config['prescore_load'] = 1 
 config['score_load'] = 1
+
+print("Threading Overview",flush=True)
+print("##################",flush=True)
+print("Assigned cores: {}".format(workflow.cores),flush=True)
+print("Available system memory: {}GB".format(int(system_memory)),flush=True)
+if gpu_memory > 0:
+   print("Total GPU memory: {}GB".format(gpu_memory),flush=True)
+else:
+   print("No gpu found",flush=True)
+print("Task Parallelization: ",flush=True)
+print("  PreScore : {}x".format(min(workflow.cores,int(100/config['prescore_load']))))
+print("  VEP : {}x".format(min(workflow.cores,int(100/config['vep_load']))))
+print("  ESM : {}x (memory/gpu constraints)".format(min(workflow.cores,config['esm_slots'])))
+print("  RegSeq : {}x".format(min(workflow.cores,int(100/config['regseq_load']))))
+print("  MMsplice : {}x (memory constraints)".format(min(workflow.cores,int(100/config['mms_load']))))
+print("  Annotate : {}x".format(min(workflow.cores,int(100/config['anno_load']))))
+print("  Impute : {}x".format(min(workflow.cores,int(100/config['impute_load']))))
+          
+
+
 
 ## allowed scattering 
 scattergather:
