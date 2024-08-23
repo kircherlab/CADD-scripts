@@ -304,7 +304,7 @@ def aggregate_input(wildcards):
     with checkpoints.prescore.get(file=wildcards.file).output["novel"].open() as f:
         output = ["{file}.pre.tsv"]
         for line in f:
-            if line.strip() != "":
+            if (not line.startswith("#") and line.strip() != ""):
                 output.append("{file}.novel.tsv")
                 break
         return output
