@@ -14,7 +14,7 @@ where:
     -q  print basic information about snakemake run
     -p  print full information about the snakemake run
     -d  do not remove temporary directory for debug puroposes
-    -t  specify temporary directory [default: mktemp -d]
+    -t  specify location for temporary directory [default: /tmp/]
     -c  number of cores that snakemake is allowed to use [default: 1]
     "
 
@@ -31,7 +31,7 @@ SIGNULARITYARGS=""
 VERBOSE="-q"
 CORES="1"
 RM_TMP_DIR=true
-TMP_FOLDER=$(mktemp -d)
+TMP_PREFIX="/tmp"
 while getopts ':ho:g:v:c:amr:qpdt:' option; do
   case "$option" in
     h) echo "$usage"
@@ -57,8 +57,7 @@ while getopts ':ho:g:v:c:amr:qpdt:' option; do
        ;;
     d) RM_TMP_DIR=false
        ;;
-    t) TMP_FOLDER=$OPTARG
-       RM_TMP_DIR=false
+    t) TMP_PREFIX=$OPTARG
        ;;
    \?) printf "illegal option: -%s\n" "$OPTARG" >&2
        echo "$usage" >&2
@@ -129,6 +128,7 @@ fi
 
 # Setup temporary folder that is removed reliably on exit and is outside of
 # the CADD-scripts directory.
+TMP_FOLDER=$(mktemp -d -p $TMP_PREFIX)
 if [ "$RM_TMP_DIR" = 'true' ]
 then
     trap "rm -rf $TMP_FOLDER" ERR EXIT
