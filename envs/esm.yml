@@ -6,7 +6,7 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - numpy
+  - numpy<2
   - python
   - click
   - biopython
