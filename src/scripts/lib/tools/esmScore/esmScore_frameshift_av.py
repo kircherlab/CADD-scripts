@@ -368,6 +368,12 @@ def cli(
             data_alt.append((transcript_id[i], aa_seq_alt[i][-window:]))
 
     ref_alt_scores = []
+    # preloading reduces disk I/O time and bottlenecks
+    preloaded_models = list()
+    for k in range(0,len(modelsToUse),1):
+        # print("Preloading model {}".format(k))
+        model, alphabet = pretrained.load_model_and_alphabet(modelsToUse[k])
+        preloaded_models.append([model,alphabet])
     # load esm model(s)
     for o in range(0, len([data_ref, data_alt]), 1):
         data = [data_ref, data_alt][o]
@@ -375,7 +381,8 @@ def cli(
         if len(data) >= 1:
             for k in range(0, len(modelsToUse), 1):
                 torch.cuda.empty_cache()
-                model, alphabet = pretrained.load_model_and_alphabet(modelsToUse[k])
+                # print("fetch model {} from preloaded models".format(k))
+                model, alphabet = preloaded_models[k] # pretrained.load_model_and_alphabet(modelsToUse[k])
                 model.eval()  # disables dropout for deterministic results
                 batch_converter = alphabet.get_batch_converter()
 
@@ -386,6 +393,7 @@ def cli(
                 # apply es model to sequence, tokenProbs hat probs von allen aa an jeder pos basierend auf der seq in "data"
                 seq_scores = []
                 for t in range(0, len(data), batch_size):
+                    # print("modelling allele {}/2 : model {}/{} : {}/{}".format(o+1,k+1,len(modelsToUse),t+1,len(data)))
                     if t + batch_size > len(data):
                         batch_data = data[t:]
                     else:
@@ -423,9 +431,9 @@ def cli(
                                     else:
                                         # calc mean of all possible aa at this position
                                         aa_scores = []
-                                        for k in range(4, 24, 1):
+                                        for l in range(4, 24, 1):
                                             aa_scores.append(
-                                                token_probs[i, y + 1, k]
+                                                token_probs[i, y + 1, l]
                                             )  # for all aa (except selenocystein)
                                         aa_scores.append(
                                             token_probs[i, y + 1, 26]

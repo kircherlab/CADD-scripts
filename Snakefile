@@ -28,7 +28,7 @@ import os
 system_memory = psutil.virtual_memory().total / (1024 ** 3)
 gpu_memory = 0
 try:
-    lines = subprocess.check_output("nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits", shell=True).decode('utf-8').splitlines()
+    lines = subprocess.check_output("nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits 2>/dev/null", shell=True).decode('utf-8').splitlines()
     # sum over gpu(s)
     gpu_memory = int(sum([int(x) for x in lines])/1024)
 except Exception as e:
@@ -41,10 +41,13 @@ else:
     config['esm_slots'] = int(0.9*system_memory / 16)
 if config['esm_slots'] < 1:
     config['esm_slots'] = 1
-config['esm_load'] = 100 if config['esm_slots'] < 1 else int(100/config['esm_slots'])  
+# then assign other resources
+config['esm_load'] = 100 if config['esm_slots'] < 1 else int(100/config['esm_slots']) 
+config['esm_threads'] = int(workflow.cores /  config['esm_slots'])
 config['vep_load'] = 100 if system_memory < 4 else int(100/int(0.9*system_memory / 4 ))  # up to 4Gb/ram
 config['regseq_load'] = 100 if system_memory < 2 else int(100/int(0.9*system_memory / 2 ))   # up to 2Gb of ram
 config['mms_load'] = 100 if system_memory < 16 else int(100/int(0.9*system_memory / 16 ))   # up to 16Gb/ram
+config['mms_threads'] = int(workflow.cores / (100/config['mms_load']))
 config['anno_load'] = 1 # disk IO intensive
 config['impute_load'] = 1 
 config['prescore_load'] = 1 
@@ -61,9 +64,9 @@ else:
 print("Task Parallelization: ",flush=True)
 print("  PreScore : {}x".format(min(workflow.cores,int(100/config['prescore_load']))))
 print("  VEP : {}x".format(min(workflow.cores,int(100/config['vep_load']))))
-print("  ESM : {}x (memory/gpu constraints)".format(min(workflow.cores,config['esm_slots'])))
+print("  ESM : {}x with {} threads each (memory/gpu constraints)".format(min(workflow.cores,config['esm_slots']),config['esm_threads']))
 print("  RegSeq : {}x".format(min(workflow.cores,int(100/config['regseq_load']))))
-print("  MMsplice : {}x (memory constraints)".format(min(workflow.cores,int(100/config['mms_load']))))
+print("  MMsplice : {}x with {} threads each (memory constraints)".format(min(workflow.cores,int(100/config['mms_load'])),config['mms_threads']))
 print("  Annotate : {}x".format(min(workflow.cores,int(100/config['anno_load']))))
 print("  Impute : {}x".format(min(workflow.cores,int(100/config['impute_load']))))
           
@@ -82,7 +85,6 @@ envvars:
 #    basefile="[^/]+"
 
 # START Rules
-
 
 rule decompress:
     conda:
@@ -231,6 +233,8 @@ rule annotate_esm:
         "{file}.chunk_{chunk}.annotate_esm.log",
     resources:
         load=int(config['esm_load']),
+    threads: 
+        config['esm_threads'],
     params:
         cadd=os.environ["CADD"],
         models=["--model %s " % model for model in config["ESMmodels"]],
@@ -311,6 +315,8 @@ rule annotate_mmsplice:
         cadd=os.environ["CADD"],
     resources:
         load=int(config['mms_load']),
+    threads: 
+        config['mms_threads'],
     shell:
         """
         tabix -p vcf {input.vcf} &> {log};

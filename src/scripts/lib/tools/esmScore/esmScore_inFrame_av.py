@@ -464,6 +464,11 @@ def cli(input_file, transcript_file, model_directory, modelsToUse, output_file, 
             data_alt.append((transcript_id[i], aa_seq_alt[i][-window:]))
 
     ref_alt_scores = []
+    preloaded_models = list()
+    for k in range(0,len(modelsToUse),1):
+        # print("Preloading model {}".format(k))
+        model, alphabet = pretrained.load_model_and_alphabet(modelsToUse[k])
+        preloaded_models.append([model,alphabet])
     # load esm model(s)
     for o in range(0, len([data_ref, data_alt]), 1):
         data = [data_ref, data_alt][o]
@@ -471,7 +476,8 @@ def cli(input_file, transcript_file, model_directory, modelsToUse, output_file, 
         if len(data) >= 1:
             for k in range(0, len(modelsToUse), 1):
                 torch.cuda.empty_cache()
-                model, alphabet = pretrained.load_model_and_alphabet(modelsToUse[k])
+                # print("fetch model {} from preloaded models".format(k))
+                model, alphabet = preloaded_models[k] # pretrained.load_model_and_alphabet(modelsToUse[k])
                 model.eval()  # disables dropout for deterministic results
                 batch_converter = alphabet.get_batch_converter()
 
