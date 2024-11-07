@@ -66,7 +66,7 @@ mamba install -c conda-forge -c bioconda 'snakemake=8'
 
 *Note2: We are using mamba here. In principle it should also work with conda, in that case add `--conda-frontend conda` to line 318 in install.sh`*
 
-*Note3: The commands are tested with snakemake 8.15.2. Snakemake 7 (>= 7.32.3) might also work but then the commands are different and the `CADD.sh` script will not work.*
+*Note3: The commands are tested with snakemake 8.25.2. This is the minimum snakemake version supported.*
 
 ### Setup
 
