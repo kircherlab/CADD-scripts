@@ -3,6 +3,7 @@ name: mmsplice
 channels:
   - bioconda
   - conda-forge
+  - nodefaults
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=2_gnu

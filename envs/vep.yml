@@ -3,7 +3,7 @@ name: vep
 channels:
     - conda-forge
     - bioconda
-    - defaults
+    - nodefaults
 dependencies:
     - ensembl-vep=110
     - pyvcf=0.6.*

@@ -4,13 +4,13 @@ Note that we are declaring many files temporary here that should be located in a
 
 
 # container with conda environments
-containerized: "docker://visze/cadd-scripts-v1_7:0.1.0"
+containerized: "docker://visze/cadd-scripts-v1_7:0.1.1"
 
 
 # Min version of snakemake
 from snakemake.utils import min_version
 
-min_version("7.32.3")
+min_version("8.25.2")
 
 # Validation of config file
 from snakemake.utils import validate
