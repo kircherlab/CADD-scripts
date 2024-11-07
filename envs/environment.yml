@@ -1,9 +1,9 @@
+---
 name: cadd
 channels:
-  - bioconda
-  - r
-  - defaults
   - conda-forge
+  - bioconda
+  - nodefaults
 dependencies:
   - _libgcc_mutex=0.1=main
   - bcftools=1.9=h68d8f2e_9

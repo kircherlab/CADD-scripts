@@ -1,34 +1,53 @@
-
 """Note that we are declaring many files temporary here that should be located in a temporary folder to begin with"""
 
+
+# container with conda environments
+containerized: "docker://visze/cadd-scripts-v1_6:0.1.0"
+
+
+# Min version of snakemake
+from snakemake.utils import min_version
+
+min_version("8.25.2")
+
+
 rule decompress:
-    input: '{file}.vcf.gz'
-    output: temp('{file}.vcf')
+    input:
+        "{file}.vcf.gz",
+    output:
+        temp("{file}.vcf"),
     shell:
-        '''
+        """
         zcat {input} > {output}
-        '''
+        """
+
 
 rule prepare:
-    input: '{file}.vcf'
-    output: temp('{file}.prepared.vcf')
-    conda: 'envs/environment.yml'
+    input:
+        "{file}.vcf",
+    output:
+        temp("{file}.prepared.vcf"),
+    conda:
+        "envs/environment_minimal.yml"
     shell:
-        '''
+        """
         cat {input} \
         | python $CADD/src/scripts/VCF2vepVCF.py \
         | sort -k1,1 -k2,2n -k4,4 -k5,5 \
         | uniq > {output}
-        '''        
+        """
+
 
 rule prescore:
-    input: '{file}.prepared.vcf'
+    input:
+        "{file}.prepared.vcf",
     output:
-        novel=temp('{file}.novel.vcf'),
-        prescored=temp('{file}.pre.tsv')
-    conda: 'envs/environment.yml'
+        novel=temp("{file}.novel.vcf"),
+        prescored=temp("{file}.pre.tsv"),
+    conda:
+        "envs/environment_minimal.yml"
     shell:
-        '''
+        """
         # Prescoring
         echo '## Prescored variant file' > {output.prescored};
         if [ -d $CADD/{config[PrescoredFolder]} ]
@@ -45,14 +64,18 @@ rule prescore:
             rm {output.prescored}.tmp
         fi
         mv {input} {output.novel}
-        '''
+        """
+
 
 rule annotation:
-    input: '{file}.novel.vcf'
-    output: temp('{file}.anno.tsv.gz')
-    conda: 'envs/environment.yml'
+    input:
+        "{file}.novel.vcf",
+    output:
+        temp("{file}.anno.tsv.gz"),
+    conda:
+        "envs/environment_minimal.yml"
     shell:
-        '''
+        """
         cat {input} \
         | vep --quiet --cache --offline --dir $CADD/{config[VEPpath]} \
             --buffer 1000 --no_stats --species homo_sapiens \
@@ -62,27 +85,34 @@ rule annotation:
         | python $CADD/src/scripts/annotateVEPvcf.py \
             -c $CADD/{config[ReferenceConfig]} \
         | gzip -c > {output}
-        '''
+        """
+
 
 rule imputation:
-    input: '{file}.anno.tsv.gz'
-    output: temp('{file}.csv.gz')
-    conda: 'envs/environment.yml'
+    input:
+        "{file}.anno.tsv.gz",
+    output:
+        temp("{file}.csv.gz"),
+    conda:
+        "envs/environment_minimal.yml"
     shell:
-        '''
+        """
         zcat {input} \
         | python $CADD/src/scripts/trackTransformation.py -b \
             -c $CADD/{config[ImputeConfig]} -o {output} --noheader;
-        '''
+        """
+
 
 rule score:
     input:
-        impute='{file}.csv.gz',
-        anno='{file}.anno.tsv.gz'
-    output: temp('{file}.novel.tsv')
-    conda: 'envs/environment.yml'
+        impute="{file}.csv.gz",
+        anno="{file}.anno.tsv.gz",
+    output:
+        temp("{file}.novel.tsv"),
+    conda:
+        "envs/environment_minimal.yml"
     shell:
-        '''
+        """
         python $CADD/src/scripts/predictSKmodel.py \
             -i {input.impute} -m $CADD/{config[Model]} -a {input.anno} \
         | python $CADD/src/scripts/max_line_hierarchy.py --all \
@@ -94,16 +124,19 @@ rule score:
             cat {output} | cut -f {config[Columns]} | uniq > {output}.tmp
             mv {output}.tmp {output}
         fi
-        '''
+        """
+
 
 rule join:
     input:
-        pre='{file}.pre.tsv',
-        novel='{file}.novel.tsv'
-    output: '{file}.tsv.gz'
-    conda: 'envs/environment.yml'
+        pre="{file}.pre.tsv",
+        novel="{file}.novel.tsv",
+    output:
+        "{file}.tsv.gz",
+    conda:
+        "envs/environment_minimal.yml"
     shell:
-        '''
+        """
         (
         echo "{config[Header]}";
         head -n 1 {input.novel};
@@ -111,4 +144,4 @@ rule join:
         | grep -v "^#" \
         | sort -k1,1 -k2,2n -k3,3 -k4,4 || true;
         ) | bgzip -c > {output};
-        '''
+        """
