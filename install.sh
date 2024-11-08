@@ -58,7 +58,7 @@ echo "Please note, that for successfully running CADD locally, you will need the
 echo ""
 
 # ask which parts of CADD the user wants to install
-read -p "Do you want to install the virtual environments with all CADD dependencies via conda? (y)/n " CHOICE
+read -p "For conda runs only (running without apptainer): Do you want to install the virtual environments with all CADD dependencies via conda? (y)/n " CHOICE
 case "$CHOICE" in
     y|Y ) ENV=true;;
     n|N ) ENV=false;;
@@ -212,7 +212,7 @@ esac
 if [ "$ENV" = true ]
 then
     echo "Setting up virtual environments for CADD v1.6"
-    snakemake test/input.tsv.gz --use-conda --conda-create-envs-only --conda-prefix envs \
+    snakemake test/input.tsv.gz --sdm conda --conda-create-envs-only --conda-prefix envs \
         --cores 1 --configfile config/config_GRCh38_v1.6.yml --snakefile Snakefile
 fi
 
