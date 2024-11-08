@@ -1,5 +1,8 @@
 # data folders
-data/prescored/*
+data/prescored/GRCh38_v1.6/incl_anno/*
+data/prescored/GRCh37_v1.6/incl_anno/*
+data/prescored/GRCh38_v1.6/no_anno/*
+data/prescored/GRCh37_v1.6/no_anno/*
 data/annotations/*
 input/*
 output/*
