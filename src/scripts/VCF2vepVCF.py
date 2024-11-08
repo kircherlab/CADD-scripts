@@ -91,7 +91,7 @@ for line in sys.stdin:
     line = line.rstrip('\r\n')
     if line.upper().startswith("#CHROM"):
         fields = line.split()
-        outsnvs.write("\t".join(fields[:falt_allele+1])+"\n")
+        outsnvs.write("\t".join(fields[:falt_allele+1])+"\tQUAL\tFILTER\tINFO\n")
         if options.SNVs != None or options.InDels != None:
             outindels.write("\t".join(fields[:falt_allele+1])+"\n")
     if line.startswith("#"):
