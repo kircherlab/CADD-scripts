@@ -30,7 +30,7 @@ SIGNULARITYARGS=""
 VERBOSE="-q"
 CORES="1"
 RM_TMP_DIR=true
-while getopts ':ho:g:v:c:aqp' option; do
+while getopts ':ho:g:v:c:amr:qpd' option; do
   case "$option" in
     h) echo "$usage"
        exit
