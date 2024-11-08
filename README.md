@@ -45,28 +45,24 @@ This section describes how users can setup CADD version 1.7 on their own system.
 
 ### Prerequisite
 
-- conda or mamba
+- conda > 24.7.4
 
-  We recommend to install conda/mamba via [miniforge](https://github.com/conda-forge/miniforge)
+  We recommend to install conda via [miniforge](https://github.com/conda-forge/miniforge)
 
 ```bash
 # For example 
 curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
 bash Miniforge3-$(uname)-$(uname -m).sh
 ```
-- snakemake 8.X (installed via mamba). 
+- snakemake  >=8.25.2  (installed via conda). 
 
 ```bash
-mamba install -c conda-forge -c bioconda 'snakemake=8'
+conda install -c conda-forge -c bioconda 'snakemake=8'
 ```
 
 - apptainer/singularity (optional, but highly recommended for a more stable environment)
 
-*Note1: If you are using an existing conda installation, please make sure it is [a version >=4.4.0](https://github.com/conda/conda/issues/3200). *
-
-*Note2: We are using mamba here. In principle it should also work with conda, in that case add `--conda-frontend conda` to line 318 in install.sh`*
-
-*Note3: The commands are tested with snakemake 8.25.2. This is the minimum snakemake version supported.*
+*Note1: The commands are tested with snakemake 8.25.2. This is the minimum snakemake version supported.*
 
 ### Setup
 
