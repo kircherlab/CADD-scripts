@@ -28,19 +28,24 @@ This section describes how users can setup CADD version 1.6 on their own system.
 
 ### Prerequisite
 
-- conda
+- conda > 24.7.4
+
+  We recommend to install conda via [miniforge](https://github.com/conda-forge/miniforge)
+
 ```bash
-# can be installed like this
-wget https://repo.continuum.io/miniconda/Miniconda2-latest-Linux-x86_64.sh
-bash Miniconda2-latest-Linux-x86_64.sh -p $HOME/miniconda2 -b
-export PATH=$HOME/miniconda2/bin:$PATH
+# For example 
+curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+bash Miniforge3-$(uname)-$(uname -m).sh
 ```
-- snakemake (installed via conda)
+- snakemake >=8.25.2 (installed via conda). 
+
 ```bash
-conda install -c conda-forge -c bioconda snakemake
+conda install -c conda-forge -c bioconda 'snakemake=8'
 ```
 
-*Note2: If you are using an existing conda installation, please make sure it is [a version >=4.4.0](https://github.com/conda/conda/issues/3200). Make also sure to use snakemake >= 4.0 as some command line parameters are not available in earlier versions. *
+- apptainer/singularity (optional, but highly recommended for a more stable environment)
+
+*Note1: The commands are tested with snakemake 8.25.2. This is the minimum snakemake version supported.*
 
 ### Setup
 
@@ -76,7 +81,7 @@ Running CADD depends on four big building blocks (plus the repository containing
 As of this version, dependencies have to be installed via conda and snakemake. This is because we are using two different enviroments for python2 and python3.
 
 ```bash
-snakemake test/input.tsv.gz --use-conda --conda-create-envs-only --conda-prefix envs \
+snakemake test/input.tsv.gz --sdm conda --conda-create-envs-only --conda-prefix envs \
         --configfile config/config_GRCh38_v1.6.yml --snakefile Snakefile
 ```
 
