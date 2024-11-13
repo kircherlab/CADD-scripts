@@ -9,7 +9,7 @@ where:
     -v  CADD version (only v1.7 possible with this set of scripts [default: v1.7])
     -a  include annotation in output
         input vcf of vcf.gz file (required)
-    -m  use mamba/conda only (no apptainer/singularity)
+    -m  use conda only (no apptainer/singularity)
     -r  singularity/apptainer arguments, e.g. \"--bind /data/mnt/x --nv\" [default \"\" but will always add \"--bind $TMP_DIR\"]
     -q  print basic information about snakemake run
     -p  print full information about the snakemake run
@@ -23,7 +23,7 @@ export LC_ALL=C
 
 GENOMEBUILD="GRCh38"
 ANNOTATION=false
-MAMBAONLY=false
+CONDAONLY=false
 OUTFILE=""
 VERSION="v1.7"
 SIGNULARITYARGS=""
@@ -45,7 +45,7 @@ while getopts ':ho:g:v:c:amr:qpd' option; do
        ;;
     a) ANNOTATION=true
        ;;
-    m) MAMBAONLY=true
+    m) CONDAONLY=true
        ;;
     r) SIGNULARITYARGS=$OPTARG
        ;;
@@ -136,7 +136,7 @@ TMP_OUTFILE=$TMP_FOLDER/$NAME.tsv.gz
 cp $INFILE $TMP_INFILE
 
 # setup bindings of singularity args
-if [ "$MAMBAONLY" = 'true' ]
+if [ "$CONDAONLY" = 'true' ]
 then
     SIGNULARITYARGS=""
 else

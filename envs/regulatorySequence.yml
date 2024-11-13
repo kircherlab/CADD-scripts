@@ -1,8 +1,8 @@
 ---
 channels:
-  - defaults
   - bioconda
   - conda-forge
+  - nodefaults
 dependencies:
   - numpy<=1.23.5
   - click

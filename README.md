@@ -45,28 +45,24 @@ This section describes how users can setup CADD version 1.7 on their own system.
 
 ### Prerequisite
 
-- conda or mamba
+- conda > 24.7.4
 
-  We recommend to install conda/mamba via [miniforge](https://github.com/conda-forge/miniforge)
+  We recommend to install conda via [miniforge](https://github.com/conda-forge/miniforge)
 
 ```bash
 # For example 
 curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
 bash Miniforge3-$(uname)-$(uname -m).sh
 ```
-- snakemake 8.X (installed via mamba). 
+- snakemake  >=8.25.2  (installed via conda). 
 
 ```bash
-mamba install -c conda-forge -c bioconda 'snakemake=8'
+conda install -c conda-forge -c bioconda 'snakemake=8'
 ```
 
 - apptainer/singularity (optional, but highly recommended for a more stable environment)
 
-*Note1: If you are using an existing conda installation, please make sure it is [a version >=4.4.0](https://github.com/conda/conda/issues/3200). *
-
-*Note2: We are using mamba here. In principle it should also work with conda, in that case add `--conda-frontend conda` to line 318 in install.sh`*
-
-*Note3: The commands are tested with snakemake 8.15.2. Snakemake 7 (>= 7.32.3) might also work but then the commands are different and the `CADD.sh` script will not work.*
+*Note1: The commands are tested with snakemake 8.25.2. This is the minimum snakemake version supported.*
 
 ### Setup
 
@@ -176,6 +172,17 @@ There are a few options to decrease calculation times of your CADD offline insta
 - Second, you can optimize the `ESMbatchsize` parameter for your local system. This is especially recommented if you have a GPU available. Note that your GPU is automatically detected and set up by the `install.sh` CADD installation script. You can simply add a line with, e.g., `ESMbatchsize: 20` to the the respective CADDv1.7 config file in `./configs/` (e.g., `config_GRCh38_v1.7.yml`). This will parrallelize calculations of ESM1-v scores on your GPU, which are used for the calculation of CADD scores. This is expected to significantly decrease calculation times. Note that the dafault value for the `ESMbatchsize` parameter is set to 1 to avoid memory overload. Also note that if changing the `EMSbatchsize` parameter gives you errors, it is likely that the memory of your GPU is too small. Consider using a smaller number for the parameter in such a case (e.g. `ESMbatchsize: 10`).
 
 ### Update
+
+#### Version 1.7.2
+
+Just a `CADD-Script` version update. CADD scores are the same as with CADD-script v1.7 (CADD scores v1.7). Detailed changes:
+
+- only snakemake >= 8.25.2 supported
+- using only conda-forge and bioconda channels (no default anymore)
+- new container `docker://visze/cadd-scripts-v1_7:0.1.1`
+- only conda >24.7.1 is allowed (no mamba support anymore)
+- `VCF2vepVCF.py` script fix to extend header. Otherwise regseq will fail using the vcf library
+- readme update
 
 #### Version 1.7.1
 
