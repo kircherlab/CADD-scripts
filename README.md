@@ -130,6 +130,20 @@ You can test whether your CADD is set up properly by comparing to the example fi
 
 ### Update
 
+### Version 1.6.1
+
+Just a CADD-Script version update for snakemake 8 compatibility and containerization. CADD scores are the same as with CADD-script v1.6 (CADD scores v1.6). Detailed changes:
+
+- only snakemake >= 8.25.2 supported
+- using only conda-forge and bioconda channels (no default anymore)
+- conda container docker://visze/cadd-scripts-v1_6:0.1.0
+- only conda >24.7.1 is allowed (no mamba support anymore)
+- VCF2vepVCF.py script fix to extend header. Otherwise regseq will fail using the vcf library
+- readme update
+
+
+### Version 1.6
+
 Version 1.6 includes some changes in comparison to v1.5. Next to the obvious switch of the pipeline into a Snakemake workflow which became necessary due to the ongoin issues with `conda activate`, the new models for v1.6 are extended by more specialized annotations for splicing variants, as well as a few minor changes in some other annotations (most prominent: fixed gerp for GRCh38) and changes in consequence categories which make this scripts incompatible with CADD v1.4 and v1.5. If you are still using those version, please use [version 1.5 of this repository](https://github.com/kircherlab/CADD-scripts/archive/CADD1.5.zip).
 
 ```
