@@ -1,10 +1,11 @@
 ---
 name: esm_annotate
 channels:
+  - conda-forge
   - pytorch
   - nvidia
-  - conda-forge
   - bioconda
+  - nodefaults
 dependencies:
   - numpy
   - python

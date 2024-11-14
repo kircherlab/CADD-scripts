@@ -7,8 +7,8 @@ LABEL io.github.snakemake.conda_env_hash="2c2e74f6a7392d16830a1aa1a341e3bd0565e6
 RUN mkdir -p /conda-envs/fe7049a03d989a2faa6d7688f5987d09
 COPY envs/environment_minimal.yml /conda-envs/fe7049a03d989a2faa6d7688f5987d09/environment.yaml
 
-RUN mkdir -p /conda-envs/ef25c8d726aebbe9e0ee64fee6c3caa9
-COPY envs/esm.yml /conda-envs/ef25c8d726aebbe9e0ee64fee6c3caa9/environment.yaml
+RUN mkdir -p /conda-envs/10a710eb7e199e21064fc58a16f9ea4f
+COPY envs/esm.yml /conda-envs/10a710eb7e199e21064fc58a16f9ea4f/environment.yaml
 
 RUN mkdir -p /conda-envs/27e6f085c62573d05046d5330f07505d
 COPY envs/mmsplice.yml /conda-envs/27e6f085c62573d05046d5330f07505d/environment.yaml
@@ -22,7 +22,7 @@ COPY envs/vep.yml /conda-envs/0b37582dec236e35970e555dc2c0f0b5/environment.yaml
 # Step 2: Generate conda environments
 
 RUN conda env create --no-default-packages --prefix /conda-envs/fe7049a03d989a2faa6d7688f5987d09 --file /conda-envs/fe7049a03d989a2faa6d7688f5987d09/environment.yaml && \
-    conda env create --no-default-packages --prefix /conda-envs/ef25c8d726aebbe9e0ee64fee6c3caa9 --file /conda-envs/ef25c8d726aebbe9e0ee64fee6c3caa9/environment.yaml && \
+    conda env create --no-default-packages --prefix /conda-envs/10a710eb7e199e21064fc58a16f9ea4f --file /conda-envs/10a710eb7e199e21064fc58a16f9ea4f/environment.yaml && \
     conda env create --no-default-packages --prefix /conda-envs/27e6f085c62573d05046d5330f07505d --file /conda-envs/27e6f085c62573d05046d5330f07505d/environment.yaml && \
     conda env create --no-default-packages --prefix /conda-envs/f675d936396bfaffdd96e0282b787268 --file /conda-envs/f675d936396bfaffdd96e0282b787268/environment.yaml && \
     conda env create --no-default-packages --prefix /conda-envs/0b37582dec236e35970e555dc2c0f0b5 --file /conda-envs/0b37582dec236e35970e555dc2c0f0b5/environment.yaml && \
