@@ -138,7 +138,8 @@ rule annotate_esm:
             path="%s/%s" % (os.environ["CADD"], config["ESMpath"]),
             model=config["ESMmodels"],
         ),
-        transcripts="%s/%s/pep.%s.fa" % (os.environ["CADD"], config["ESMpath"], config["EnsemblDB"]),
+        transcripts="%s/%s/pep.%s.fa"
+        % (os.environ["CADD"], config["ESMpath"], config["EnsemblDB"]),
     output:
         missens=temp("{file}.esm_missens.vcf.gz"),
         frameshift=temp("{file}.esm_frameshift.vcf.gz"),
@@ -179,10 +180,14 @@ rule annotate_regseq:
         "envs/regulatorySequence.yml"
     input:
         vcf="{file}.esm.vcf.gz",
-        reference="%s/%s/%s" % (os.environ["CADD"], config["REGSEQpath"], "reference.fa"),
-        genome="%s/%s/%s" % (os.environ["CADD"], config["REGSEQpath"], "reference.fa.genome"),
-        model="%s/%s/%s" % (os.environ["CADD"], config["REGSEQpath"], "Hyperopt400InclNegatives.json"),
-        weights="%s/%s/%s" % (os.environ["CADD"], config["REGSEQpath"], "Hyperopt400InclNegatives.h5"),
+        reference="%s/%s/%s"
+        % (os.environ["CADD"], config["REGSEQpath"], "reference.fa"),
+        genome="%s/%s/%s"
+        % (os.environ["CADD"], config["REGSEQpath"], "reference.fa.genome"),
+        model="%s/%s/%s"
+        % (os.environ["CADD"], config["REGSEQpath"], "Hyperopt400InclNegatives.json"),
+        weights="%s/%s/%s"
+        % (os.environ["CADD"], config["REGSEQpath"], "Hyperopt400InclNegatives.h5"),
     output:
         temp("{file}.regseq.vcf.gz"),
     log:
@@ -202,13 +207,16 @@ rule annotate_regseq:
 
 
 if config["GenomeBuild"] == "GRCh38":
+
     rule annotate_mmsplice:
         conda:
             "envs/mmsplice.yml"
         input:
             vcf="{file}.regseq.vcf.gz",
-            transcripts="%s/%s/homo_sapiens.110.gtf" % (os.environ["CADD"], config["MMSPLICEpath"]),
-            reference="%s/%s/reference.fa" % (os.environ["CADD"], config["REFERENCEpath"]),
+            transcripts="%s/%s/homo_sapiens.110.gtf"
+            % (os.environ["CADD"], config["MMSPLICEpath"]),
+            reference="%s/%s/reference.fa"
+            % (os.environ["CADD"], config["REFERENCEpath"]),
         output:
             mmsplice=temp("{file}.mmsplice.vcf.gz"),
             idx=temp("{file}.regseq.vcf.gz.tbi"),
@@ -305,7 +313,7 @@ def aggregate_input(wildcards):
     with checkpoints.prescore.get(file=wildcards.file).output["novel"].open() as f:
         output = ["{file}.pre.tsv"]
         for line in f:
-            if (not line.startswith("#") and line.strip() != ""):
+            if not line.startswith("#") and line.strip() != "":
                 output.append("{file}.novel.tsv")
                 break
         return output
