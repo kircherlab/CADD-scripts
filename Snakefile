@@ -135,10 +135,10 @@ rule annotate_esm:
         vcf="{file}.vep.vcf.gz",
         models=expand(
             "{path}/{model}.pt",
-            path=config["ESMpath"],
+            path="%s/%s" % (os.environ["CADD"], config["ESMpath"]),
             model=config["ESMmodels"],
         ),
-        transcripts="%s/pep.%s.fa" % (config["ESMpath"], config["EnsemblDB"]),
+        transcripts="%s/%s/pep.%s.fa" % (os.environ["CADD"], config["ESMpath"], config["EnsemblDB"]),
     output:
         missens=temp("{file}.esm_missens.vcf.gz"),
         frameshift=temp("{file}.esm_frameshift.vcf.gz"),
@@ -179,10 +179,10 @@ rule annotate_regseq:
         "envs/regulatorySequence.yml"
     input:
         vcf="{file}.esm.vcf.gz",
-        reference="%s/%s" % (config["REGSEQpath"], "reference.fa"),
-        genome="%s/%s" % (config["REGSEQpath"], "reference.fa.genome"),
-        model="%s/%s" % (config["REGSEQpath"], "Hyperopt400InclNegatives.json"),
-        weights="%s/%s" % (config["REGSEQpath"], "Hyperopt400InclNegatives.h5"),
+        reference="%s/%s/%s" % (os.environ["CADD"], config["REGSEQpath"], "reference.fa"),
+        genome="%s/%s/%s" % (os.environ["CADD"], config["REGSEQpath"], "reference.fa.genome"),
+        model="%s/%s/%s" % (os.environ["CADD"], config["REGSEQpath"], "Hyperopt400InclNegatives.json"),
+        weights="%s/%s/%s" % (os.environ["CADD"], config["REGSEQpath"], "Hyperopt400InclNegatives.h5"),
     output:
         temp("{file}.regseq.vcf.gz"),
     log:
@@ -201,29 +201,30 @@ rule annotate_regseq:
         """
 
 
-rule annotate_mmsplice:
-    conda:
-        "envs/mmsplice.yml"
-    input:
-        vcf="{file}.regseq.vcf.gz",
-        transcripts="%s/homo_sapiens.110.gtf" % config.get("MMSPLICEpath", ""),
-        reference="%s/reference.fa" % config.get("REFERENCEpath", ""),
-    output:
-        mmsplice=temp("{file}.mmsplice.vcf.gz"),
-        idx=temp("{file}.regseq.vcf.gz.tbi"),
-    log:
-        "{file}.annotate_mmsplice.log",
-    params:
-        cadd=os.environ["CADD"],
-    shell:
-        """
-        tabix -p vcf {input.vcf} &> {log};
-        KERAS_BACKEND=tensorflow python {params.cadd}/src/scripts/lib/tools/MMSplice.py -i {input.vcf} \
-        -g {input.transcripts} \
-        -f {input.reference} | \
-        grep -v '^Variant(CHROM=' | \
-        bgzip -c > {output.mmsplice} 2>> {log}
-        """
+if config["GenomeBuild"] == "GRCh38":
+    rule annotate_mmsplice:
+        conda:
+            "envs/mmsplice.yml"
+        input:
+            vcf="{file}.regseq.vcf.gz",
+            transcripts="%s/%s/homo_sapiens.110.gtf" % (os.environ["CADD"], config["MMSPLICEpath"]),
+            reference="%s/%s/reference.fa" % (os.environ["CADD"], config["REFERENCEpath"]),
+        output:
+            mmsplice=temp("{file}.mmsplice.vcf.gz"),
+            idx=temp("{file}.regseq.vcf.gz.tbi"),
+        log:
+            "{file}.annotate_mmsplice.log",
+        params:
+            cadd=os.environ["CADD"],
+        shell:
+            """
+            tabix -p vcf {input.vcf} &> {log};
+            KERAS_BACKEND=tensorflow python {params.cadd}/src/scripts/lib/tools/MMSplice.py -i {input.vcf} \
+            -g {input.transcripts} \
+            -f {input.reference} | \
+            grep -v '^Variant(CHROM=' | \
+            bgzip -c > {output.mmsplice} 2>> {log}
+            """
 
 
 rule annotation:
