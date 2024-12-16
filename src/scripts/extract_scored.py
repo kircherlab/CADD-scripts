@@ -6,8 +6,7 @@ import os
 import pysam
 from optparse import OptionParser
 import multiprocessing as mp
-from functools import partial
-import time
+
 
 
 def setup_output_dir(output_base, chrom):
@@ -229,6 +228,9 @@ def main():
     # Close files
     if options.found_out:
         found_out.close()
+
+    if options.input:
+        stdin.close()
 
 if __name__ == "__main__":
     main()
