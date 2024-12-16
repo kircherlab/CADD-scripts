@@ -194,7 +194,7 @@ def main():
         # Get number of threads from Snakemake
         threads = int(os.environ.get("SNAKEMAKE_THREADS", "1"))
         threads = min(threads, len(chromosomes))
-        print("Using {0} threads to extract the scored variants across all chromosomes".format(threads), file=sys.stderr)
+        sys.stderr.write("Using {0} threads to extract the scored variants across all chromosomes\n".format(threads))
         
         # Setup parallel processing args
         process_args = [
