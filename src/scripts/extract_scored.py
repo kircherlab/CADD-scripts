@@ -45,7 +45,8 @@ def extract_prescored_chromosome(input_file, output_base, chrom):
         # Setup output directory
         chrom_dir = setup_output_dir(output_base, chrom)
         input_file_name = os.path.basename(input_file)
-        input_file_name_base = input_file_name.rsplit('.', 1)[0]
+        input_file_name_base = input_file_name.replace(".tsv.gz", "")
+        assert input_file_name_base != input_file_name, "The input file name {0} is not valid".format(input_file_name)
         output_file = os.path.join(chrom_dir, "{0}.{1}.tsv".format(input_file_name_base, chrom))
         compressed_file = "{0}.gz".format(output_file)
         
@@ -142,6 +143,7 @@ def main():
     parser.add_option("--found_out", dest="found_out", help="Write found variants to file (default: stdout)", default=None)
     parser.add_option("--header", dest="header", help="Write full header to output (default none)",
                       default=False, action="store_true")
+    parser.add_option("-t", "--threads", dest="threads", help="Number of threads to use (default: 1)", default=1)
     (options, args) = parser.parse_args()
 
     # Setup input stream
@@ -192,7 +194,6 @@ def main():
             sys.stdout.write(line)
         
         # Get number of threads from Snakemake
-        threads = int(os.environ.get("SNAKEMAKE_THREADS", "10"))
         threads = min(threads, len(chromosomes))
         sys.stderr.write("Using {0} threads to extract the scored variants across all chromosomes\n".format(threads))
         

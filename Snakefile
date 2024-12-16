@@ -77,6 +77,7 @@ checkpoint prescore:
         prescored=temp("{file}.pre.tsv"),
     log:
         "{file}.prescore.log",
+    threads: workflow.cores,
     params:
         cadd=os.environ["CADD"],
     shell:
@@ -91,7 +92,7 @@ checkpoint prescore:
             do
                 cat {input.vcf}.new \
                 | python {params.cadd}/src/scripts/extract_scored.py --header \
-                    -p $PRESCORED --found_out={output.prescored}.tmp \
+                    -p $PRESCORED --found_out={output.prescored}.tmp --threads {threads} \
                 > {input.vcf}.tmp 2>> {log};
                 cat {output.prescored}.tmp >> {output.prescored}
                 mv {input.vcf}.tmp {input.vcf}.new &> {log};
