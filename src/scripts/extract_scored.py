@@ -194,7 +194,7 @@ def main():
             sys.stdout.write(line)
         
         # Get number of threads from Snakemake
-        threads = min(threads, len(chromosomes))
+        threads = min(options.threads, len(chromosomes))
         sys.stderr.write("Using {0} threads to extract the scored variants across all chromosomes\n".format(threads))
         
         temp_dir = os.environ.get("TMPDIR", "/tmp")
