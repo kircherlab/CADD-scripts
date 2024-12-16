@@ -7,6 +7,7 @@ import pysam
 from optparse import OptionParser
 import multiprocessing as mp
 
+
 def buffer_vcf_by_chromosome(input_stream):
     """Read VCF from input stream and buffer by chromosome"""
     vcf_by_chrom = {}
@@ -26,6 +27,7 @@ def buffer_vcf_by_chromosome(input_stream):
             
     return header_lines, vcf_by_chrom
 
+
 def setup_output_dir(output_base, chrom):
     """Create chromosome-specific output directory"""
     chrom_dir = os.path.join(output_base, chrom)
@@ -35,6 +37,7 @@ def setup_output_dir(output_base, chrom):
         if not os.path.isdir(chrom_dir):
             raise
     return chrom_dir
+
 
 def extract_prescored_chromosome(input_file, output_base, chrom):
     """Extract records for a single chromosome from prescored TSV file"""
@@ -49,6 +52,7 @@ def extract_prescored_chromosome(input_file, output_base, chrom):
         # Check if extraction is needed
         if os.path.exists(compressed_file):
             if os.path.getmtime(compressed_file) > os.path.getmtime(input_file):
+                sys.stderr.write("The prescored file {0} for chromosome {1} is up to date, skip the extraction\n".format(compressed_file, chrom))
                 return compressed_file
         
         # Extract records for this chromosome using tabix
@@ -69,10 +73,12 @@ def extract_prescored_chromosome(input_file, output_base, chrom):
         
         # Remove uncompressed file
         os.remove(output_file)
+        sys.stderr.write("The prescored file {0} for chromosome {1} is extracted\n".format(compressed_file, chrom))
         return compressed_file
         
     except Exception as e:
         raise Exception("Error extracting prescored chromosome {0}: {1}".format(chrom, str(e)))
+
 
 def process_chromosome(args):
     """Process a single chromosome"""
@@ -81,7 +87,7 @@ def process_chromosome(args):
         # First extract prescored records for this chromosome
         prescored_chrom_file = extract_prescored_chromosome(
             prescored_file,
-            os.path.join(temp_dir, "prescored"),
+            os.path.dirname(prescored_file),
             chrom
         )
 
@@ -151,14 +157,6 @@ def main():
     found_out = open(options.found_out, 'w') if options.found_out else sys.stdout
     
     try:
-        # Create temporary directory
-        temp_dir = "temp_extract_scored"
-        try:
-            os.makedirs(temp_dir)
-        except OSError:
-            if not os.path.isdir(temp_dir):
-                raise
-
         # Initialize column indices
         fpos, fref, falt = 1, 2, 3
         
@@ -186,15 +184,19 @@ def main():
         # Buffer VCF data and get chromosomes
         header_lines, vcf_by_chrom = buffer_vcf_by_chromosome(input_stream)
         chromosomes = sorted(vcf_by_chrom.keys())
+        sys.stderr.write("The chromosomes are {0}\n".format(chromosomes))
+        sys.stderr.write("There are in total {} lines of records got from the buffer of the input VCF file\n".format(sum([len(vcf_by_chrom[chrom]) for chrom in chromosomes])))
         
         # Write VCF headers to stdout
         for line in header_lines:
             sys.stdout.write(line)
         
         # Get number of threads from Snakemake
-        threads = int(os.environ.get("SNAKEMAKE_THREADS", "1"))
+        threads = int(os.environ.get("SNAKEMAKE_THREADS", "10"))
         threads = min(threads, len(chromosomes))
         sys.stderr.write("Using {0} threads to extract the scored variants across all chromosomes\n".format(threads))
+        
+        temp_dir = os.environ.get("TMPDIR", "/tmp")
         
         # Setup parallel processing args
         process_args = [
