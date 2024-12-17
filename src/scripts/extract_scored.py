@@ -53,8 +53,24 @@ def extract_prescored_chromosome(input_file, output_base, chrom):
         # Check if extraction is needed
         if os.path.exists(compressed_file):
             if os.path.getmtime(compressed_file) > os.path.getmtime(input_file):
-                sys.stderr.write("The prescored file {0} for chromosome {1} is up to date, skip the extraction\n".format(compressed_file, chrom))
-                return compressed_file
+                if os.path.exists(compressed_file + ".tbi"):
+                    if os.path.getmtime(compressed_file + ".tbi") > os.path.getmtime(compressed_file):
+                        sys.stderr.write("The prescored file {0} for chromosome {1} is up to date, skip the extraction\n".format(compressed_file, chrom))
+                        return compressed_file
+                    else:
+                        tabix_only=True
+                else:
+                    tabix_only=True
+
+        if tabix_only:
+            pysam.tabix_index(compressed_file, 
+                             preset=None,
+                             force=True,
+                             seq_col=0,
+                             start_col=1,
+                             end_col=1,
+                             zerobased=False)
+            return compressed_file
         
         # Extract records for this chromosome using tabix
         tbx = pysam.TabixFile(input_file)
