@@ -228,13 +228,6 @@ def main():
                         for line in f:
                             sys.stdout.write(line)
                     os.remove(notfound_file)
-        
-        # Cleanup
-        try:
-            import shutil
-            shutil.rmtree(temp_dir)
-        except:
-            pass
 
     finally:
         # Close input file if it's not stdin
