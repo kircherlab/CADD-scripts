@@ -1,23 +1,20 @@
 """
 Description: input is vep annotated vcf and a file containing all peptide sequences with Ensemble transcript IDs. 
-The script adds a score for frameshifts and stop gains to the info column of the vcf file. In brief, Scores for frameshift or stop gain variants were calculated 
-for variants annotated with the Ensembl VEP tools' frameshift
-or stop gain consequence annotation. Amino acid sequences of reference alleles were obtained as described above, with the only difference that a window of 250 amino acids was used. 
-Log transformed probabilities were calculated and summed up for the entire reference amino acid sequence. 
-Calculation of a score for the alternative allele was carried out based on the entire reference amino acid sequence. Here, we summed up log probabilities of the reference
-sequences amino acids up to the point where the frameshift or stop gain occurred as obtained from the Ensembl VEP tools' annotations. For every amino acid that is lost due
-to the frameshift or stop gain, we used the median of log transformed probabilities calculated from all possible amino acids at each individual position in the remaining sequence
-and added them to the sum corresponding to the alternative allele.
-The average of logs odds ratios between the reference and alternative sequences from the five models  was than used as a final score. 
-
+The script adds a score for frameshifts and stop gains to the info column of the vcf file. In brief, scores for inframe InDel variants were calculated for variants annotated with the Ensembl VEP tools'
+inframe insertion or inframe deletion consequence annotation. Variants with missense consequence annotations were only used if multiple amino acids are substituted. 
+Variants with stop gain, stop lost, and stop retained consequence annotations were explicitly excluded. Amino acid sequences of reference alleles were obtained as described 
+above, with the only difference that a window of 250 amino acids was used. As for InDel variants multiple amino acids can be affected, the amino acid sequence corresponding to the 
+alternative allele can differ in more than one position from the sequence of the reference allele. To account for this, we generated the entire amino acid sequence of the alternative
+allele using the Ensembl VEP tools' annotations and the reference sequence. To calculate scores for inframe InDel variants, log transformed probabilities of the entire reference and 
+alternative sequences were added up, respectively, and substracted from each other, yielding log odds ratios. 
+The log odds ratios resulting from each of the five models were than averaged and used as final score. 
 Author: Thorben Maass, Max Schubach
 Contact: tho.maass@uni-luebeck.de
 Year:2023
 
-Refractored by yangyxt (using numpy array instead of list appending, greatly improved the performance when dealing with huge VCF file)
+Refractored by yangyxt, replacing list appending with numpy array storing. Improving computation speed by 20x when dealing with large amount of variants.
 """
 
-import warnings
 import numpy as np
 from Bio.bgzf import BgzfReader, BgzfWriter
 import torch
@@ -62,9 +59,9 @@ def read_and_extract_vcf_data(input_file):
             for i in range(len(variant_entry)):
                 variant_info = variant_entry[i].split("|")
                 consequences = variant_info[info_pos["Consequence"]].split("&")
-                if ("frameshift_variant" in consequences or "stop_gained" in consequences) and len(variant_info[info_pos["Amino_acids"]].split("/")) == 2:
+                if ("inframe_insertion" in consequences or "inframe_deletion" in consequences or "missense_variant" in consequences) and len(variant_info[info_pos["Amino_acids"]].split("/")) == 2:
                     variant_ids[idx] = variant_entry[0].split("|")[0]
-                    transcript_ids[idx] = variant_info[info_pos["Feature"]]
+                    transcript_ids[idx] = variant_info[info_pos["Feature"]].split(".")[0]
                     cons[idx] = consequences
                     oAA[idx] = variant_info[info_pos["Amino_acids"]].split("/")[0]
                     nAA[idx] = variant_info[info_pos["Amino_acids"]].split("/")[1]
@@ -133,49 +130,47 @@ def process_transcript_data(transcript_file, transcript_ids, prot_pos_start, pro
 
     return aa_seq_ref, total_stop_codons, stop_codons_before_mutation, stop_codons_in_indel
 
-def prepare_data_for_esm(aa_seq, transcript_ids, prot_pos_start, stop_codons_before_mutation):
-    """Prepares data for the ESM model."""
+def prepare_data_for_esm(aa_seq, transcript_ids, prot_pos_start, stop_codons_before_mutation, window_size):
+    """Prepares data for ESM, handling windowing and edge cases."""
     data = []
-    prot_pos_mod = []
-    for i in range(len(aa_seq)):
-        if aa_seq[i] == "NA":
+    prot_pos_mod = np.copy(prot_pos_start)
+
+    for i, seq in enumerate(aa_seq):
+        if seq == "NA":
             continue
 
-        adjusted_pos = prot_pos_start[i] - stop_codons_before_mutation[i]
-        seq_len = len(aa_seq[i])
-
-        if seq_len < WINDOW_SIZE:
-            data.append((transcript_ids[i], aa_seq[i]))
-            prot_pos_mod.append(adjusted_pos)
-        elif adjusted_pos + 1 + WINDOW_SIZE // 2 <= seq_len and adjusted_pos + 1 - WINDOW_SIZE // 2 >= 1:
-            start = adjusted_pos - WINDOW_SIZE // 2
-            end = adjusted_pos + WINDOW_SIZE // 2
-            data.append((transcript_ids[i], aa_seq[i][start:end]))
-            prot_pos_mod.append(WINDOW_SIZE // 2)
-        elif seq_len >= WINDOW_SIZE and adjusted_pos + 1 - WINDOW_SIZE // 2 < 1:
-            data.append((transcript_ids[i], aa_seq[i][:WINDOW_SIZE]))
-            prot_pos_mod.append(adjusted_pos)
+        if len(seq) < window_size:
+            data.append((transcript_ids[i], seq))
+            prot_pos_mod[i] -= stop_codons_before_mutation[i]
         else:
-            data.append((transcript_ids[i], aa_seq[i][-WINDOW_SIZE:]))
-            prot_pos_mod.append(adjusted_pos - (seq_len - WINDOW_SIZE))
+            start = prot_pos_start[i] - stop_codons_before_mutation[i]
+            if start + 1 + window_size // 2 <= len(seq) and start + 1 - window_size // 2 >= 1:
+                seq_window = seq[start - window_size // 2 : start + window_size // 2]
+                data.append((transcript_ids[i], seq_window))
+                prot_pos_mod[i] = len(seq_window) // 2
+            elif start + 1 - window_size // 2 < 1:
+                data.append((transcript_ids[i], seq[:window_size]))
+                prot_pos_mod[i] = start
+            else:
+                data.append((transcript_ids[i], seq[-window_size:]))
+                prot_pos_mod[i] = start - (len(seq) - window_size)
 
     return data, prot_pos_mod
 
-def calculate_esm_scores(data, prot_pos_mod, modelsToUse, conseq, batch_size=BATCH_SIZE):
-    """Runs the ESM model and calculates scores."""
+def calculate_esm_scores(data, prot_pos_mod, modelsToUse, conseq, batch_size):
+    """Calculates ESM scores for a given dataset."""
     model_scores = []
     for model_name in modelsToUse:
-        torch.cuda.empty_cache()
         model, alphabet = pretrained.load_model_and_alphabet(model_name)
-        model.eval()
         batch_converter = alphabet.get_batch_converter()
-
+        model.eval()
         if torch.cuda.is_available():
-            model = model.cuda()
+            model.cuda()
 
         seq_scores = []
         for i in range(0, len(data), batch_size):
-            batch_data = data[i:i + batch_size]
+            batch_end = min(i + batch_size, len(data))
+            batch_data = data[i:batch_end]
             batch_labels, batch_strs, batch_tokens = batch_converter(batch_data)
 
             with torch.no_grad():
@@ -183,72 +178,45 @@ def calculate_esm_scores(data, prot_pos_mod, modelsToUse, conseq, batch_size=BAT
                     batch_tokens = batch_tokens.cuda()
                 token_probs = torch.log_softmax(model(batch_tokens)["logits"], dim=-1).cpu()
 
-            for j, (transcript_id, seq) in enumerate(batch_data):
-                idx = i + j
-                if conseq[idx] == "FS":
-                    score = 0
+            for j, (_, seq) in enumerate(batch_data):
+                score = 0
+                if conseq[i + j] in ["inFrame", "MultiMissense"]:
                     for y, aa in enumerate(seq):
-                        if y < prot_pos_mod[idx]:
-                            score += token_probs[j, y + 1, alphabet.get_idx(aa)].item()
-                        else:
-                            aa_scores = [token_probs[j, y + 1, k].item() for k in range(4, 24)]
-                            aa_scores.append(token_probs[j, y + 1, 26].item())
-                            aa_scores.sort()
-                            mid = len(aa_scores) // 2
-                            median = (aa_scores[mid] + aa_scores[~mid]) / 2
-                            score += median
-                    seq_scores.append(score)
-                elif conseq[idx] == "NA":
-                    seq_scores.append(0)
+                        score += token_probs[j, y + 1, alphabet.get_idx(aa)].item()
+                elif conseq[i + j] == "NA":
+                    score = 999
+                seq_scores.append(score)
 
         model_scores.append(seq_scores)
 
     return np.array(model_scores)
 
-def annotate_vcf_and_write_output(vcf_data, variant_ids, transcript_ids, np_array_score_diff, modelsToUse, output_file, aa_seq_ref):
-    """Adds scores to the VCF file and writes the output."""
+def annotate_vcf_and_write_output(vcf_data, variant_ids, transcript_ids, score_diff, modelsToUse, output_file, aa_seq_ref):
+    """Annotates the VCF with ESM scores and writes the output."""
     header_end = 0
     for i, line in enumerate(vcf_data):
         if line.startswith("#CHROM"):
-            vcf_data[i - 1] += '##INFO=<ID=EsmScoreFrameshift,Number=.,Type=String,Description="esmScore for one submodels. Format: esmScore">\n'
+            vcf_data[i - 1] += "##INFO=<ID=EsmScoreInFrame,Number=.,Type=String,Description=\"esmScore for one submodels. Format: esmScore\">\n"
             header_end = i
             break
 
-    vcf_data_modified = vcf_data[:header_end + 1]
+    vcf_output = BgzfWriter(output_file, "w")
+    for line in vcf_data[:header_end + 1]:
+        vcf_output.write(line)
 
-    for i in range(header_end + 1, len(vcf_data)):
-        line = vcf_data[i]
-        new_line = line
+    for i, line in enumerate(vcf_data[header_end + 1:]):
         j = 0
         while j < len(variant_ids):
             if line.split("|")[0] == variant_ids[j]:
-                num_scores = 0
-                for l in range(j, len(variant_ids)):
-                    if line.split("|")[0] == variant_ids[l]:
-                        num_scores += 1
-                    else:
-                        break
-
-                new_line = new_line[:-1] + ";EsmScoreFrameshift" + "=" + new_line[-1:]
-
-                for h in range(num_scores):
-                    if aa_seq_ref[j + h] != "NA":
-                        avg_score = np.mean(np_array_score_diff[:, j + h])
-                        new_line = new_line[:-1] + "{0}|{1:.3f}".format(transcript_ids[j + h][11:], avg_score) + new_line[-1:]
-                    else:
-                        new_line = new_line[:-1] + "{0}|NA".format(transcript_ids[j + h][11:]) + new_line[-1:]
-
-                    if h < num_scores - 1:
-                        new_line = new_line[:-1] + "," + new_line[-1:]
-
-                j += num_scores
-            else:
-                j += 1
-        vcf_data_modified.append(new_line)
-
-    with BgzfWriter(output_file, "w") as vcf_file_output:
-        for line in vcf_data_modified:
-            vcf_file_output.write(line)
+                if aa_seq_ref[j] != "NA":
+                    score_string = [str(round(score_diff[m][j], 3)) for m in range(len(modelsToUse))]
+                    line = line.strip() + ";EsmScoreInFrame=" + ",".join(score_string) + "\n"
+                else:
+                    line = line.strip() + ";EsmScoreInFrame=NA\n"
+                break
+            j += 1
+        vcf_output.write(line)
+    vcf_output.close()
 
 @click.command()
 @click.option(
@@ -314,28 +282,71 @@ def cli(
     )
 
     conseq = []
-    aa_seq_alt = []
-    for j in range(0, len(aa_seq_ref)):
+    aa_seq_alt = np.empty(len(aa_seq_ref), dtype=object)
+    for j in range(0, len(aa_seq_ref), 1):
         if aa_seq_ref[j] == "NA":
-            aa_seq_alt.append("NA")
+            aa_seq_alt[j] = "NA"
             conseq.append("NA")
-        elif "*" in nAA[j] or "X" in nAA[j]:  # stop codon gained or complete frameshift
-            aa_seq_alt.append(aa_seq_ref[j])  # add alt seq without stop codon
-            conseq.append("FS")
-        else:
-            aa_seq_alt.append("NA")
-            conseq.append("NA")
-            warnings.warn(
-                "there is a problem with the ensembl data base and vep. The ESMframesift score of this variant will be artificially set to 0. Affected transcript is "
-                + str(transcript_ids[j])
+        elif len(nAA[j]) == len(oAA[j]) and "-" not in oAA[j] and "-" not in nAA[j]:
+            nAA_mod = nAA[j].replace("*", "")
+            aa_seq_alt[j] = (
+                aa_seq_ref[j][: prot_pos_start[j] - stop_codons_before_mutation[j] - 1]
+                + nAA_mod
+                + aa_seq_ref[j][
+                    prot_pos_end[j]
+                    - stop_codons_before_mutation[j]
+                    - stop_codons_in_indel[j] :
+                ]
             )
+            conseq.append("MultiMissense")
+        elif len(nAA[j]) >= len(oAA[j]) and "-" in oAA[j]:
+            aa_seq_alt[j] = (
+                aa_seq_ref[j][: prot_pos_start[j] - stop_codons_before_mutation[j] - 1]
+                + nAA[j]
+                + aa_seq_ref[j][prot_pos_start[j] - stop_codons_before_mutation[j] - 1 :]
+            )
+            conseq.append("inFrame")
+        elif len(nAA[j]) > len(oAA[j]):
+            nAA_mod = nAA[j].replace("*", "")
+            aa_seq_alt[j] = (
+                aa_seq_ref[j][: prot_pos_start[j] - stop_codons_before_mutation[j] - 1]
+                + nAA_mod
+                + aa_seq_ref[j][
+                    prot_pos_end[j]
+                    - stop_codons_before_mutation[j]
+                    - stop_codons_in_indel[j] :
+                ]
+            )
+            conseq.append("inFrame")
+        elif len(nAA[j]) <= len(oAA[j]) and "-" in nAA[j]:
+            aa_seq_alt[j] = (
+                aa_seq_ref[j][: prot_pos_start[j] - stop_codons_before_mutation[j] - 1]
+                + aa_seq_ref[j][
+                    prot_pos_end[j]
+                    - stop_codons_in_indel[j]
+                    - stop_codons_before_mutation[j] :
+                ]
+            )
+            conseq.append("inFrame")
+        elif len(nAA[j]) < len(oAA[j]):
+            nAA_mod = nAA[j].replace("*", "")
+            aa_seq_alt[j] = (
+                aa_seq_ref[j][: prot_pos_start[j] - stop_codons_before_mutation[j] - 1]
+                + nAA_mod
+                + aa_seq_ref[j][
+                    prot_pos_end[j]
+                    - stop_codons_before_mutation[j]
+                    - stop_codons_in_indel[j] :
+                ]
+            )
+            conseq.append("inFrame")
 
-    data_ref, prot_pos_mod_ref = prepare_data_for_esm(aa_seq_ref, transcript_ids, prot_pos_start, stop_codons_before_mutation)
-    data_alt, prot_pos_mod_alt = prepare_data_for_esm(aa_seq_alt, transcript_ids, prot_pos_start, stop_codons_before_mutation)
+    data_ref, prot_pos_mod_ref = prepare_data_for_esm(aa_seq_ref, transcript_ids, prot_pos_start, stop_codons_before_mutation, WINDOW_SIZE)
+    data_alt, prot_pos_mod_alt = prepare_data_for_esm(aa_seq_alt, transcript_ids, prot_pos_start, stop_codons_before_mutation, WINDOW_SIZE)
 
     ref_scores = calculate_esm_scores(data_ref, prot_pos_mod_ref, modelsToUse, conseq, batch_size)
     alt_scores = calculate_esm_scores(data_alt, prot_pos_mod_alt, modelsToUse, conseq, batch_size)
-    np_array_score_diff = alt_scores - ref_scores
+    np_array_score_diff = ref_scores - alt_scores
 
     annotate_vcf_and_write_output(vcf_data, variant_ids, transcript_ids, np_array_score_diff, modelsToUse, output_file, aa_seq_ref)
 
