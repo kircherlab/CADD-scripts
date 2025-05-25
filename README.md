@@ -150,7 +150,7 @@ cd $OLDPWD
 
 **Installing prescored files**
 
-At this point you are ready to go, but if you want a faster version of CADD, you can download the prescored files from our website (see section Downloads for a list of available files). Please note that these files can be very big. The files are (together with their respective tabix indices) put in the folders `no_anno` or `incl_anno` depending on the file under `data/prescored/${GENOME_BUILD}_${VERSION}/` and will be automatically detected by the `CADD.sh` script.
+At this point you are ready to go, but if you want to safe time running CADD and have disk space to spare, you can download the prescored files from our website (see section Downloads for a list of available files). Please note that these files can be very big. The files are (together with their respective tabix indices) put in `data/prescored/${GENOME_BUILD}_${VERSION}/` in sub folders `no_anno` or `incl_anno` depending on whether they contain annotation or just the final CADD scores. The `CADD.sh` script will use all files in these respective folders, depending on whether it is configured to produce output files with or without annotations.
 
 ### Running CADD
 
