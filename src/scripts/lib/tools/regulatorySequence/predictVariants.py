@@ -49,7 +49,7 @@ def cli(
     variants_file, model_file, weights_file, reference_file, genome_file, output_file
 ):
     import os
-    os.environ["CUDA_VISIBLE_DEVICES"]="-1"    
+    os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
     import numpy as np
     import math
     import vcfpy
@@ -57,7 +57,6 @@ def cli(
     import copy
 
     import tensorflow as tf
-
     from seqiolib import Interval, Encoder, VariantType, Variant
     from seqiolib import utils
 
@@ -72,9 +71,11 @@ def cli(
         for sequence in sequences:
             if variants is not None:
                 sequence.replace(variants[i])
-            X.append(Encoder.one_hot_encode_along_channel_axis(sequence.getSequence()))
+            seq_encoded = Encoder.one_hot_encode_along_channel_axis(sequence.getSequence())
+            X.append(seq_encoded)
             i += 1
-        prediction = model.predict(np.array(X))
+        X_array = np.array(X)
+        prediction = model.predict(X_array)
         return prediction
 
     def extendIntervals(intervals, region_length, genome_file):
@@ -204,9 +205,16 @@ def cli(
                 else:
                     sequence_alt = copy.copy(sequence_ref)
                     sequence_alt.replace(variant)
-                    sequences_alt.append(sequence_alt)
-                    sequences_ref.append(sequence_ref)
-                    predict_avail_idx.add(alt_idx)
+                    if len(sequence_alt.sequence) == input_length:
+                        # FIXME: This is a hack. it seems that for longer MNVs the replacement does not work
+                        sequences_alt.append(sequence_alt)
+                        sequences_ref.append(sequence_ref)
+                        predict_avail_idx.add(alt_idx)
+                    else:
+                        print(
+                            "Cannot use variant %s because of wrong interval %s has wrong size after InDel Correction"
+                            % (str(variant), str(interval))
+                        )
                 alt_idx += 1
         click.echo("Predict reference...")
         results_ref = loadAndPredict(sequences_ref, model)
@@ -243,7 +251,7 @@ def cli(
                 for task_id in range(num_targets):
                     to_add["RegSeq%d" % task_id] = to_add.get(
                         "RegSeq%d" % task_id, []
-                    ) + [round(results_alt[predict_idx][task_id] - results_ref[predict_idx][task_id],6)]
+                    ) + [round(results_alt[predict_idx][task_id] - results_ref[predict_idx][task_id], 6)]
                 predict_idx += 1
             else:
                 for task_id in range(num_targets):
