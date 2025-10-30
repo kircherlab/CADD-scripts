@@ -77,6 +77,7 @@ checkpoint prescore:
         prescored=temp("{file}.pre.tsv"),
     log:
         "{file}.prescore.log",
+    threads: workflow.cores,
     params:
         cadd=os.environ["CADD"],
     shell:
@@ -85,20 +86,18 @@ checkpoint prescore:
         echo '## Prescored variant file' > {output.prescored} 2> {log};
         PRESCORED_FILES=`find -L {input.prescored} -maxdepth 1 -type f -name \\*.tsv.gz | wc -l`
         cp {input.vcf} {input.vcf}.new
-        if [ ${{PRESCORED_FILES}} -gt 0 ];
-        then
-            for PRESCORED in $(ls {input.prescored}/*.tsv.gz)
-            do
+        if [ ${{PRESCORED_FILES}} -gt 0 ]; then
+            for PRESCORED in $(ls {input.prescored}/*.tsv.gz); do
                 cat {input.vcf}.new \
                 | python {params.cadd}/src/scripts/extract_scored.py --header \
-                    -p $PRESCORED --found_out={output.prescored}.tmp \
+                    -p $PRESCORED --found_out={output.prescored}.tmp --threads {threads} \
                 > {input.vcf}.tmp 2>> {log};
                 cat {output.prescored}.tmp >> {output.prescored}
-                mv {input.vcf}.tmp {input.vcf}.new &> {log};
+                mv {input.vcf}.tmp {input.vcf}.new 2>> {log};
             done;
-            rm {output.prescored}.tmp &>> {log}
+            rm {output.prescored}.tmp 2>> {log}
         fi
-        mv {input.vcf}.new {output.novel} &>> {log}
+        mv {input.vcf}.new {output.novel} 2>> {log}
         """
 
 
