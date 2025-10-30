@@ -173,11 +173,9 @@ There are a few options to decrease calculation times of your CADD offline insta
 
 ### Update
 
-Just a `CADD-Script` version update. CADD scores are the same as with CADD-script v1.7 (CADD scores v1.7). Detailed changes:
-
-- fix that long MNVs can cause sequences of != 500 in regseq annotaton rule and cause a workflow failure ([#90](https://github.com/kircherlab/CADD-scripts/pull/90), [#89](https://github.com/kircherlab/CADD-scripts/issues/89)).
-
 #### Version 1.7.3
+
+Just a `CADD-Script` version update. CADD scores are the same as with CADD-script v1.7 (CADD scores v1.7). Detailed changes:
 
 - fix that long MNVs can cause sequences of != 500 in regseq annotaton rule and cause a workflow failure ([#90](https://github.com/kircherlab/CADD-scripts/pull/90), [#89](https://github.com/kircherlab/CADD-scripts/issues/89)).
 
