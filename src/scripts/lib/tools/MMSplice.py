@@ -133,14 +133,14 @@ parser.add_argument("-g" "--gtf", dest="gtf", type=str, required=True,
 
 args = parser.parse_args()
 
-dl = SplicingVCFDataloader(args.gtf,
-                           args.fasta,
-                           args.input)
-
-# Specify model
-model = MMSplice()
-
 try:
+    dl = SplicingVCFDataloader(args.gtf,
+                               args.fasta,
+                               args.input)
+
+    # Specify model
+    model = MMSplice()
+
     # Do prediction
     predictions = predict_table_fast(model, dl, batch_size=512)
 
