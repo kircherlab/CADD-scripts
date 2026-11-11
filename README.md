@@ -1,4 +1,5 @@
 ## Combined Annotation Dependent Depletion (CADD)
+[![CADD data DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24083856.svg)](https://doi.org/10.5281/zenodo.24083856)
 
 CADD is a tool for scoring the deleteriousness of single nucleotide variants as well as insertion/deletions variants in the human genome (currently supported builds: GRCh37/hg19 and GRCh38/hg38).
 
@@ -38,6 +39,16 @@ We provide pre-computed CADD-based scores (C-scores) for all 9 billion possible 
 all SNV and insertions/deletions variants (InDels) from population-wide whole genome variant releases and enable scoring of short InDels on our website.
 
 Please check our [website for updates and further information](https://cadd.bihealth.org/)
+
+## Data availability
+
+CADD v1.7 training data for GRCh37 and GRCh38, supporting documentation,
+and a manifest of externally hosted CADD resources are available on
+[Zenodo](https://doi.org/10.5281/zenodo.24083856).
+
+Additional resources are available through the
+[German](https://cadd.bihealth.org/download) and
+[US](https://cadd.gs.washington.edu/download) download mirrors.
 
 ## Offline Installation
 
