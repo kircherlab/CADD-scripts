@@ -1,5 +1,6 @@
 ## Combined Annotation Dependent Depletion (CADD)
-[![CADD data DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24083856.svg)](https://doi.org/10.5281/zenodo.24083856)
+[![CADD data DOI](https://img.shields.io/badge/CADD_data-10.5281%2Fzenodo.24083856-blue)](https://doi.org/10.5281/zenodo.24083856)
+[![CADD scripts DOI](https://img.shields.io/badge/CADD_scripts-10.5281%2Fzenodo.17482296-blue)](https://doi.org/10.5281/zenodo.17482296)
 
 CADD is a tool for scoring the deleteriousness of single nucleotide variants as well as insertion/deletions variants in the human genome (currently supported builds: GRCh37/hg19 and GRCh38/hg38).
 
